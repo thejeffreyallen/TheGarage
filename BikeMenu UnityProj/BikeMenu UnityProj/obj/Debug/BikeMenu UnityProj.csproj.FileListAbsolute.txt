@@ -1,0 +1,14 @@
+D:\Unity\Unity Projects\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll
+D:\Unity\Unity Projects\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.pdb
+D:\VisualStudio Projects\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csprojAssemblyReference.cache
+D:\VisualStudio Projects\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csproj.CoreCompileInputs.cache
+D:\VisualStudio Projects\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.dll
+D:\VisualStudio Projects\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb
+C:\Sync\Unity\Unity Projects\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll
+C:\Sync\Unity\Unity Projects\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.pdb
+C:\Sync\New Bike Workshop (One Person Use At A Time)\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csproj.CoreCompileInputs.cache
+C:\Sync\New Bike Workshop (One Person Use At A Time)\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.dll
+C:\Sync\New Bike Workshop (One Person Use At A Time)\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb
+C:\Sync\New Bike Workshop (One Person Use At A Time)\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll
+C:\Sync\New Bike Workshop (One Person Use At A Time)\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.pdb
+C:\Sync\New Bike Workshop (One Person Use At A Time)\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csprojAssemblyReference.cache
