@@ -60,4 +60,14 @@ public class BrakesManager : MonoBehaviour
         frameBrakes = null;
         brakesEnabled = false;
     }
+
+    public GameObject GetBarBrakes()
+    {
+        return this.barBrakes;
+    }
+
+    public GameObject GetFrameBrakes()
+    {
+        return this.frameBrakes;
+    }
 }
