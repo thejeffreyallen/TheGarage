@@ -12,3 +12,9 @@ C:\Sync\New Bike Workshop (One Person Use At A Time)\BikeMenu UnityProj\BikeMenu
 C:\Sync\New Bike Workshop (One Person Use At A Time)\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll
 C:\Sync\New Bike Workshop (One Person Use At A Time)\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.pdb
 C:\Sync\New Bike Workshop (One Person Use At A Time)\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csprojAssemblyReference.cache
+C:\Users\sam_s\Documents\GitHub\TheGarage\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll
+C:\Users\sam_s\Documents\GitHub\TheGarage\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.pdb
+C:\Users\sam_s\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csprojAssemblyReference.cache
+C:\Users\sam_s\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csproj.CoreCompileInputs.cache
+C:\Users\sam_s\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.dll
+C:\Users\sam_s\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb

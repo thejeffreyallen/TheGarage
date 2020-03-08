@@ -129,19 +129,10 @@ public class TextureManager : MonoBehaviour
                 tires.Add(go);
         }
 
-         tires[0].GetComponent<Renderer>().material.mainTexture = OriginalTire1Tex;
-         tires[1].GetComponent<Renderer>().material.mainTexture = OriginalTire2Tex;
-
-        List<GameObject> tireWalls = new List<GameObject>();
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Tire Mesh")
-                tires.Add(go);
-        }
-
-        tireWalls[0].GetComponent<Renderer>().materials[1].mainTexture = OriginalTire1WallTex;
-        tireWalls[1].GetComponent<Renderer>().materials[1].mainTexture = OriginalTire2WallTex;
-
+        tires[0].GetComponent<Renderer>().material.mainTexture = OriginalTire1Tex;
+        tires[1].GetComponent<Renderer>().material.mainTexture = OriginalTire2Tex;
+        tires[0].GetComponent<Renderer>().materials[1].mainTexture = OriginalTire1WallTex;
+        tires[1].GetComponent<Renderer>().materials[1].mainTexture = OriginalTire2WallTex;
         List<GameObject> rims = new List<GameObject>();
         foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
         {
@@ -152,7 +143,9 @@ public class TextureManager : MonoBehaviour
         {
             rims[i].GetComponent<Renderer>().material.mainTexture = OriginalRimTex;
         }
+
     }
+
 
     IEnumerator SetTextureEnum()
     {

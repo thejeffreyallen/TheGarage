@@ -42,6 +42,7 @@ public class ColourSetter : MonoBehaviour
         currentPart = part;
         chain = false;
         seatPost = false;
+        brakes = false;
     }
 
     public void SetText(String txt)
