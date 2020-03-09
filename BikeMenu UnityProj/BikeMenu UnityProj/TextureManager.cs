@@ -22,6 +22,7 @@ public class TextureManager : MonoBehaviour
     public string tireURL = "";
     public string tireWallURL = "";
     public string rimsURL = "";
+    public string hubsURL = "";
 
     public Texture OriginalFrameTex;
     public Texture OriginalBarsTex;
@@ -32,6 +33,7 @@ public class TextureManager : MonoBehaviour
     public Texture OriginalTire1WallTex;
     public Texture OriginalTire2WallTex;
     public Texture OriginalRimTex;
+    public Texture OriginalHubTex;
 
     public enum Parts
     {
@@ -41,7 +43,8 @@ public class TextureManager : MonoBehaviour
         Forks,
         Tires,
         Tire_Wall,
-        Rims
+        Rims,
+        Hubs
     }
 
     void Awake()
@@ -64,6 +67,7 @@ public class TextureManager : MonoBehaviour
         tireURL = "";
         tireWallURL = "";
         rimsURL = "";
+        hubsURL = "";
     }
 
     public void SetSelectedPart(int bikePart)
@@ -93,6 +97,7 @@ public class TextureManager : MonoBehaviour
         OriginalForksTex = GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.mainTexture;
         OriginalSeatTex = GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.mainTexture;
         OriginalRimTex = GameObject.Find("Rim Mesh").GetComponent<Renderer>().material.mainTexture;
+        OriginalHubTex = GameObject.Find("Hub Mesh").GetComponent<Renderer>().material.mainTexture;
 
         List<GameObject> tires = new List<GameObject>();
         foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
@@ -142,6 +147,17 @@ public class TextureManager : MonoBehaviour
         for (int i = 0; i < rims.Count; i++)
         {
             rims[i].GetComponent<Renderer>().material.mainTexture = OriginalRimTex;
+        }
+
+        List<GameObject> hubs = new List<GameObject>();
+        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+        {
+            if (go.name == "Hub Mesh")
+                hubs.Add(go);
+        }
+        for (int i = 0; i < hubs.Count; i++)
+        {
+            hubs[i].GetComponent<Renderer>().material.mainTexture = OriginalRimTex;
         }
 
     }
@@ -218,6 +234,19 @@ public class TextureManager : MonoBehaviour
                 }
                 rimsURL = urlInput.text;
                 break;
+            case Parts.Hubs:
+                List<GameObject> hubs = new List<GameObject>();
+                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+                {
+                    if (go.name == "Hub Mesh")
+                        hubs.Add(go);
+                }
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.mainTexture = www.texture;
+                }
+                hubsURL = urlInput.text;
+                break;
         }
     }
     IEnumerator SetTextureEnum(int partNum, string url)
@@ -291,6 +320,19 @@ public class TextureManager : MonoBehaviour
                 }
                 rimsURL = urlInput.text;
                 break;
+            case Parts.Hubs:
+                List<GameObject> hubs = new List<GameObject>();
+                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+                {
+                    if (go.name == "Hub Mesh")
+                        hubs.Add(go);
+                }
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.mainTexture = www.texture;
+                }
+                hubsURL = urlInput.text;
+                break;
         }
     }
 
@@ -354,6 +396,19 @@ public class TextureManager : MonoBehaviour
                 }
                 rimsURL = "";
                 break;
+            case Parts.Hubs:
+                List<GameObject> hubs = new List<GameObject>();
+                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+                {
+                    if (go.name == "Hub Mesh")
+                        hubs.Add(go);
+                }
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.mainTexture = null;
+                }
+                hubsURL = "";
+                break;
         }
     }
 
@@ -375,6 +430,8 @@ public class TextureManager : MonoBehaviour
                 return tireWallURL;
             case Parts.Rims:
                 return rimsURL;
+            case Parts.Hubs:
+                return hubsURL;
         }
 
         return null;

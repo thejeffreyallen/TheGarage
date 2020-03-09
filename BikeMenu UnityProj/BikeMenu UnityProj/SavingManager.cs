@@ -792,6 +792,14 @@ public class SavingManager : MonoBehaviour
             {
                 saveData += "wall " + TextureManager.instance.tireWallURL + " ";
             }
+            if (TextureManager.instance.rimsURL != "")
+            {
+                saveData += "rim " + TextureManager.instance.rimsURL + " ";
+            }
+            if (TextureManager.instance.hubsURL != "")
+            {
+                saveData += "hub " + TextureManager.instance.hubsURL + " ";
+            }
             else
             {
                 return;
@@ -836,6 +844,14 @@ public class SavingManager : MonoBehaviour
                 else if (key == "wall")
                 {
                     TextureManager.instance.SetTexture(5, url);
+                }
+                else if (key == "rim")
+                {
+                    TextureManager.instance.SetTexture(6, url);
+                }
+                else if (key == "hub")
+                {
+                    TextureManager.instance.SetTexture(7, url);
                 }
 
             }
