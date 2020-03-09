@@ -259,7 +259,15 @@ public class SavingManager : MonoBehaviour
     {
         try
         {
-            this.saveData += this.partManager.tiresCount - 1 + " ";
+            if (partManager.tiresCount == 0)
+            {
+                this.saveData += "3 ";
+            }
+            else
+            {
+                this.saveData += this.partManager.tiresCount - 1 + " ";
+            }
+            
         }
         catch (Exception e)
         {

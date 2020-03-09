@@ -91,6 +91,7 @@ public class BetterWheelsMod : MonoBehaviour
         stockRearWheel[4].gameObject.GetComponent<MeshFilter>().mesh = newRearHub;
         stockRearWheel[4].gameObject.GetComponent<Renderer>().material = betterWheelMat;
         this.modEnabled = true;
+        PartManager.instance.tiresCount = 3;
 
     }
 
