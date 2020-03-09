@@ -9,6 +9,7 @@ using System.Collections;
 
 public class MaterialManager : MonoBehaviour
 {
+    public static MaterialManager instance;
     public Material[] customMats;
     private int matCount = 0;
 
@@ -17,15 +18,15 @@ public class MaterialManager : MonoBehaviour
 
     public Material chainMatFix;
 
-    //Trying to remove the detail normal map.
-
     private void Awake()
     {
         StartCoroutine(DestroyNormal());
+        instance = this;
     }
 
     public void Start()
     {
+        defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
         GameObject.Find("Chain Mesh").GetComponent<Renderer>().material = chainMatFix;
     }
 

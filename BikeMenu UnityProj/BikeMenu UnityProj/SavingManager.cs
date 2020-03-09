@@ -51,7 +51,7 @@ public class SavingManager : MonoBehaviour
             Directory.CreateDirectory(path);
         }
         SaveSlotNames();
-        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", error);
+        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "SAVING ERRORS: " + saveErrors);
     }
 
     public void Load(string presetName)
@@ -63,9 +63,9 @@ public class SavingManager : MonoBehaviour
         }
         catch(Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
-        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", error);
+        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "LOADING ERRORS: " + error);
     }
 
     private void LoadSlotNames(string presetName)
@@ -110,7 +110,7 @@ public class SavingManager : MonoBehaviour
             }
             catch (Exception e)
             {
-                error += e.Message + " " + e.StackTrace;
+                error += e.Message + "\n " + e.StackTrace + "\n ";
             }
             
         }
@@ -158,7 +158,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " "; 
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n "; 
         }
     }
 
@@ -175,7 +175,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -189,7 +189,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace + " ";
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -201,7 +201,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -215,7 +215,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace + " ";
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -231,7 +231,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -251,7 +251,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -263,7 +263,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -276,7 +276,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -288,7 +288,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -301,7 +301,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -313,7 +313,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -326,7 +326,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -338,7 +338,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -351,7 +351,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -366,7 +366,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -384,7 +384,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -403,7 +403,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -423,7 +423,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -442,7 +442,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -462,7 +462,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -484,7 +484,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -503,7 +503,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -524,7 +524,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -537,7 +537,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -550,7 +550,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -569,7 +569,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -590,21 +590,26 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
     private void SaveMaterials()
     {
+        string debug = "";
         try
         {
             for (int i = 0; i < 20; i++)
             {
                 Material mat = FindObjectOfType<BikeLoadOut>().GetPartMat(i);
-
+                debug += mat.name.ToLower() + "\n ";
                 switch (mat.name.ToLower())
                 {
                     case "a_glossy (instance)":
+                        saveData += i + " 0 ";
+                        partsCount++;
+                        break;
+                    case "a_glossy (instance) (instance)":
                         saveData += i + " 0 ";
                         partsCount++;
                         break;
@@ -660,6 +665,9 @@ public class SavingManager : MonoBehaviour
                 case "a_glossy (instance)":
                     saveData += "0 ";
                     break;
+                case "a_glossy (instance) (instance)":
+                    saveData += " 0 ";
+                    break;
                 case "jetfuel (instance)":
                     saveData += "1 ";
                     break;
@@ -686,9 +694,9 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
-
+        //File.WriteAllText(Application.dataPath + "//MaterialListDebug.txt", debug);
     }
 
     private void LoadMaterials()
@@ -704,7 +712,7 @@ public class SavingManager : MonoBehaviour
                 switch (set)
                 {
                     case 0:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(a_glossy, partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(MaterialManager.instance.defaultMat, partNum, true);
                         break;
                     case 1:
                         FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[0], partNum, true);
@@ -759,7 +767,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -807,7 +815,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -817,7 +825,7 @@ public class SavingManager : MonoBehaviour
         try
         {
             words = scan.ReadToEnd().Split(' ');
-            for (int i = 0; i < words.Length; i+=2)
+            for (int i = 0; i < words.Length-1; i+=2)
             {
                 string key = words[i];
                 string url = words[i+1];
@@ -858,7 +866,7 @@ public class SavingManager : MonoBehaviour
         }
         catch(Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -876,7 +884,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + " " + e.StackTrace + " ";
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -901,7 +909,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
@@ -915,7 +923,7 @@ public class SavingManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            error += e.Message + " " + e.StackTrace;
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 }

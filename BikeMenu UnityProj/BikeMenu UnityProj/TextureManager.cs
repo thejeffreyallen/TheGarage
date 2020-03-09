@@ -175,22 +175,18 @@ public class TextureManager : MonoBehaviour
         {
             case Parts.Bars:
                 GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.color = Color.white;
                 barsURL = urlInput.text;
                 break;
             case Parts.Forks:
                 GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.color = Color.white;
                 forksURL = urlInput.text;
                 break;
             case Parts.Frame:
                 GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.color = Color.white;
                 frameURL = urlInput.text;
                 break;
             case Parts.Seat:
                 GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.color = Color.white;
                 seatURL = urlInput.text;
                 break;
             case Parts.Tires:
@@ -203,7 +199,6 @@ public class TextureManager : MonoBehaviour
                 for (int i = 0; i < tires.Count; i++)
                 {
                     tires[i].GetComponent<Renderer>().material.mainTexture = www.texture;
-                    //tires[i].GetComponent<Renderer>().material.color = Color.white;
                 }
                 tireURL = urlInput.text;
                 break;
@@ -217,7 +212,6 @@ public class TextureManager : MonoBehaviour
                 for (int i = 0; i < tireWalls.Count; i++)
                 {
                     tireWalls[i].GetComponent<Renderer>().materials[1].mainTexture = www.texture;
-                    //tireWalls[i].GetComponent<Renderer>().materials[1].color = Color.white;
                 }
                 tireWallURL = urlInput.text;
                 break;
@@ -261,22 +255,18 @@ public class TextureManager : MonoBehaviour
         {
             case Parts.Bars:
                 GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.color = Color.white;
                 barsURL = url;
                 break;
             case Parts.Forks:
                 GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.color = Color.white;
                 forksURL = url;
                 break;
             case Parts.Frame:
                 GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.color = Color.white;
                 frameURL = url;
                 break;
             case Parts.Seat:
                 GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.mainTexture = www.texture;
-                //GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.color = Color.white;
                 seatURL = url;
                 break;
             case Parts.Tires:
@@ -289,7 +279,6 @@ public class TextureManager : MonoBehaviour
                 for (int i = 0; i < tires.Count; i++)
                 {
                     tires[i].GetComponent<Renderer>().material.mainTexture = www.texture;
-                    //tires[i].GetComponent<Renderer>().material.color = Color.white;
                 }
                 tireURL = url;
                 break;
@@ -303,7 +292,6 @@ public class TextureManager : MonoBehaviour
                 for (int i = 0; i < tireWalls.Count; i++)
                 {
                     tireWalls[i].GetComponent<Renderer>().materials[1].mainTexture = www.texture;
-                    //tireWalls[i].GetComponent<Renderer>().materials[1].color = Color.white;
                 }
                 tireWallURL = url;
                 break;
@@ -318,7 +306,7 @@ public class TextureManager : MonoBehaviour
                 {
                     rims[i].GetComponent<Renderer>().material.mainTexture = www.texture;
                 }
-                rimsURL = urlInput.text;
+                rimsURL = url;
                 break;
             case Parts.Hubs:
                 List<GameObject> hubs = new List<GameObject>();
@@ -331,7 +319,7 @@ public class TextureManager : MonoBehaviour
                 {
                     hubs[i].GetComponent<Renderer>().material.mainTexture = www.texture;
                 }
-                hubsURL = urlInput.text;
+                hubsURL = url;
                 break;
         }
     }

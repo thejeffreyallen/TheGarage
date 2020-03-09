@@ -168,15 +168,12 @@ public class PartManager : MonoBehaviour
         {
             FindObjectOfType<BikeLoadOut>().SetFrontTireTextureID(id);
             FindObjectOfType<BikeLoadOut>().SetBackTireTextureID(id);
+            tiresCount = id + 1;
         }
-        if (id == 3)
+        else if (id == 3)
         {
             BetterWheelsMod.instance.SetTireTread();
             tiresCount = 0;
-        }
-        else
-        {
-            tiresCount = id + 1;
         }
 
     }
