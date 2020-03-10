@@ -242,7 +242,14 @@ public class SavingManager : MonoBehaviour
             int bin = scan.nextInt();
             if (bin == 1)
             {
-                BrakesManager.instance.SetBrakes(true);
+                if (BrakesManager.instance.brakesEnabled)
+                {
+                    return;
+                }
+                else
+                {
+                    BrakesManager.instance.SetBrakes(true);
+                }    
             }
             else
             {
