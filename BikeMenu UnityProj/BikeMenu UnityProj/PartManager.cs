@@ -64,12 +64,14 @@ public class PartManager : MonoBehaviour
             ogRearWheel.localRotation = (Quaternion.Euler(0, 0, 270f));
             chainMesh.localPosition = (new Vector3(0.089f, 0, 0));
             sprocketMesh.localPosition = (new Vector3(0.0467f, 0.001f, 0));
+            sprocketMesh.localRotation = (Quaternion.Euler(0, 0, 180f));
         }
         else
         {
             ogRearWheel.localRotation = (Quaternion.Euler(0, 0, 90f));
             chainMesh.localPosition = (new Vector3(0, 0, 0)); ;
             sprocketMesh.localPosition = (new Vector3(-0.0402f, 0.0013f, 0.0001f));
+            sprocketMesh.localRotation = (Quaternion.Euler(0, 0, 0));
         }
     }
 
@@ -78,6 +80,7 @@ public class PartManager : MonoBehaviour
         ogRearWheel.localRotation = (Quaternion.Euler(0, 0, 270f));
         chainMesh.localPosition = (new Vector3(0.089f, 0, 0));
         sprocketMesh.localPosition = (new Vector3(0.0467f, 0.001f, 0));
+        sprocketMesh.localRotation = (Quaternion.Euler(0, 0, 180f));
         LHD = true;
     }
 
@@ -86,6 +89,7 @@ public class PartManager : MonoBehaviour
         ogRearWheel.localRotation = (Quaternion.Euler(0, 0, 90f));
         chainMesh.localPosition = (new Vector3(0, 0, 0)); ;
         sprocketMesh.localPosition = (new Vector3(-0.0402f, 0.0013f, 0.0001f));
+        sprocketMesh.localRotation = (Quaternion.Euler(0, 0, 0));
         LHD = false;
     }
 
