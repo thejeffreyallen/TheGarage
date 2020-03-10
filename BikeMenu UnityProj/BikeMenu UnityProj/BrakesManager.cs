@@ -44,6 +44,8 @@ public class BrakesManager : MonoBehaviour
         Transform frame = GameObject.Find("Frame Mesh").transform;
 
         barBrakes = Instantiate(barsbrakePrefab, bars.transform.position, bars.transform.rotation);
+        barBrakes.transform.localScale = (new Vector3(0.8833787f,0.893016f, 1));
+        barBrakes.transform.localPosition = (new Vector3(barBrakes.transform.localPosition.x+0.0025f, barBrakes.transform.localPosition.y +0.026f, barBrakes.transform.localPosition.z-0.005f));
         barBrakes.transform.parent = bars;
 
         frameBrakes = Instantiate(framebrakePrefab, frame.transform.position, frame.transform.rotation);
