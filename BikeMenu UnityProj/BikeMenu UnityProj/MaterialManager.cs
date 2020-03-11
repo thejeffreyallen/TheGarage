@@ -32,11 +32,17 @@ public class MaterialManager : MonoBehaviour
 
     public void SetMaterial(Material mat)
     {
-        if (FindObjectOfType<ColourSetter>().getSeatPostBool())
+        if (ColourSetter.instance.getSeatPostBool())
         {
             GameObject.Find("Seat Post").GetComponent<Renderer>().material = mat;
         }
-        else {
+        //else if (ColourSetter.instance.GetBrakesBool())
+        //{
+         //   BrakesManager.instance.barBrakes.GetComponent<Renderer>().materials[1] = mat;
+          //  BrakesManager.instance.frameBrakes.GetComponent<Renderer>().materials[2] = mat;
+        //}
+        else
+        {
             FindObjectOfType<BikeLoadOut>().SetPartMaterial(mat, FindObjectOfType<ColourSetter>().currentPart, true);
         }
         
@@ -44,7 +50,17 @@ public class MaterialManager : MonoBehaviour
 
     public void SetDefaultMat()
     {
-        FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, FindObjectOfType<ColourSetter>().currentPart, true);
+        if (ColourSetter.instance.getSeatPostBool())
+        {
+            GameObject.Find("Seat Post").GetComponent<Renderer>().material = defaultMat;
+        }
+        //else if (ColourSetter.instance.GetBrakesBool())
+        //{
+        //    BrakesManager.instance.barBrakes.GetComponent<Renderer>().materials[1] = defaultMat;
+        //    BrakesManager.instance.frameBrakes.GetComponent<Renderer>().materials[2] = defaultMat;
+        //}
+        else
+            FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, FindObjectOfType<ColourSetter>().currentPart, true);
     }
 
     public void SwapMaterial(String name)
@@ -71,19 +87,12 @@ public class MaterialManager : MonoBehaviour
         defaultMat.color = Color.black;
         for (int i = 0; i < 20; i++)
         {
-            try
-            {
                 Material m = FindObjectOfType<BikeLoadOut>().GetPartMat(i);
                 if (m.name.ToLower().Contains("a_glossy"))
                 {
                     FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, i, true);
                 }
                 
-            }
-            catch (Exception e)
-            {
-                File.WriteAllText(Application.dataPath + "//errorLog.txt", e.Message + " " + e.StackTrace);
-            }
         }
         yield break;
     }

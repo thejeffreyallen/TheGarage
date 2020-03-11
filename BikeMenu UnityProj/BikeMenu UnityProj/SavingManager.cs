@@ -51,7 +51,7 @@ public class SavingManager : MonoBehaviour
             Directory.CreateDirectory(path);
         }
         SaveSlotNames();
-        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "SAVING ERRORS: " + saveErrors);
+        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "\n"+DateTime.Now + "\nSAVING ERRORS: " + saveErrors);
     }
 
     public void Load(string presetName)
@@ -65,7 +65,7 @@ public class SavingManager : MonoBehaviour
         {
             error += e.Message + "\n " + e.StackTrace + "\n ";
         }
-        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "LOADING ERRORS: " + error);
+        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "\n"+DateTime.Now + "\nLOADING ERRORS: " + error);
     }
 
     private void LoadSlotNames(string presetName)

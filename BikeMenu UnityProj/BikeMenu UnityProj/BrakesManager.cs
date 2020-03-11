@@ -11,8 +11,8 @@ public class BrakesManager : MonoBehaviour
     public GameObject barsbrakePrefab;
     public GameObject framebrakePrefab;
 
-    GameObject barBrakes;
-    GameObject frameBrakes;
+    public GameObject barBrakes;
+    public GameObject frameBrakes;
 
     public bool brakesEnabled;
 

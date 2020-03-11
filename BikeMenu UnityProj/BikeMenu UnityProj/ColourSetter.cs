@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 
 public class ColourSetter : MonoBehaviour
 {
+    public static ColourSetter instance;
     public int currentPart;
 
     public Slider slider;
@@ -23,6 +24,11 @@ public class ColourSetter : MonoBehaviour
     private bool chain = false;
     private bool seatPost = false;
     private bool brakes = false;
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -53,11 +59,15 @@ public class ColourSetter : MonoBehaviour
     public void setChainColor()
     {
         this.chain = true;
+        this.seatPost = false;
+        this.brakes = false;
     }
 
     public void setSeatPostColor()
     {
         this.seatPost = true;
+        this.chain = false;
+        this.brakes = false;
     }
 
     public bool getSeatPostBool()
@@ -68,6 +78,8 @@ public class ColourSetter : MonoBehaviour
     public void SetBrakesColor()
     {
         this.brakes = true;
+        this.seatPost = false;
+        this.chain = false;
     }
 
     public bool GetBrakesBool()
