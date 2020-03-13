@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MeshBlend : MonoBehaviour
 {
@@ -17,8 +16,6 @@ public class MeshBlend : MonoBehaviour
     private Mesh baseMesh;
     private Vector3[] vertices;
     private MeshFilter filter;
-
-    public Slider slide;
 
     private void Awake()
     {
@@ -49,10 +46,6 @@ public class MeshBlend : MonoBehaviour
         this.filter.mesh = this.baseMesh;
     }
 
-    public void Update()
-    {
-        SetMeshBlend(this.perc);
-    }
 
     public void SetMeshBlend(float percent)
     {
@@ -66,17 +59,6 @@ public class MeshBlend : MonoBehaviour
         this.baseMesh.vertices = this.vertices;
     }
 
-    public void SetMeshBlend()
-    {
-        this.perc = Mathf.Clamp01(slide.value);
-        Vector3[] array = this.shape01.vertices;
-        Vector3[] array2 = this.shape02.vertices;
-        for (int i = 0; i < this.vertices.Length; i++)
-        {
-            this.vertices[i] = Vector3.Lerp(array[i], array2[i], this.perc);
-        }
-        this.baseMesh.vertices = this.vertices;
-    }
 
     public float GetPercent()
     {

@@ -50,8 +50,7 @@ public class PartManager : MonoBehaviour
         rightHandTarget = GameObject.Find("Right Anchor");
         leftHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
         rightHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
-        BetterWheelsMod.instance.frontTireMeshBlend.debug = true;
-        BetterWheelsMod.instance.backTireMeshBlend.debug = true;
+
     }
 
 
@@ -61,7 +60,6 @@ public class PartManager : MonoBehaviour
     {
         FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
         FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
-
     }
 
     public float GetTireWidth()
