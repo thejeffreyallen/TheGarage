@@ -20,7 +20,6 @@ C:\Users\sam_s\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\
 C:\Users\sam_s\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb
 G:\Unity Projects\TheGarage\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll
 G:\Unity Projects\TheGarage\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.pdb
-G:\Unity Projects\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csprojAssemblyReference.cache
 G:\Unity Projects\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csproj.CoreCompileInputs.cache
 G:\Unity Projects\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.dll
 G:\Unity Projects\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb

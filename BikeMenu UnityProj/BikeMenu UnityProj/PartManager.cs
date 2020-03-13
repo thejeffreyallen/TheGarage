@@ -50,10 +50,25 @@ public class PartManager : MonoBehaviour
         rightHandTarget = GameObject.Find("Right Anchor");
         leftHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
         rightHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
-
+        BetterWheelsMod.instance.frontTireMeshBlend.debug = true;
+        BetterWheelsMod.instance.backTireMeshBlend.debug = true;
     }
 
 
+<<<<<<< HEAD
+=======
+    public void SetTireWidth(float width)
+    {
+        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
+        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+
+    }
+
+    public float GetTireWidth()
+    {
+        return FindObjectOfType<BikeLoadOut>().GetBackTireFatness();
+    }
+>>>>>>> parent of 99f8da8... Revert "Tire width slider working"
 
     public void SwitchDriveSide()
     {
