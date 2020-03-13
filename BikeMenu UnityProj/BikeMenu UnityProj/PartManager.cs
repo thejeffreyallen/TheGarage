@@ -25,6 +25,7 @@ public class PartManager : MonoBehaviour
     public Slider seatAngleSlider;
     public Slider bikeScaleSlider;
     public Slider barsAngleSlider;
+    public Slider tireWidth;
     public int partCount = 0;
 
     private GameObject leftHandTarget;
@@ -53,9 +54,12 @@ public class PartManager : MonoBehaviour
 
     }
 
+    public void TireWidth()
+    {
+        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(tireWidth.value);
+        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(tireWidth.value);
+    }
 
-<<<<<<< HEAD
-=======
     public void SetTireWidth(float width)
     {
         FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
@@ -66,7 +70,6 @@ public class PartManager : MonoBehaviour
     {
         return FindObjectOfType<BikeLoadOut>().GetBackTireFatness();
     }
->>>>>>> parent of 99f8da8... Revert "Tire width slider working"
 
     public void SwitchDriveSide()
     {
