@@ -25,6 +25,7 @@ public class PartManager : MonoBehaviour
     public Slider seatAngleSlider;
     public Slider bikeScaleSlider;
     public Slider barsAngleSlider;
+    public Slider tireWidth;
     public int partCount = 0;
 
     private GameObject leftHandTarget;
@@ -53,7 +54,22 @@ public class PartManager : MonoBehaviour
 
     }
 
+    public void TireWidth()
+    {
+        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(tireWidth.value);
+        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(tireWidth.value);
+    }
 
+    public void SetTireWidth(float width)
+    {
+        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
+        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+    }
+
+    public float GetTireWidth()
+    {
+        return FindObjectOfType<BikeLoadOut>().GetBackTireFatness();
+    }
 
     public void SwitchDriveSide()
     {

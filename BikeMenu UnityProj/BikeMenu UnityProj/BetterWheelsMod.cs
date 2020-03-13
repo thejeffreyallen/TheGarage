@@ -32,8 +32,8 @@ public class BetterWheelsMod : MonoBehaviour
 
     private void Start()
     {
-        stockFrontWheel = GameObject.Find("BMX:Wheel").GetComponentsInChildren<Transform>();
-        stockRearWheel = GameObject.Find("BMX:Wheel 1").GetComponentsInChildren<Transform>();
+        stockFrontWheel = GameObject.Find("BMX:Wheel").GetComponentsInChildren<Transform>(true);
+        stockRearWheel = GameObject.Find("BMX:Wheel 1").GetComponentsInChildren<Transform>(true);
         //Store old parts
         oldRim = stockFrontWheel[1].gameObject.GetComponent<MeshFilter>().mesh;
         oldHub = stockFrontWheel[3].gameObject.GetComponent<MeshFilter>().mesh;
