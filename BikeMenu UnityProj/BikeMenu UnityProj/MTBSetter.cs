@@ -57,6 +57,7 @@ public class MTBSetter : MonoBehaviour
 
     private void Start()
     {
+
         stockFrontWheel = GameObject.Find("BMX:Wheel").GetComponentsInChildren<Transform>();
         stockRearWheel = GameObject.Find("BMX:Wheel 1").GetComponentsInChildren<Transform>();
         //Store old parts
@@ -73,7 +74,7 @@ public class MTBSetter : MonoBehaviour
         oldTireMats = stockFrontWheel[6].gameObject.GetComponent<Renderer>().materials;
 
         frameJoint = GameObject.Find("BMX:Frame_Joint").transform;
-        barsJoint = GameObject.Find("BMX:Bars_Joint").transform;
+        barsJoint = GameObject.Find("BMX:Bars_Joint").GetComponent<Transform>();
         driveTrain = GameObject.Find("BMX:DriveTrain_Joint").transform;
         initFramePos = frameJoint.localPosition.y;
         initBarsPos = barsJoint.localPosition.y;
@@ -88,6 +89,8 @@ public class MTBSetter : MonoBehaviour
         rearWheelCol = GameObject.Find("BackWheelMeshCollider");
 
         originalWheelCol = GameObject.Find("FrontWheelMeshCollider").GetComponent<MeshFilter>().mesh;
+
+       
 
     }
 
@@ -106,6 +109,8 @@ public class MTBSetter : MonoBehaviour
         //frameJoint.localPosition = new Vector3(frameJoint.localPosition.x, initFramePos+0.124556f, frameJoint.localPosition.z);
         //barsJoint.localPosition = new Vector3(barsJoint.localPosition.x, initBarsPos+0.124556f, barsJoint.localPosition.z);
         //driveTrain.localPosition = new Vector3(driveTrain.localPosition.x, initDrivePos - 0.124556f, driveTrain.localPosition.z);
+
+        barsJoint.Rotate(-7.3f, 0, 0);
 
         List<GameObject> partObjects = new List<GameObject>();
 
@@ -146,6 +151,8 @@ public class MTBSetter : MonoBehaviour
         //frameJoint.localPosition = new Vector3(frameJoint.localPosition.x, initFramePos, frameJoint.localPosition.z);
         //barsJoint.localPosition = new Vector3(barsJoint.localPosition.x, initBarsPos, barsJoint.localPosition.z);
         //driveTrain.localPosition = new Vector3(driveTrain.localPosition.x, initDrivePos, driveTrain.localPosition.z);
+
+        barsJoint.Rotate(7.3f, 0, 0);
 
         frontWheel.localPosition = new Vector3(frontWheel.localPosition.x, frontWheel.localPosition.y - 0.028f, frontWheel.localPosition.z - 0.1f);
         rearWheel.localPosition = new Vector3(rearWheel.localPosition.x, rearWheel.localPosition.y - 0.028f, rearWheel.localPosition.z + 0.019f);
