@@ -86,6 +86,7 @@ public class SavingManager : MonoBehaviour
                 this.LoadGripsID();
                 this.LoadBikeScale();
                 this.LoadWheels();
+                this.LoadTireWidth();
                 this.LoadFlanges();
                 this.LoadSeatHeight();
                 this.LoadDriveSide();
@@ -130,6 +131,7 @@ public class SavingManager : MonoBehaviour
             this.SaveGripsID();
             this.SaveBikeScale();
             this.SaveWheels();
+            this.SaveTireWidth();
             this.SaveFlanges();
             this.SaveSeatHeight();
             this.SaveDriveSide();
@@ -162,9 +164,36 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+
     public void SetOverwrite()
     {
         File.WriteAllText(this.path + this.saveNames[0].text + ".preset", this.saveData);
+    }
+
+    private void SaveTireWidth()
+    {
+        try
+        {
+            saveData += FindObjectOfType<BikeLoadOut>().GetFrontTireFatness() + " ";
+        }
+        catch (Exception e)
+        {
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadTireWidth()
+    {
+        try
+        {
+            float width = (float)scan.nextDouble();
+            FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
+            FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
+        }
     }
 
     private void SaveSeatAngle()

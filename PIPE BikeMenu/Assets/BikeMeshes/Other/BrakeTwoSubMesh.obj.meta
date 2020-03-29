@@ -5,14 +5,21 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: default
+    100004: BrakeTwo
     400000: //RootNode
     400002: default
+    400004: BrakeTwo
     2100000: Default_OBJ
     2100002: Metal
     2100004: BrakeParts
+    2100006: BrakeTwoMat
+    2100008: Cable
     2300000: default
+    2300002: BrakeTwo
     3300000: default
+    3300002: BrakeTwo
     4300000: default
+    4300002: BrakeTwo
   externalObjects: {}
   materials:
     importMaterials: 1

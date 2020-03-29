@@ -5,13 +5,21 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: default
+    100004: Brakes
     400000: //RootNode
     400002: default
+    400004: Brakes
     2100000: None
     2100002: BrakeParts
+    2100004: BrakesMat
+    2100006: BrakeParts.001
+    2100008: Cable.001
     2300000: default
+    2300002: Brakes
     3300000: default
+    3300002: Brakes
     4300000: default
+    4300002: Brakes
   externalObjects: {}
   materials:
     importMaterials: 1
