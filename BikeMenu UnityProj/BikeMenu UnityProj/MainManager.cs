@@ -29,31 +29,26 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
-        if (MenuManager.instance == null)
+     /*  if (MenuManager.instance == null)
             SetOpen();
         else if (!MenuManager.instance.IsMenuActive(MenuManager.instance.saveMenu))
-            SetOpen();
+            SetOpen();*/
     }
 
     void SetOpen()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        isOpen = !isOpen;        
+
+        if (isOpen)
         {
-            isOpen = !isOpen;
-
-            
-
-            if (isOpen)
-            {
-                MenuManager.instance.SetMenuActive(MenuManager.instance.mainMenu);
-                RoomLoader.instance.LoadRoom();
+            MenuManager.instance.SetMenuActive(MenuManager.instance.mainMenu);
+            RoomLoader.instance.LoadRoom();
                 
-            }
-            else
-            {
-                MenuManager.instance.DisableAllMenus();
-                RoomLoader.instance.DestroyRoom();
-            }
+        }
+        else
+        {
+            MenuManager.instance.DisableAllMenus();
+            RoomLoader.instance.DestroyRoom();
         }
     }
     private IEnumerator LoadDefault()
