@@ -15,24 +15,9 @@ public class MenuManager : MonoBehaviour
     public GameObject saveMenu;
     public GameObject helpMenu;
 
-    bool hideMenu;
-
     void Awake()
     {
         instance = this;
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Keypad0))
-        {
-            hideMenu = !hideMenu;
-
-            if (hideMenu)
-                DisableAllMenus();
-            else
-                ReturnMainMenu();
-        }
     }
 
     public void SetMenuActive(GameObject menu)

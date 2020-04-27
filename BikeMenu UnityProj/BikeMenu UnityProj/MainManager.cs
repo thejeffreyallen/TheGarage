@@ -35,7 +35,7 @@ public class MainManager : MonoBehaviour
             SetOpen();*/
     }
 
-    void SetOpen()
+    public void SetOpen()
     {
         isOpen = !isOpen;        
 
@@ -51,6 +51,23 @@ public class MainManager : MonoBehaviour
             RoomLoader.instance.DestroyRoom();
         }
     }
+
+    public void SetOpen(bool _isOpen)
+    {
+        isOpen = _isOpen;
+
+        if (isOpen)
+        {
+            MenuManager.instance.SetMenuActive(MenuManager.instance.mainMenu);
+            RoomLoader.instance.LoadRoom();
+        }
+        else
+        {
+            MenuManager.instance.DisableAllMenus();
+            RoomLoader.instance.DestroyRoom();
+        }
+    }
+
     private IEnumerator LoadDefault()
     {
         yield return new WaitForSeconds(0.5f);
