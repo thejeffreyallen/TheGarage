@@ -42,13 +42,13 @@ public class MainManager : MonoBehaviour
         if (isOpen)
         {
             MenuManager.instance.SetMenuActive(MenuManager.instance.mainMenu);
-            RoomLoader.instance.LoadRoom();
+            GarageRoomLoader.instance.LoadRoom();
                 
         }
         else
         {
             MenuManager.instance.DisableAllMenus();
-            RoomLoader.instance.DestroyRoom();
+            GarageRoomLoader.instance.DestroyRoom();
         }
     }
 
@@ -59,12 +59,12 @@ public class MainManager : MonoBehaviour
         if (isOpen)
         {
             MenuManager.instance.SetMenuActive(MenuManager.instance.mainMenu);
-            RoomLoader.instance.LoadRoom();
+            GarageRoomLoader.instance.LoadRoom();
         }
         else
         {
             MenuManager.instance.DisableAllMenus();
-            RoomLoader.instance.DestroyRoom();
+            GarageRoomLoader.instance.DestroyRoom();
         }
     }
 

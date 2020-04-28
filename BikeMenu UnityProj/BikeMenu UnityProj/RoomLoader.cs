@@ -7,9 +7,9 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using System.Windows.Forms;
 
-public class RoomLoader : MonoBehaviour
+public class GarageRoomLoader : MonoBehaviour
 {
-    public static RoomLoader instance;
+    public static GarageRoomLoader instance;
 
     public GameObject roomPrefab;
     GameObject room;
@@ -69,10 +69,13 @@ public class RoomLoader : MonoBehaviour
 
     public void DestroyRoom()
     {
-        for (int i = 0; i < mapLights.Length; i++)
+       /* if (mapLights != null)
         {
-            mapLights[i].enabled = true;
-        }
+            for (int i = 0; i < mapLights.Length; i++)
+            {
+                mapLights[i].enabled = true;
+            }
+        }*/
 
         FindObjectOfType<DrivableVehicle>().vehiclePhysicsBody.GetComponent<Rigidbody>().isKinematic = false;
 
