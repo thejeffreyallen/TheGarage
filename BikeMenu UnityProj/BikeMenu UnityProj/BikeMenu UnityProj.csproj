@@ -393,6 +393,8 @@
     <Compile Include="SavingManager.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="TextureManager.cs" />
+    <Compile Include="VehicleDriver.cs" />
+    <Compile Include="VehicleSpawner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
