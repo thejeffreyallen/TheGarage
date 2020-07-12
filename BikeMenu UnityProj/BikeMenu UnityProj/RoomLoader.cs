@@ -37,11 +37,11 @@ public class GarageRoomLoader : MonoBehaviour
     {
         mainCam = Camera.main;
 
-        mapLights = FindObjectsOfType<Light>();
+       /* mapLights = FindObjectsOfType<Light>();
         for (int i = 0; i < mapLights.Length; i++)
         {
             mapLights[i].enabled = false;
-        }
+        }*/
 
         room = Instantiate(roomPrefab, new Vector3(10000, 10000, 10000), Quaternion.identity);
         bikePlacement = room.transform.position;
@@ -87,5 +87,7 @@ public class GarageRoomLoader : MonoBehaviour
         player.SetActive(true);
         FindObjectOfType<SessionMarker>().ResetPlayerAtMarker();
         Destroy(room);
+
+        HouseManager.instance.SetHouseOpen(true, true, false);
     }
 }

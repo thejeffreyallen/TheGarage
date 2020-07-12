@@ -105,6 +105,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TheHouse">
+      <HintPath>E:\Steam Games\steamapps\common\PIPE\PIPE_Data\TheHouse.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\DllsForReferencing\UnityEngine.dll</HintPath>
       <Private>False</Private>

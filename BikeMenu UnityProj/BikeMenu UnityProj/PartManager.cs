@@ -64,6 +64,7 @@ public class PartManager : MonoBehaviour
     {
         FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
         FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+        tireWidth.value = width;
     }
 
     public float GetTireWidth()
