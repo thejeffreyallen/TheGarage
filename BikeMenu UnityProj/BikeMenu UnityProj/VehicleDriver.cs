@@ -19,17 +19,24 @@ public class VehicleDriver : MonoBehaviour
 
     void Update()
     {
-        if (transform.position == path[targetPoint].position)
+        try
         {
-            if (targetPoint == path.Length - 1)
-                Destroy(gameObject);
+            if (transform.position == path[targetPoint].position)
+            {
+                if (targetPoint == path.Length - 1)
+                    Destroy(gameObject);
 
-            targetPoint++;
+                targetPoint++;
+            }
+            else
+            {
+                transform.position = Vector3.MoveTowards(transform.position, path[targetPoint].position, speed);
+                transform.LookAt(path[targetPoint], Vector3.up);
+            }
         }
-        else
+        catch
         {
-            transform.position = Vector3.MoveTowards(transform.position, path[targetPoint].position, speed);
-            transform.LookAt(path[targetPoint], Vector3.up);
+            Destroy(gameObject);
         }
     }
 }
