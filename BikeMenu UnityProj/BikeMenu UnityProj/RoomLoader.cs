@@ -23,6 +23,7 @@ public class GarageRoomLoader : MonoBehaviour
     Transform marker;
     Renderer markerRend;
     private Vector3 bikePlacement;
+    private Transform[] playerComponents;
 
     Light[] mapLights;
 
@@ -57,7 +58,14 @@ public class GarageRoomLoader : MonoBehaviour
         FindObjectOfType<SessionMarker>().SetMarker(bikePlacement, Quaternion.identity);
         FindObjectOfType<SessionMarker>().ResetPlayerAtMarker();
 
-        player.SetActive(false);
+        this.playerComponents = this.player.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < this.playerComponents.Length; i++)
+        {
+            if (this.playerComponents[i].gameObject.name.Contains("geo") || this.playerComponents[i].gameObject.name.Contains("Daryen") || this.playerComponents[i].gameObject.name.Contains("Cap"))
+            {
+                this.playerComponents[i].gameObject.SetActive(false);
+            }
+        }
 
         mainCam.gameObject.SetActive(false);
         Camera newCam = FindObjectOfType<Camera>();
@@ -84,7 +92,13 @@ public class GarageRoomLoader : MonoBehaviour
         mainCam.gameObject.SetActive(true);
 
         FindObjectOfType<SessionMarker>().SetMarker(previousMarkerPos, previousMarkerRot);
-        player.SetActive(true);
+        for (int i = 0; i < this.playerComponents.Length; i++)
+        {
+            if (this.playerComponents[i].gameObject.name.Contains("geo") || this.playerComponents[i].gameObject.name.Contains("Daryen") || this.playerComponents[i].gameObject.name.Contains("Cap"))
+            {
+                this.playerComponents[i].gameObject.SetActive(true);
+            }
+        }
         FindObjectOfType<SessionMarker>().ResetPlayerAtMarker();
         Destroy(room);
 

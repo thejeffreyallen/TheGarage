@@ -30,7 +30,7 @@ public class PartManager : MonoBehaviour
 
     private GameObject leftHandTarget;
     private GameObject rightHandTarget;
-    
+    private ColourSetter cs;
 
 
     Transform bmx;
@@ -51,6 +51,7 @@ public class PartManager : MonoBehaviour
         rightHandTarget = GameObject.Find("Right Anchor");
         leftHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
         rightHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
+        FindObjectOfType<ColourSetter>();
 
     }
 
@@ -190,11 +191,19 @@ public class PartManager : MonoBehaviour
             FindObjectOfType<BikeLoadOut>().SetFrontTireTextureID(id);
             FindObjectOfType<BikeLoadOut>().SetBackTireTextureID(id);
             tiresCount = id + 1;
+            Color front = FindObjectOfType<ColourSetter>().getFrontTireColor();
+            Color rear = FindObjectOfType<ColourSetter>().getRearTireColor();
+            FindObjectOfType<ColourSetter>().SetFrontTireColor(front.a, front.g, front.b, front.a);
+            FindObjectOfType<ColourSetter>().SetRearTireColor(rear.a, rear.g, rear.b, rear.a);
         }
-        else if (id == 3)
+        else
         {
-            BetterWheelsMod.instance.SetTireTread();
+            FindObjectOfType<BetterWheelsMod>().SetTireTread();
             tiresCount = 0;
+            Color front = FindObjectOfType<ColourSetter>().getFrontTireColor();
+            Color rear = FindObjectOfType<ColourSetter>().getRearTireColor();
+            FindObjectOfType<ColourSetter>().SetFrontTireColor(front.a, front.g, front.b, front.a);
+            FindObjectOfType<ColourSetter>().SetRearTireColor(rear.a, rear.g, rear.b, rear.a);
         }
 
     }

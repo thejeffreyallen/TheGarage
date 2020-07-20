@@ -102,6 +102,12 @@ public class SavingManager : MonoBehaviour
                 }
                 this.LoadSeatChainColors();
                 this.LoadBrakesColor();
+                this.LoadBrakeCableColor();
+                this.LoadTireColors();
+                this.LoadLeftGripColor();
+                this.LoadRightGripColor();
+                this.LoadRimColors();
+                this.LoadTireWallColors();
                 this.LoadMeshes();
                 this.LoadTextures();
                 this.scan.Close();
@@ -143,6 +149,12 @@ public class SavingManager : MonoBehaviour
             }
             this.SaveSeatPostChainColors();
             this.SaveBrakeColor();
+            this.SaveBrakeCableColor();
+            this.SaveTireColors();
+            this.SaveLeftGripColor();
+            this.SaveRightGripColor();
+            this.SaveRimColors();
+            this.SaveTireWallColors();
             this.SaveMeshes();
             this.SaveTextures();
             for (int j = 0; j < this.saveNames.Length; j++)
@@ -264,6 +276,8 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    
+
     private void LoadBrakes()
     {
         try
@@ -295,7 +309,7 @@ public class SavingManager : MonoBehaviour
     {
         try
         {
-            if (partManager.tiresCount == 0)
+            if (this.partManager.tiresCount == 0)
             {
                 this.saveData += "3 ";
             }
@@ -414,6 +428,135 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    private void SaveTireColors()
+    {
+        try
+        {
+            saveData += cs.getFrontTireColor().r + " ";
+            saveData += cs.getFrontTireColor().g + " ";
+            saveData += cs.getFrontTireColor().b + " ";
+            saveData += cs.getFrontTireColor().a + " ";
+
+            saveData += cs.getRearTireColor().r + " ";
+            saveData += cs.getRearTireColor().g + " ";
+            saveData += cs.getRearTireColor().b + " ";
+            saveData += cs.getRearTireColor().a + " ";
+
+        }
+        catch (Exception e)
+        {
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void SaveTireWallColors()
+    {
+        try
+        {
+            saveData += cs.GetFrontTireWallColor().r + " ";
+            saveData += cs.GetFrontTireWallColor().g + " ";
+            saveData += cs.GetFrontTireWallColor().b + " ";
+            saveData += cs.GetFrontTireWallColor().a + " ";
+
+            saveData += cs.GetRearTireWallColor().r + " ";
+            saveData += cs.GetRearTireWallColor().g + " ";
+            saveData += cs.GetRearTireWallColor().b + " ";
+            saveData += cs.GetRearTireWallColor().a + " ";
+
+        }
+        catch (Exception e)
+        {
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void SaveRimColors()
+    {
+        try
+        {
+            saveData += cs.GetFrontRimColor().r + " ";
+            saveData += cs.GetFrontRimColor().g + " ";
+            saveData += cs.GetFrontRimColor().b + " ";
+            saveData += cs.GetFrontRimColor().a + " ";
+
+            saveData += cs.GetRearRimColor().r + " ";
+            saveData += cs.GetRearRimColor().g + " ";
+            saveData += cs.GetRearRimColor().b + " ";
+            saveData += cs.GetRearRimColor().a + " ";
+
+        }
+        catch (Exception e)
+        {
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadRimColors()
+    {
+        try
+        {
+            float r = (float)scan.nextDouble();
+            float g = (float)scan.nextDouble();
+            float b = (float)scan.nextDouble();
+            float a = (float)scan.nextDouble();
+            cs.SetFrontRimColor(r, g, b, a);
+
+            float r2 = (float)scan.nextDouble();
+            float g2 = (float)scan.nextDouble();
+            float b2 = (float)scan.nextDouble();
+            float a2 = (float)scan.nextDouble();
+            cs.SetRearRimColor(r2, g2, b2, a2);
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadTireColors()
+    {
+        try
+        {
+            float r = (float)scan.nextDouble();
+            float g = (float)scan.nextDouble();
+            float b = (float)scan.nextDouble();
+            float a = (float)scan.nextDouble();
+            cs.SetFrontTireColor(r, g, b, a);
+
+            float r2 = (float)scan.nextDouble();
+            float g2 = (float)scan.nextDouble();
+            float b2 = (float)scan.nextDouble();
+            float a2 = (float)scan.nextDouble();
+            cs.SetRearTireColor(r2, g2, b2, a2);
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadTireWallColors()
+    {
+        try
+        {
+            float r = (float)scan.nextDouble();
+            float g = (float)scan.nextDouble();
+            float b = (float)scan.nextDouble();
+            float a = (float)scan.nextDouble();
+            cs.SetFrontTireWallColor(r, g, b, a);
+
+            float r2 = (float)scan.nextDouble();
+            float g2 = (float)scan.nextDouble();
+            float b2 = (float)scan.nextDouble();
+            float a2 = (float)scan.nextDouble();
+            cs.SetRearTireWallColor(r2, g2, b2, a2);
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
     private void SaveBrakeColor()
     {
         try
@@ -429,6 +572,106 @@ public class SavingManager : MonoBehaviour
         catch (Exception e)
         {
             saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void SaveLeftGripColor()
+    {
+        try
+        {
+            saveData += cs.GetLeftGripColor().r + " ";
+            saveData += cs.GetLeftGripColor().g + " ";
+            saveData += cs.GetLeftGripColor().b + " ";
+            saveData += cs.GetLeftGripColor().a + " ";
+        }
+        catch (Exception e)
+        {
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void SaveRightGripColor()
+    {
+        try
+        {
+            saveData += cs.GetRightGripColor().r + " ";
+            saveData += cs.GetRightGripColor().g + " ";
+            saveData += cs.GetRightGripColor().b + " ";
+            saveData += cs.GetRightGripColor().a + " ";
+        }
+        catch (Exception e)
+        {
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadLeftGripColor()
+    {
+        try
+        {
+            float r = (float)scan.nextDouble();
+            float g = (float)scan.nextDouble();
+            float b = (float)scan.nextDouble();
+            float a = (float)scan.nextDouble();
+            cs.SetLeftGripColor(r, g, b, a);
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadRightGripColor()
+    {
+        try
+        {
+            float r = (float)scan.nextDouble();
+            float g = (float)scan.nextDouble();
+            float b = (float)scan.nextDouble();
+            float a = (float)scan.nextDouble();
+            cs.SetRightGripColor(r, g, b, a);
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+
+    private void SaveBrakeCableColor()
+    {
+        try
+        {
+            if (BrakesManager.instance.brakesEnabled)
+            {
+                saveData += cs.GetBrakeCableColor().r + " ";
+                saveData += cs.GetBrakeCableColor().g + " ";
+                saveData += cs.GetBrakeCableColor().b + " ";
+                saveData += cs.GetBrakeCableColor().a + " ";
+            }
+        }
+        catch (Exception e)
+        {
+            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadBrakeCableColor()
+    {
+        try
+        {
+            if (BrakesManager.instance.brakesEnabled)
+            {
+                float r = (float)scan.nextDouble();
+                float g = (float)scan.nextDouble();
+                float b = (float)scan.nextDouble();
+                float a = (float)scan.nextDouble();
+                cs.SetCableColor(r, g, b, a);
+            }
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 

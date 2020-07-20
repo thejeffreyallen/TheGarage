@@ -70,8 +70,13 @@ public class BetterWheelsMod : MonoBehaviour
 
     public void SetTireTread()
     {
-        stockFrontWheel[6].gameObject.GetComponent<Renderer>().materials = tireMats;
-        stockRearWheel[3].gameObject.GetComponent<Renderer>().materials = tireMats;
+        stockFrontWheel[6].gameObject.GetComponent<Renderer>().materials[0] = tireMats[0];
+        stockRearWheel[3].gameObject.GetComponent<Renderer>().materials[0] = tireMats[0];
+    }
+
+    public bool GetModEnabled()
+    {
+        return this.modEnabled;
     }
 
     public void ApplyMod()
