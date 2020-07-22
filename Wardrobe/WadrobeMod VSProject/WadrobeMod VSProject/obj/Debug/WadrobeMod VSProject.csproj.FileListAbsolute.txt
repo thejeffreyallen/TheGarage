@@ -1,0 +1,12 @@
+C:\Users\Mayhe\Documents\GitHub\PIPE-WardrobeMod\Wardrobe Mod\Assets\VS Build\WardrobeMod.dll
+C:\Users\Mayhe\Documents\GitHub\PIPE-WardrobeMod\Wardrobe Mod\Assets\VS Build\WardrobeMod.pdb
+C:\Users\Mayhe\Documents\GitHub\PIPE-WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WadrobeMod VSProject.csprojAssemblyReference.cache
+C:\Users\Mayhe\Documents\GitHub\PIPE-WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WadrobeMod VSProject.csproj.CoreCompileInputs.cache
+C:\Users\Mayhe\Documents\GitHub\PIPE-WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.dll
+C:\Users\Mayhe\Documents\GitHub\PIPE-WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.pdb
+C:\Users\Mayhe\Documents\GitHub\WardrobeMod\Wardrobe Mod\Assets\VS Build\WardrobeMod.dll
+C:\Users\Mayhe\Documents\GitHub\WardrobeMod\Wardrobe Mod\Assets\VS Build\WardrobeMod.pdb
+C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WadrobeMod VSProject.csprojAssemblyReference.cache
+C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WadrobeMod VSProject.csproj.CoreCompileInputs.cache
+C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.dll
+C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.pdb

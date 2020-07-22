@@ -1,0 +1,6 @@
+D:\Unity\Unity Projects\The House\Assets\VS Project\TheHouse.dll
+D:\Unity\Unity Projects\The House\Assets\VS Project\TheHouse.pdb
+D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse VSProject.csprojAssemblyReference.cache
+D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse VSProject.csproj.CoreCompileInputs.cache
+D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse.dll
+D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse.pdb
