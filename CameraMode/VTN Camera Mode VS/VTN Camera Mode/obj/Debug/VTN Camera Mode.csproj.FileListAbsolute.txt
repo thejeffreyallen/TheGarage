@@ -1,0 +1,6 @@
+D:\Unity\Unity Projects\VTN Camera Mode\Assets\VS Build\CameraMode.dll
+D:\Unity\Unity Projects\VTN Camera Mode\Assets\VS Build\CameraMode.pdb
+D:\VisualStudio Projects\VTN Camera Mode\VTN Camera Mode\obj\Debug\VTN Camera Mode.csprojAssemblyReference.cache
+D:\VisualStudio Projects\VTN Camera Mode\VTN Camera Mode\obj\Debug\VTN Camera Mode.csproj.CoreCompileInputs.cache
+D:\VisualStudio Projects\VTN Camera Mode\VTN Camera Mode\obj\Debug\CameraMode.dll
+D:\VisualStudio Projects\VTN Camera Mode\VTN Camera Mode\obj\Debug\CameraMode.pdb
