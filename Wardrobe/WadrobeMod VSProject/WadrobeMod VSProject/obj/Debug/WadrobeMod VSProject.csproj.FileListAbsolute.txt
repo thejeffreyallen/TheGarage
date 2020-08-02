@@ -10,3 +10,9 @@ C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSPr
 C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WadrobeMod VSProject.csproj.CoreCompileInputs.cache
 C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.dll
 C:\Users\Mayhe\Documents\GitHub\WardrobeMod\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.pdb
+G:\Unity Projects\TheGarage\Wardrobe\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WadrobeMod VSProject.csprojAssemblyReference.cache
+G:\Unity Projects\TheGarage\Wardrobe\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WadrobeMod VSProject.csproj.CoreCompileInputs.cache
+G:\Unity Projects\TheGarage\Wardrobe\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.dll
+G:\Unity Projects\TheGarage\Wardrobe\Wardrobe Mod\Assets\VS Build\WardrobeMod.dll
+G:\Unity Projects\TheGarage\Wardrobe\Wardrobe Mod\Assets\VS Build\WardrobeMod.pdb
+G:\Unity Projects\TheGarage\Wardrobe\WadrobeMod VSProject\WadrobeMod VSProject\obj\Debug\WardrobeMod.pdb

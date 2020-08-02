@@ -21,11 +21,14 @@ public class ColourSetter : MonoBehaviour
     private Color barBrakesColor;
     private Color frameBrakesColor;
     private Color cableColor;
+    private Color col;
 
     private bool chain = false;
     private bool seatPost = false;
     private bool brakes = false;
     private bool cable = true;
+
+    private bool active = false;
 
     void Awake()
     {
@@ -34,11 +37,10 @@ public class ColourSetter : MonoBehaviour
 
     void Start()
     {
+        col = new Color(0f, 0f, 0f, 1f);
         this.seatPostCol = GameObject.Find("Seat Post").GetComponent<Renderer>().material.color;
         this.chainColor = GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color;
-        this.barBrakesColor = BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].color;
-        this.frameBrakesColor = BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].color;
-        this.cableColor = BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].color;
+        
     }
 
     void OnEnable()
@@ -99,6 +101,10 @@ public class ColourSetter : MonoBehaviour
 
     public Color GetCableColor()
     {
+        if (cableColor == null)
+        {
+            return new Color(0f, 0f, 0f, 1f);
+        }
         return this.cableColor;
     }
 
@@ -107,39 +113,53 @@ public class ColourSetter : MonoBehaviour
         return this.brakes;
     }
 
+    public void SetActive(bool isActive)
+    {
+        this.active = isActive;
+        
+    }
+
+    public bool isActive()
+    {
+        return this.active;
+    }
+
     void Update()
     {
-        float hue, sat, bright;
+        if (this.isActive())
+        {
+            float hue, sat, bright;
 
-        Color col = FindObjectOfType<ColourPicker>().value;
-        Color.RGBToHSV(col, out hue, out sat, out bright);
-        col = Color.HSVToRGB(hue, sat, slider.value);
-        if (this.chain == true)
-        {
-            chainColor = col;
-            GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color = chainColor;
-        }
-        else if (this.seatPost == true)
-        {
-            seatPostCol = col;
-            GameObject.Find("Seat Post").GetComponent<Renderer>().material.color = seatPostCol;
-        }
-        else if (this.brakes == true)
-        {
-            barBrakesColor = col;
-            frameBrakesColor = col;
-            BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].color = frameBrakesColor;
-            BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].color = barBrakesColor;
-        }
-        else if (this.cable == true)
-        {
-            cableColor = col;
-            BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].color = cableColor;
-            BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].color = cableColor;
-        }
-        else
-        {
-            FindObjectOfType<BikeLoadOut>().SetColor(col, currentPart);
+            col = ColourPicker.instance.value;
+            Color.RGBToHSV(col, out hue, out sat, out bright);
+            col = Color.HSVToRGB(hue, sat, slider.value);
+            if (this.chain == true)
+            {
+                chainColor = col;
+                GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color = chainColor;
+            }
+            else if (this.seatPost == true)
+            {
+                seatPostCol = col;
+                GameObject.Find("Seat Post").GetComponent<Renderer>().material.color = seatPostCol;
+            }
+            else if (this.brakes == true)
+            {
+                barBrakesColor = col;
+                frameBrakesColor = col;
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].color = frameBrakesColor;
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].color = barBrakesColor;
+            }
+            else if (this.cable == true)
+            {
+                cableColor = col;
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].color = cableColor;
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].color = cableColor;
+            }
+            else
+            {
+                FindObjectOfType<BikeLoadOut>().SetColor(col, currentPart);
+            }
         }
     }
 

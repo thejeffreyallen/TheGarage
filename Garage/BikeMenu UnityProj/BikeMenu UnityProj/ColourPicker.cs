@@ -29,7 +29,15 @@ public class ColourPicker : MonoBehaviour
     private Vector3 Min; // min bounds
 
     private CanvasScaler myScale;
+
+    public static ColourPicker instance;
+
     //////////////////	
+    private void Awake()
+    {
+        instance = this;
+    }
+
 
     private void Start()
     {

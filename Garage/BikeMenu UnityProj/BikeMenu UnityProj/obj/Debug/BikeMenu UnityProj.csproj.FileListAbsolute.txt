@@ -30,3 +30,9 @@ C:\Users\Mayhe\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\
 C:\Users\Mayhe\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csproj.CoreCompileInputs.cache
 C:\Users\Mayhe\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.dll
 C:\Users\Mayhe\Documents\GitHub\TheGarage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb
+G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csprojAssemblyReference.cache
+G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csproj.CoreCompileInputs.cache
+G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.dll
+G:\Unity Projects\TheGarage\Garage\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll
+G:\Unity Projects\TheGarage\Garage\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.pdb
+G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb

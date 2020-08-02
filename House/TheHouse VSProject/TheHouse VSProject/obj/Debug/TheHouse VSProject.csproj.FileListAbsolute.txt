@@ -4,3 +4,9 @@ D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHous
 D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse VSProject.csproj.CoreCompileInputs.cache
 D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse.dll
 D:\VisualStudio Projects\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse.pdb
+G:\Unity Projects\TheGarage\House\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse VSProject.csprojAssemblyReference.cache
+G:\Unity Projects\TheGarage\House\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse VSProject.csproj.CoreCompileInputs.cache
+G:\Unity Projects\TheGarage\House\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse.dll
+G:\Unity Projects\TheGarage\Unity\Unity Projects\The House\Assets\VS Project\TheHouse.dll
+G:\Unity Projects\TheGarage\Unity\Unity Projects\The House\Assets\VS Project\TheHouse.pdb
+G:\Unity Projects\TheGarage\House\TheHouse VSProject\TheHouse VSProject\obj\Debug\TheHouse.pdb

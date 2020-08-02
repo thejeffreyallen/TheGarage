@@ -8,11 +8,12 @@ using UnityEngine;
 
 public class MainManager : MonoBehaviour
 {
-    bool isOpen;
+    public static MainManager instance;
+    public bool isOpen;
     void Awake()
     {
-        
-        
+
+        instance = this;
     }
     void Start()
     {

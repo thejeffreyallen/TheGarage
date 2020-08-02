@@ -17,6 +17,8 @@ public class TextureSwapManager : MonoBehaviour
 
     string chosenURL;
 
+    string saveErrors;
+
     void Start()
     {
         instance = this;
@@ -24,24 +26,92 @@ public class TextureSwapManager : MonoBehaviour
 
     public void SetTexture()
     {
-        chosenURL = url.text;
-       // StartCoroutine(SetTexture_Enum());
-        ButtonCreator.instance.CreateButton(chosenURL);
-        TextureSaving.instance.SetClothingSave(chosenURL, clothingDropdown.value);
+        try
+        {
+            chosenURL = url.text;
+            // StartCoroutine(SetTexture_Enum());
+            ButtonCreator.instance.CreateButton(chosenURL);
+            TextureSaving.instance.SetClothingSave(chosenURL, clothingDropdown.value);
+        }
+        catch (Exception ex)
+        {
+            {
+                this.saveErrors = string.Concat(new string[]
+                {
+                    this.saveErrors,
+                    ex.Message,
+                    "\n ",
+                    ex.StackTrace,
+                    "\n "
+                });
+            }
+            File.AppendAllText(Application.dataPath + "//TheHouseErrorLog.txt", string.Concat(new object[]
+            {
+                "\n",
+                DateTime.Now,
+                "\nERRORS: ",
+                this.saveErrors
+            }));
+        }
     }
 
     public void SetTexture(string url)
     {
+        try { 
         chosenURL = url;
         StartCoroutine(SetTexture_Enum());
         TextureSaving.instance.SetClothingSave(url, clothingDropdown.value);
+        }
+        catch (Exception ex)
+        {
+            {
+                this.saveErrors = string.Concat(new string[]
+                {
+                    this.saveErrors,
+                    ex.Message,
+                    "\n ",
+                    ex.StackTrace,
+                    "\n "
+                });
+            }
+            File.AppendAllText(Application.dataPath + "//TheHouseErrorLog.txt", string.Concat(new object[]
+            {
+                "\n",
+                DateTime.Now,
+                "\nERRORS: ",
+                this.saveErrors
+            }));
+        }
     }
 
     public void SetTexture(string url, int clothingPiece)
     {
-        chosenURL = url;
-        StartCoroutine(SetTexture_Enum(clothingPiece));
-        TextureSaving.instance.SetClothingSave(url, clothingPiece);
+        try
+        {
+            chosenURL = url;
+            StartCoroutine(SetTexture_Enum(clothingPiece));
+            TextureSaving.instance.SetClothingSave(url, clothingPiece);
+        }
+        catch (Exception ex)
+        {
+            {
+                this.saveErrors = string.Concat(new string[]
+                {
+                    this.saveErrors,
+                    ex.Message,
+                    "\n ",
+                    ex.StackTrace,
+                    "\n "
+                });
+            }
+            File.AppendAllText(Application.dataPath + "//TheHouseErrorLog.txt", string.Concat(new object[]
+            {
+                "\n",
+                DateTime.Now,
+                "\nERRORS: ",
+                this.saveErrors
+            }));
+        }
     }
 
     IEnumerator SetTexture_Enum()

@@ -26,16 +26,20 @@ public class HouseCam : MonoBehaviour
 
     void Update()
     {
-        if (cam.position != targetPos)
+        if (HouseManager.instance.IsOpen())
         {
-            cam.position = Vector3.MoveTowards(cam.position, targetPos, moveSpeed * Time.deltaTime);
-            cam.rotation = Quaternion.RotateTowards(cam.rotation, targetRot, rotateSpeed * Time.deltaTime);
-        }
+            if (cam.position != targetPos)
+            {
+                cam.position = Vector3.MoveTowards(cam.position, targetPos, moveSpeed * Time.deltaTime);
+                cam.rotation = Quaternion.RotateTowards(cam.rotation, targetRot, rotateSpeed * Time.deltaTime);
+            }
 
-        if (moveForward)
-        {
-            cam.position = Vector3.MoveTowards(cam.position, moveToPos, Vector3.Distance(cam.position, moveToPos) * Time.deltaTime);       
+            if (moveForward)
+            {
+                cam.position = Vector3.MoveTowards(cam.position, moveToPos, Vector3.Distance(cam.position, moveToPos) * Time.deltaTime);
+            }
         }
+       
     }
 
     public void SetTargetPos(int listValue)
