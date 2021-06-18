@@ -84,6 +84,11 @@ public class ColourPicker : MonoBehaviour
 
     }
 
+    public void ReturnToCenter()
+    {
+        thumb.GetComponent<RectTransform>().localPosition = Vector3.zero;
+    }
+
 
     //get color of mouse point
     private Color GetColor()

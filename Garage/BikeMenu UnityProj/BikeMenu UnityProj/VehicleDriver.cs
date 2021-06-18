@@ -34,8 +34,9 @@ public class VehicleDriver : MonoBehaviour
                 transform.LookAt(path[targetPoint], Vector3.up);
             }
         }
-        catch
+        catch(Exception e)
         {
+            Debug.Log("At VehicleDriver "+ e.Message + e.StackTrace);
             Destroy(gameObject);
         }
     }

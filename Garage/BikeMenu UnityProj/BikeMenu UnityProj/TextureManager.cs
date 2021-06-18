@@ -12,6 +12,14 @@ public class TextureManager : MonoBehaviour
     public static TextureManager instance;
 
     public InputField urlInput;
+    public InputField urlNorm;
+    public InputField urlMet;
+    public Slider shinySlide;
+    public Text selectedPartText;
+
+    private List<GameObject> tires = new List<GameObject>();
+    private List<GameObject> rims = new List<GameObject>();
+    private List<GameObject> hubs = new List<GameObject>();
 
     Parts selectedPart;
 
@@ -23,6 +31,24 @@ public class TextureManager : MonoBehaviour
     public string tireWallURL = "";
     public string rimsURL = "";
     public string hubsURL = "";
+
+    public string frameURLN = "";
+    public string barsURLN = "";
+    public string seatURLN = "";
+    public string forksURLN = "";
+    public string tireURLN = "";
+    public string tireWallURLN = "";
+    public string rimsURLN = "";
+    public string hubsURLN = "";
+
+    public string frameURLM = "";
+    public string barsURLM = "";
+    public string seatURLM = "";
+    public string forksURLM = "";
+    public string tireURLM = "";
+    public string tireWallURLM = "";
+    public string rimsURLM = "";
+    public string hubsURLM = "";
 
     public Texture OriginalFrameTex;
     public Texture OriginalBarsTex;
@@ -49,12 +75,33 @@ public class TextureManager : MonoBehaviour
 
     void Awake()
     {
+        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+        {
+            if (tires.Count == rims.Count && tires.Count == hubs.Count && tires.Count == 2)
+                return;
+            if (go.name.Equals("Tire Mesh"))
+            {
+                Debug.Log("Found " + go.name);
+                tires.Add(go);
+            }
+            if (go.name.Equals("Rim Mesh"))
+            {
+                Debug.Log("Found " + go.name);
+                rims.Add(go);
+            }
+
+            if (go.name.Equals("Hubs Mesh"))
+            {
+                Debug.Log("Found " + go.name);
+                hubs.Add(go);
+            }
+        }
         StoreOriginalTextures();
+        instance = this;
     }
 
     void Start()
     {
-        instance = this;
         
     }
 
@@ -70,6 +117,55 @@ public class TextureManager : MonoBehaviour
         hubsURL = "";
     }
 
+    public void Update()
+    {
+        if (this.shinySlide.IsActive())
+        {
+            switch (selectedPart)
+            {
+                case Parts.Bars:
+                    GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.SetFloat("_Glossiness", shinySlide.value);
+                    break;
+                case Parts.Forks:
+                    GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.SetFloat("_Glossiness", shinySlide.value);
+                    break;
+                case Parts.Frame:
+                    GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.SetFloat("_Glossiness", shinySlide.value);
+                    break;
+                case Parts.Seat:
+                    GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.SetFloat("_Glossiness", shinySlide.value);
+                    break;
+                case Parts.Tires:
+                    for (int i = 0; i < tires.Count; i++)
+                    {
+                        tires[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", shinySlide.value);
+                    }
+                    break;
+                case Parts.Tire_Wall:
+
+                    for (int i = 0; i < tires.Count; i++)
+                    {
+                        tires[i].GetComponent<Renderer>().materials[1].SetFloat("_Glossiness", shinySlide.value);
+                    }
+                    break;
+                case Parts.Rims:
+                    for (int i = 0; i < rims.Count; i++)
+                    {
+                        rims[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", shinySlide.value);
+                    }
+                    break;
+                case Parts.Hubs:
+                    for (int i = 0; i < hubs.Count; i++)
+                    {
+                        hubs[i].GetComponent<Renderer>().material.SetFloat("_Glossiness", shinySlide.value);
+                    }
+                    break;
+                default:
+                    break;
+            }   
+        }
+    }
+
     public void SetSelectedPart(int bikePart)
     {
         selectedPart = (Parts)bikePart;
@@ -78,16 +174,61 @@ public class TextureManager : MonoBehaviour
     public void SetTexture()
     {
         StartCoroutine(SetTextureEnum());
+        Resources.UnloadUnusedAssets();
     }
+
+    public void SetNormal()
+    {
+        StartCoroutine(SetNormalEnum());
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void SetMetallic()
+    {
+        StartCoroutine(SetMetallicEnum());
+        Resources.UnloadUnusedAssets();
+    }
+
     public void SetTexture(int partNum, string url)
     {
+        if (url == "" || url == null)
+            return;
         StartCoroutine(SetTextureEnum(partNum, url));
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void SetNormal(int partNum, string url)
+    {
+        if (url == "" || url == null)
+            return;
+        StartCoroutine(SetNormalEnum(partNum, url));
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void SetMetallic(int partNum, string url)
+    {
+        if (url == "" || url == null)
+            return;
+        StartCoroutine(SetMetallicEnum(partNum, url));
+        Resources.UnloadUnusedAssets();
     }
 
     public void RemoveTexture()
     {
-        //StartCoroutine(SetTextureEnum(FindObjectOfType<ColourSetter>().currentPart, "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAA1BMVEX///+nxBvIAAAASElEQVR4nO3BgQAAAADDoPlTX+AIVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwDcaiAAFXD1ujAAAAAElFTkSuQmCC"));
         StartCoroutine(SetTextureBlank(FindObjectOfType<ColourSetter>().currentPart));
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void RemoveNormal()
+    {
+        StartCoroutine(SetNormalBlank(FindObjectOfType<ColourSetter>().currentPart));
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void RemoveMetallic()
+    {
+        StartCoroutine(SetMetallicBlank(FindObjectOfType<ColourSetter>().currentPart));
+        Resources.UnloadUnusedAssets();
     }
 
     public void StoreOriginalTextures()
@@ -99,25 +240,12 @@ public class TextureManager : MonoBehaviour
         OriginalRimTex = GameObject.Find("Rim Mesh").GetComponent<Renderer>().material.mainTexture;
         OriginalHubTex = GameObject.Find("Hub Mesh").GetComponent<Renderer>().material.mainTexture;
 
-        List<GameObject> tires = new List<GameObject>();
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Tire Mesh")
-                tires.Add(go);
-        }
 
         OriginalTire1Tex = tires[0].GetComponent<Renderer>().material.mainTexture;
         OriginalTire2Tex = tires[1].GetComponent<Renderer>().material.mainTexture;
 
-        List<GameObject> tireWalls = new List<GameObject>();
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Tire Mesh")
-                tireWalls.Add(go);
-        }
-
-        OriginalTire1WallTex = tireWalls[0].GetComponent<Renderer>().materials[1].mainTexture;
-        OriginalTire2WallTex = tireWalls[1].GetComponent<Renderer>().materials[1].mainTexture;      
+        OriginalTire1WallTex = tires[0].GetComponent<Renderer>().materials[1].mainTexture;
+        OriginalTire2WallTex = tires[1].GetComponent<Renderer>().materials[1].mainTexture;      
     }
 
     public void SetOriginalTextures()
@@ -127,39 +255,21 @@ public class TextureManager : MonoBehaviour
         GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.mainTexture = OriginalForksTex;
         GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.mainTexture = OriginalSeatTex;
 
-        List<GameObject> tires = new List<GameObject>();
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Tire Mesh")
-                tires.Add(go);
-        }
-
         tires[0].GetComponent<Renderer>().material.mainTexture = OriginalTire1Tex;
         tires[1].GetComponent<Renderer>().material.mainTexture = OriginalTire2Tex;
         tires[0].GetComponent<Renderer>().materials[1].mainTexture = OriginalTire1WallTex;
         tires[1].GetComponent<Renderer>().materials[1].mainTexture = OriginalTire2WallTex;
-        List<GameObject> rims = new List<GameObject>();
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Rim Mesh")
-                rims.Add(go);
-        }
+
         for (int i = 0; i < rims.Count; i++)
         {
             rims[i].GetComponent<Renderer>().material.mainTexture = OriginalRimTex;
         }
 
-        List<GameObject> hubs = new List<GameObject>();
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Hub Mesh")
-                hubs.Add(go);
-        }
         for (int i = 0; i < hubs.Count; i++)
         {
             hubs[i].GetComponent<Renderer>().material.mainTexture = OriginalRimTex;
         }
-
+        Resources.UnloadUnusedAssets();
     }
 
 
@@ -190,12 +300,6 @@ public class TextureManager : MonoBehaviour
                 seatURL = urlInput.text;
                 break;
             case Parts.Tires:
-                List<GameObject> tires = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Tire Mesh")
-                        tires.Add(go);
-                }
                 for (int i = 0; i < tires.Count; i++)
                 {
                     tires[i].GetComponent<Renderer>().material.mainTexture = www.texture;
@@ -203,25 +307,13 @@ public class TextureManager : MonoBehaviour
                 tireURL = urlInput.text;
                 break;
             case Parts.Tire_Wall:
-                List<GameObject> tireWalls = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+                for (int i = 0; i < tires.Count; i++)
                 {
-                    if (go.name == "Tire Mesh")
-                        tireWalls.Add(go);
-                }
-                for (int i = 0; i < tireWalls.Count; i++)
-                {
-                    tireWalls[i].GetComponent<Renderer>().materials[1].mainTexture = www.texture;
+                    tires[i].GetComponent<Renderer>().materials[1].mainTexture = www.texture;
                 }
                 tireWallURL = urlInput.text;
                 break;
             case Parts.Rims:
-                List<GameObject> rims = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Rim Mesh")
-                        rims.Add(go);
-                }
                 for (int i = 0; i < rims.Count; i++)
                 {
                     rims[i].GetComponent<Renderer>().material.mainTexture = www.texture;
@@ -229,12 +321,6 @@ public class TextureManager : MonoBehaviour
                 rimsURL = urlInput.text;
                 break;
             case Parts.Hubs:
-                List<GameObject> hubs = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Hub Mesh")
-                        hubs.Add(go);
-                }
                 for (int i = 0; i < hubs.Count; i++)
                 {
                     hubs[i].GetComponent<Renderer>().material.mainTexture = www.texture;
@@ -242,7 +328,304 @@ public class TextureManager : MonoBehaviour
                 hubsURL = urlInput.text;
                 break;
         }
+
+        urlInput.text = "";
     }
+
+    IEnumerator SetNormalEnum()
+    {
+        WWW www = new WWW(urlNorm.text);
+        while (!www.isDone)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+
+        Texture2D normalTexture = new Texture2D(www.texture.width, www.texture.height, TextureFormat.ARGB32, true, true);
+        Color32[] colours = www.texture.GetPixels32();
+        for (int i = 0; i < colours.Length; i++)
+        {
+            Color32 c = colours[i];
+            c.a = c.r;
+            c.r = c.b = c.g;
+            colours[i] = c;
+        }
+        normalTexture.SetPixels32(colours);
+        normalTexture.Apply();
+
+        switch (selectedPart)
+        {
+            case Parts.Bars:
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                barsURLN = urlNorm.text;
+                break;
+            case Parts.Forks:
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                forksURLN = urlNorm.text;
+                break;
+            case Parts.Frame:
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                StartCoroutine(SetMetallicEnum());
+                frameURLN = urlNorm.text;
+                break;
+            case Parts.Seat:
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                seatURLN = urlNorm.text;
+                break;
+            case Parts.Tires:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    tires[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                }
+                tireURLN = urlNorm.text;
+                break;
+            case Parts.Tire_Wall:
+
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    tires[i].GetComponent<Renderer>().materials[1].SetTexture("_BumpMap", normalTexture);
+                }
+                tireWallURLN = urlNorm.text;
+                break;
+            case Parts.Rims:
+
+                for (int i = 0; i < rims.Count; i++)
+                {
+                    rims[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    rims[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                }
+                rimsURLN = urlNorm.text;
+                break;
+            case Parts.Hubs:
+
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    hubs[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                }
+                hubsURLN = urlNorm.text;
+                break;
+        }
+
+        urlNorm.text = "";
+    }
+
+    IEnumerator SetNormalEnum(int partNum, string url)
+    {
+        WWW www = new WWW(url);
+        while (!www.isDone)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+
+        Texture2D normalTexture = new Texture2D(www.texture.width, www.texture.height, TextureFormat.ARGB32, true, true);
+        Color32[] colours = www.texture.GetPixels32();
+        for (int i = 0; i < colours.Length; i++)
+        {
+            Color32 c = colours[i];
+            c.a = c.r;
+            c.r = c.b = c.g;
+            colours[i] = c;
+        }
+        normalTexture.SetPixels32(colours);
+        normalTexture.Apply();
+
+        switch ((Parts) partNum)
+        {
+            case Parts.Bars:
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                barsURLN = url;
+                break;
+            case Parts.Forks:
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                forksURLN = url;
+                break;
+            case Parts.Frame:
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                StartCoroutine(SetMetallicEnum());
+                frameURLN = url;
+                break;
+            case Parts.Seat:
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                seatURLN = url;
+                break;
+            case Parts.Tires:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    tires[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                }
+                tireURLN = url;
+                break;
+            case Parts.Tire_Wall:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    tires[i].GetComponent<Renderer>().materials[1].SetTexture("_BumpMap", normalTexture);
+                }
+                tireWallURLN = url;
+                break;
+            case Parts.Rims:
+                for (int i = 0; i < rims.Count; i++)
+                {
+                    rims[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    rims[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                }
+                rimsURLN = url;
+                break;
+            case Parts.Hubs:
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.EnableKeyword("_NORMALMAP");
+                    hubs[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", normalTexture);
+                }
+                hubsURLN = url;
+                break;
+        }
+    }
+
+    IEnumerator SetMetallicEnum()
+    {
+        WWW www = new WWW(urlMet.text);
+        while (!www.isDone)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        switch (selectedPart)
+        {
+            case Parts.Bars:
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                barsURLM = urlMet.text;
+                break;
+            case Parts.Forks:
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                forksURLM = urlMet.text;
+                break;
+            case Parts.Frame:
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                frameURLM = urlMet.text;
+                break;
+            case Parts.Seat:
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                seatURLM = urlMet.text;
+                break;
+            case Parts.Tires:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    tires[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                }
+                tireURLM = urlMet.text;
+                break;
+            case Parts.Tire_Wall:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    tires[i].GetComponent<Renderer>().materials[1].SetTexture("_MetallicGlossMap", www.texture);
+                }
+                tireWallURLM = urlMet.text;
+                break;
+            case Parts.Rims:
+                for (int i = 0; i < rims.Count; i++)
+                {
+                    rims[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    rims[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                }
+                rimsURLM = urlMet.text;
+                break;
+            case Parts.Hubs:
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    hubs[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                }
+                hubsURLM = urlMet.text;
+                break;
+        }
+        urlMet.text = "";
+    }
+
+    IEnumerator SetMetallicEnum(int partNum, string url)
+    {
+        WWW www = new WWW(url);
+        while (!www.isDone)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        switch ((Parts) partNum)
+        {
+            case Parts.Bars:
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                barsURLM = url;
+                break;
+            case Parts.Forks:
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                forksURLM = url;
+                break;
+            case Parts.Frame:
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                frameURLM = url;
+                break;
+            case Parts.Seat:
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                seatURLM = url;
+                break;
+            case Parts.Tires:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    tires[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                }
+                tireURLM = url;
+                break;
+            case Parts.Tire_Wall:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    tires[i].GetComponent<Renderer>().materials[1].SetTexture("_MetallicGlossMap", www.texture);
+                }
+                tireWallURLM = url;
+                break;
+            case Parts.Rims:
+                for (int i = 0; i < rims.Count; i++)
+                {
+                    rims[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    rims[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                }
+                rimsURLM = url;
+                break;
+            case Parts.Hubs:
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                    hubs[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", www.texture);
+                }
+                hubsURLM = url;
+                break;
+        }
+    }
+
     IEnumerator SetTextureEnum(int partNum, string url)
     {
         WWW www = new WWW(url);
@@ -270,12 +653,6 @@ public class TextureManager : MonoBehaviour
                 seatURL = url;
                 break;
             case Parts.Tires:
-                List<GameObject> tires = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Tire Mesh")
-                        tires.Add(go);
-                }
                 for (int i = 0; i < tires.Count; i++)
                 {
                     tires[i].GetComponent<Renderer>().material.mainTexture = www.texture;
@@ -283,25 +660,13 @@ public class TextureManager : MonoBehaviour
                 tireURL = url;
                 break;
             case Parts.Tire_Wall:
-                List<GameObject> tireWalls = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+                for (int i = 0; i < tires.Count; i++)
                 {
-                    if (go.name == "Tire Mesh")
-                        tireWalls.Add(go);
-                }
-                for (int i = 0; i < tireWalls.Count; i++)
-                {
-                    tireWalls[i].GetComponent<Renderer>().materials[1].mainTexture = www.texture;
+                    tires[i].GetComponent<Renderer>().materials[1].mainTexture = www.texture;
                 }
                 tireWallURL = url;
                 break;
             case Parts.Rims:
-                List<GameObject> rims = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Rim Mesh")
-                        rims.Add(go);
-                }
                 for (int i = 0; i < rims.Count; i++)
                 {
                     rims[i].GetComponent<Renderer>().material.mainTexture = www.texture;
@@ -309,12 +674,6 @@ public class TextureManager : MonoBehaviour
                 rimsURL = url;
                 break;
             case Parts.Hubs:
-                List<GameObject> hubs = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Hub Mesh")
-                        hubs.Add(go);
-                }
                 for (int i = 0; i < hubs.Count; i++)
                 {
                     hubs[i].GetComponent<Renderer>().material.mainTexture = www.texture;
@@ -346,12 +705,6 @@ public class TextureManager : MonoBehaviour
                 seatURL = "";
                 break;
             case Parts.Tires:
-                List<GameObject> tires = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Tire Mesh")
-                        tires.Add(go);
-                }
                 for (int i = 0; i < tires.Count; i++)
                 {
                     tires[i].GetComponent<Renderer>().material.mainTexture = null;
@@ -359,25 +712,13 @@ public class TextureManager : MonoBehaviour
                 tireURL = "";
                 break;
             case Parts.Tire_Wall:
-                List<GameObject> tireWalls = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+                for (int i = 0; i < tires.Count; i++)
                 {
-                    if (go.name == "Tire Mesh")
-                        tireWalls.Add(go);
-                }
-                for (int i = 0; i < tireWalls.Count; i++)
-                {
-                    tireWalls[i].GetComponent<Renderer>().materials[1].mainTexture = null;
+                    tires[i].GetComponent<Renderer>().materials[1].mainTexture = null;
                 }
                 tireWallURL = "";
                 break;
             case Parts.Rims:
-                List<GameObject> rims = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Rim Mesh")
-                        rims.Add(go);
-                }
                 for (int i = 0; i < rims.Count; i++)
                 {
                     rims[i].GetComponent<Renderer>().material.mainTexture = null;
@@ -385,17 +726,115 @@ public class TextureManager : MonoBehaviour
                 rimsURL = "";
                 break;
             case Parts.Hubs:
-                List<GameObject> hubs = new List<GameObject>();
-                foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-                {
-                    if (go.name == "Hub Mesh")
-                        hubs.Add(go);
-                }
                 for (int i = 0; i < hubs.Count; i++)
                 {
                     hubs[i].GetComponent<Renderer>().material.mainTexture = null;
                 }
                 hubsURL = "";
+                break;
+        }
+    }
+
+    IEnumerator SetNormalBlank(int partNum)
+    {
+        yield return new WaitForEndOfFrame();
+        switch ((Parts)partNum)
+        {
+            case Parts.Bars:
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", null);
+                barsURLN = "";
+                break;
+            case Parts.Forks:
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", null);
+                forksURLN = "";
+                break;
+            case Parts.Frame:
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", null);
+                frameURLN = "";
+                break;
+            case Parts.Seat:
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.SetTexture("_BumpMap", null);
+                seatURLN = "";
+                break;
+            case Parts.Tires:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", null);
+                }
+                tireURLN = "";
+                break;
+            case Parts.Tire_Wall:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().materials[1].SetTexture("_BumpMap", null);
+                }
+                tireWallURLN = "";
+                break;
+            case Parts.Rims:
+                for (int i = 0; i < rims.Count; i++)
+                {
+                    rims[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", null);
+                }
+                rimsURLN = "";
+                break;
+            case Parts.Hubs:
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.SetTexture("_BumpMap", null);
+                }
+                hubsURLN = "";
+                break;
+        }
+    }
+
+    IEnumerator SetMetallicBlank(int partNum)
+    {
+        yield return new WaitForEndOfFrame();
+        switch ((Parts)partNum)
+        {
+            case Parts.Bars:
+                GameObject.Find("Bars Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", null);
+                barsURLM = "";
+                break;
+            case Parts.Forks:
+                GameObject.Find("Forks Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", null);
+                forksURLM = "";
+                break;
+            case Parts.Frame:
+                GameObject.Find("Frame Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", null);
+                frameURLM = "";
+                break;
+            case Parts.Seat:
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", null);
+                seatURLM = "";
+                break;
+            case Parts.Tires:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", null);
+                }
+                tireURLM = "";
+                break;
+            case Parts.Tire_Wall:
+                for (int i = 0; i < tires.Count; i++)
+                {
+                    tires[i].GetComponent<Renderer>().materials[1].SetTexture("_MetallicGlossMap", null);
+                }
+                tireWallURLM = "";
+                break;
+            case Parts.Rims:
+                for (int i = 0; i < rims.Count; i++)
+                {
+                    rims[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", null);
+                }
+                rimsURLM = "";
+                break;
+            case Parts.Hubs:
+                for (int i = 0; i < hubs.Count; i++)
+                {
+                    hubs[i].GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", null);
+                }
+                hubsURLM = "";
                 break;
         }
     }

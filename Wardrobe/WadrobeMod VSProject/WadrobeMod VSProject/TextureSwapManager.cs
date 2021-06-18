@@ -53,6 +53,7 @@ public class TextureSwapManager : MonoBehaviour
                 this.saveErrors
             }));
         }
+        Resources.UnloadUnusedAssets();
     }
 
     public void SetTexture(string url)
@@ -82,6 +83,7 @@ public class TextureSwapManager : MonoBehaviour
                 this.saveErrors
             }));
         }
+        Resources.UnloadUnusedAssets();
     }
 
     public void SetTexture(string url, int clothingPiece)
@@ -112,6 +114,7 @@ public class TextureSwapManager : MonoBehaviour
                 this.saveErrors
             }));
         }
+        Resources.UnloadUnusedAssets();
     }
 
     IEnumerator SetTexture_Enum()
@@ -125,8 +128,9 @@ public class TextureSwapManager : MonoBehaviour
         mat.mainTexture = texture;
 
         ManikinManager.instance.SetClothingTexture(clothingDropdown.value, mat.mainTexture);
-
+        Resources.UnloadUnusedAssets();
         yield break;
+
     }
 
     IEnumerator SetTexture_Enum(int clothing)
@@ -146,7 +150,7 @@ public class TextureSwapManager : MonoBehaviour
         mat.mainTexture = texture;
 
         ManikinManager.instance.SetClothingTexture(clothingDropdown.value, mat.mainTexture);
-
+        Resources.UnloadUnusedAssets();
         yield break;
     }
 }

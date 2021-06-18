@@ -6,17 +6,24 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Collections.Generic;
+
+
 
 public class SavingManager : MonoBehaviour
 {
+    public SaveList saveList;
+    public SaveList loadList;
     public static SavingManager instance;
     public Text[] saveNames;
+    public InputField saveField;
+    public Text placeHolder;
     private string path;
-    int partsCount = 0;
-    private string saveData;
+    private string errorPath;
     private string error;
     private string saveErrors;
-    private Scanner scan;
     private ColourSetter cs;
     private BetterWheelsMod betterWheels;
     private PartManager partManager;
@@ -24,35 +31,86 @@ public class SavingManager : MonoBehaviour
 
     public GameObject overwriteWarning;
 
-
     private Material a_glossy;
 
     string lastSelectedPreset;
 
     private void Awake()
     {
-        path = Application.dataPath + "//TheHouseContent/GarageSaves/";
+        
+        path = Application.dataPath + "//GarageContent/GarageSaves/";
+        errorPath = Application.dataPath + "//GarageContent/GarageErrorLog.txt";
         cs = FindObjectOfType<ColourSetter>();
         betterWheels = FindObjectOfType<BetterWheelsMod>();
         partManager = FindObjectOfType<PartManager>();
         matManager = FindObjectOfType<MaterialManager>();
         a_glossy = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
         instance = this;
-        File.WriteAllText(Application.dataPath + "//GarageErrorLog.txt", "");
-
+        File.WriteAllText(errorPath, "");
         lastSelectedPreset = PlayerPrefs.GetString("lastPreset");
         if (File.Exists(Path.Combine(path, lastSelectedPreset + ".preset")))
             StartCoroutine(LoadLastSelected());
+        
+    }
+
+    /// <summary>
+    /// Deserializes data from a .preset (xml) file into a SaveList object for loading of saved presets
+    /// </summary>
+    /// <param name="name"> Name of the preset to be loaded </param>
+    public void Deserialize(String name)
+    {
+        try
+        {
+            Debug.Log("Starting load of: " + name + ".preset");
+            XmlSerializer deserializer = new XmlSerializer(typeof(SaveList));
+            TextReader reader = new StreamReader(Application.dataPath + "//GarageContent/GarageSaves/" + name + ".preset");
+            object obj = deserializer.Deserialize(reader);
+            loadList = (SaveList)obj;
+            reader.Close();
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error while reading from XML: " + e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Serializes data from SaveList class and writes data to .preset (xml) file
+    /// </summary>
+    /// <param name="name"> Name of the preset to be saved </param>
+    public void Serialize(String name)
+    {
+        try
+        {
+            Debug.Log("Starting save of: " + name + ".preset");
+            var serializer = new XmlSerializer(typeof(SaveList));
+            var stream = new FileStream(Application.dataPath + "//GarageContent/GarageSaves/" + name+".preset", FileMode.Create); // Will create new file if file doesn't exist, else overwrites file
+            serializer.Serialize(stream, saveList);
+            stream.Close();
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error while writing to XML: " + e.Message);
+        }
     }
 
     public void Save()
     {
+        saveList = new SaveList();
         if (!Directory.Exists(path)) {
             Directory.CreateDirectory(path);
         }
+        if(saveField.text == "") {
+            Debug.Log("Save Field cannot be blank. ");
+            return;
+        }
         SaveSlotNames();
-        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "\n"+DateTime.Now + "\nSAVING ERRORS: " + saveErrors);
+        FindObjectOfType<PresetLister>().CheckFolder();
+        saveField.text = "";
+        File.AppendAllText(errorPath, "\n"+DateTime.Now + "\nSAVING ERRORS: " + saveErrors);
     }
+
+    
 
     public void Load(string presetName)
     {
@@ -65,20 +123,21 @@ public class SavingManager : MonoBehaviour
         {
             error += e.Message + "\n " + e.StackTrace + "\n ";
         }
-        File.AppendAllText(Application.dataPath + "//GarageErrorLog.txt", "\n"+DateTime.Now + "\nLOADING ERRORS: " + error);
+        File.AppendAllText(errorPath, "\n"+DateTime.Now + "\nLOADING ERRORS: " + error);
     }
 
     private void LoadSlotNames(string presetName)
     {
         error = "";
+        
         bool flag = File.Exists(this.path + presetName + ".preset");
         if (flag)
         {
-            
+            Deserialize(presetName);
             try
             {
+                
                 TextureManager.instance.SetOriginalTextures();
-                this.scan = new Scanner(File.ReadAllText(this.path + presetName + ".preset"));
                 this.LoadBrakes();
                 this.LoadSeatAngle();
                 this.LoadBarsAngle();
@@ -92,26 +151,20 @@ public class SavingManager : MonoBehaviour
                 this.LoadDriveSide();
                 this.LoadMaterials();
                 this.LoadTireTread();
-                for (int i = 0; i < 20; i++)
-                {
-                    float num = (float)this.scan.nextDouble();
-                    float num2 = (float)this.scan.nextDouble();
-                    float num3 = (float)this.scan.nextDouble();
-                    float num4 = (float)this.scan.nextDouble();
-                    FindObjectOfType<BikeLoadOut>().SetColor(new Color(num, num2, num3, num4), i);
+                foreach (PartColor p in loadList.partColors) {
+                    FindObjectOfType<BikeLoadOut>().SetColor(new Color(p.r, p.g, p.b, p.a), p.partNum);
                 }
                 this.LoadSeatChainColors();
                 this.LoadBrakesColor();
                 this.LoadMeshes();
                 this.LoadTextures();
-                this.scan.Close();
-                this.scan.Dispose();
                 Material m = GameObject.Find("Right Crank Arm Mesh").GetComponent<Renderer>().material;
                 GameObject.Find("Left Crank Arm Mesh").GetComponent<Renderer>().material = m;
+                Resources.UnloadUnusedAssets();
             }
             catch (Exception e)
             {
-                error += e.Message + "\n " + e.StackTrace + "\n ";
+                error += e.Message + "\n " + e.StackTrace + "\n " + e.Source + "\n ";
             }
             
         }
@@ -120,7 +173,6 @@ public class SavingManager : MonoBehaviour
 
     private void SaveSlotNames()
     {
-        this.saveData = "";
         this.saveErrors = "";
         try
         {
@@ -139,7 +191,7 @@ public class SavingManager : MonoBehaviour
             this.SaveTireTread();
             for (int i = 0; i < 20; i++)
             {
-                this.saveColors(i);
+               saveList.partColors.Add(new PartColor(i, FindObjectOfType<BikeLoadOut>().GetColor(i)));
             }
             this.SaveSeatPostChainColors();
             this.SaveBrakeColor();
@@ -147,10 +199,10 @@ public class SavingManager : MonoBehaviour
             this.SaveTextures();
             for (int j = 0; j < this.saveNames.Length; j++)
             {
-                bool flag = !File.Exists(this.path + this.saveNames[j].text + ".preset");
+                bool flag = !File.Exists(this.path + this.saveNames[j].text + ".preset") && this.saveNames[j].text != "";
                 if (flag)
                 {
-                    File.WriteAllText(this.path + this.saveNames[j].text + ".preset", this.saveData);
+                    Serialize(this.saveNames[j].text);
                 }
                 else
                 {
@@ -167,26 +219,19 @@ public class SavingManager : MonoBehaviour
 
     public void SetOverwrite()
     {
-        File.WriteAllText(this.path + this.saveNames[0].text + ".preset", this.saveData);
+        Serialize(this.saveNames[0].text);
     }
 
     private void SaveTireWidth()
     {
-        try
-        {
-            saveData += FindObjectOfType<BikeLoadOut>().GetFrontTireFatness() + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.tireWidth = FindObjectOfType<BikeLoadOut>().GetFrontTireFatness();
     }
 
     private void LoadTireWidth()
     {
         try
         {
-            float width = (float)scan.nextDouble();
+            float width = loadList.tireWidth;
             FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
             FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
         }
@@ -198,21 +243,14 @@ public class SavingManager : MonoBehaviour
 
     private void SaveSeatAngle()
     {
-        try
-        {
-            saveData += FindObjectOfType<SeatApplyMod>().GetSeatAnglePerc() + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.seatAngle = FindObjectOfType<SeatApplyMod>().GetSeatAnglePerc();
     }
 
     private void LoadSeatAngle()
     {
         try
         {
-            float angle = (float)scan.nextDouble();
+            float angle = loadList.seatAngle;
             FindObjectOfType<SeatApplyMod>().SetSeatAnglePerc(angle);
             partManager.seatAngleSlider.value = angle;
         }
@@ -224,21 +262,14 @@ public class SavingManager : MonoBehaviour
 
     private void SaveBarsAngle()
     {
-        try
-        {
-            saveData += FindObjectOfType<BarsApplyMod>().GetBarsAnglePerc() + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.barsAngle = FindObjectOfType<BarsApplyMod>().GetBarsAnglePerc();
     }
 
     private void LoadBarsAngle()
     {
         try
         {
-            float angle = (float)scan.nextDouble();
+            float angle = loadList.barsAngle;
             FindObjectOfType<BarsApplyMod>().SetBarsAnglePerc(angle);
             partManager.barsAngleSlider.value = angle;
         }
@@ -251,168 +282,54 @@ public class SavingManager : MonoBehaviour
 
     private void SaveBrakes()
     {
-        try
-        {
-            if (BrakesManager.instance.brakesEnabled)
-                saveData += "1 ";
-            else
-                saveData += "0 ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.brakes = BrakesManager.instance.brakesEnabled;
     }
 
     private void LoadBrakes()
     {
-        try
-        {
-            int bin = scan.nextInt();
-            if (bin == 1)
-            {
-                if (BrakesManager.instance.brakesEnabled)
-                {
-                    return;
-                }
-                else
-                {
-                    BrakesManager.instance.SetBrakes(true);
-                }    
-            }
-            else
-            {
-                BrakesManager.instance.SetBrakes(false);
-            }
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        BrakesManager.instance.SetBrakes(loadList.brakes);
     }
 
     private void SaveTireTread()
     {
-        try
-        {
-            if (partManager.tiresCount == 0)
-            {
-                this.saveData += "3 ";
-            }
-            else
-            {
-                this.saveData += this.partManager.tiresCount - 1 + " ";
-            }
-            
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.treadID = betterWheels.GetBetterWheels() ? saveList.treadID = 3 : saveList.treadID = this.partManager.tiresCount - 1;
     }
 
     private void LoadTireTread()
     {
-        try
-        {
-            int id = scan.nextInt();
-            this.partManager.SetTireTread(id);
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        this.partManager.SetTireTread(loadList.treadID);
     }
 
     private void SaveSeatID()
     {
-        try
-        {
-            this.saveData += this.partManager.seatCount - 1 + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.seatID = this.partManager.seatCount - 1;
     }
 
     private void LoadSeatID()
     {
-        try
-        {
-            int id = scan.nextInt();
-            this.partManager.SetSeatID(id);
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        this.partManager.SetSeatID(loadList.seatID);
     }
 
     private void SaveGripsID()
     {
-        try
-        {
-            this.saveData += this.partManager.gripsCount - 1 + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.gripsID = this.partManager.gripsCount - 1;
     }
 
     private void LoadGripsID()
     {
-        try
-        {
-            int id = scan.nextInt();
-            this.partManager.SetGripsId(id);
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        this.partManager.SetGripsId(loadList.gripsID);
     }
 
     private void SaveBikeScale()
     {
-        try
-        {
-            this.saveData = this.saveData + this.partManager.bikeScaleSlider.value + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.bikeScale = this.partManager.bikeScaleSlider.value;
     }
 
     private void LoadBikeScale()
     {
-        try
-        {
-            double num = this.scan.nextDouble();
-            this.partManager.SetBikeScale((float)num);
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        this.partManager.SetBikeScale(loadList.bikeScale);
     }
 
-    private void saveColors(int partNum)
-    {
-        try
-        {
-            saveData += FindObjectOfType<BikeLoadOut>().GetColor(partNum).r + " ";
-            saveData += FindObjectOfType<BikeLoadOut>().GetColor(partNum).g + " ";
-            saveData += FindObjectOfType<BikeLoadOut>().GetColor(partNum).b + " ";
-            saveData += FindObjectOfType<BikeLoadOut>().GetColor(partNum).a + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
-    }
 
     private void SaveBrakeColor()
     {
@@ -420,10 +337,7 @@ public class SavingManager : MonoBehaviour
         {
             if (BrakesManager.instance.brakesEnabled)
             {
-                saveData += cs.GetBrakesColor().r + " ";
-                saveData += cs.GetBrakesColor().g + " ";
-                saveData += cs.GetBrakesColor().b + " ";
-                saveData += cs.GetBrakesColor().a + " ";
+                saveList.brakesColor = cs.GetBrakesColor();
             }
         }
         catch (Exception e)
@@ -438,11 +352,7 @@ public class SavingManager : MonoBehaviour
         {
             if (BrakesManager.instance.brakesEnabled)
             {
-                float r = (float)scan.nextDouble();
-                float g = (float)scan.nextDouble();
-                float b = (float)scan.nextDouble();
-                float a = (float)scan.nextDouble();
-                cs.SetBrakesColor(r, g, b, a);
+                cs.SetBrakesColor(loadList.brakesColor);
             }
         }
         catch (Exception e)
@@ -453,60 +363,24 @@ public class SavingManager : MonoBehaviour
 
     private void SaveSeatPostChainColors()
     {
-        try
-        {
-            saveData += cs.GetSeatPostColor().r + " ";
-            saveData += cs.GetSeatPostColor().g + " ";
-            saveData += cs.GetSeatPostColor().b + " ";
-            saveData += cs.GetSeatPostColor().a + " ";
-
-            saveData += cs.GetChainColor().r + " ";
-            saveData += cs.GetChainColor().g + " ";
-            saveData += cs.GetChainColor().b + " ";
-            saveData += cs.GetChainColor().a + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.seatPostColor = cs.GetSeatPostColor();
+        saveList.chainColor = cs.GetChainColor();
     }
 
     private void SaveWheels()
     {
-        try
-        {
-            if (betterWheels.GetBetterWheels())
-            {
-                saveData += "1 ";
-            }
-            else
-            {
-                saveData += "0 ";
-            }
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.betterWheels = betterWheels.GetBetterWheels();
     }
 
     private void LoadWheels()
     {
-        try
+        if (loadList.betterWheels)
         {
-            int set = scan.nextInt();
-            if (set == 1)
-            {
-                betterWheels.ApplyMod();
-            }
-            else
-            {
-                betterWheels.DisableMod();
-            }
+            betterWheels.ApplyMod();
         }
-        catch (Exception e)
+        else
         {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
+            betterWheels.DisableMod();
         }
     }
 
@@ -515,16 +389,8 @@ public class SavingManager : MonoBehaviour
     {
         try
         {
-            float r = (float)scan.nextDouble();
-            float g = (float)scan.nextDouble();
-            float b = (float)scan.nextDouble();
-            float a = (float)scan.nextDouble();
-            float r2 = (float)scan.nextDouble();
-            float g2 = (float)scan.nextDouble();
-            float b2 = (float)scan.nextDouble();
-            float a2 = (float)scan.nextDouble();
-            cs.SetSeatPostColor(r, g, b, a);
-            cs.SetChainColor(r2, g2, b2, a2);
+            cs.SetSeatPostColor(loadList.seatPostColor);
+            cs.SetChainColor(loadList.chainColor);
         }
         catch (Exception e)
         {
@@ -534,30 +400,12 @@ public class SavingManager : MonoBehaviour
 
     private void SaveFlanges()
     {
-        try
-        {
-            if (partManager.GetFlangesVisible())
-            {
-                saveData += "0 ";
-            }
-            else
-            {
-                saveData += "1 ";
-            }
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.flanges = partManager.GetFlangesVisible();
     }
 
     private void LoadFlanges()
     {
-        try
-        {
-            int num = this.scan.nextInt();
-            bool flag = num == 1;
-            if (flag)
+            if (!loadList.flanges)
             {
                 this.partManager.SetFlangesOff();
             }
@@ -565,76 +413,32 @@ public class SavingManager : MonoBehaviour
             {
                 this.partManager.SetFlangesOn();
             }
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
     }
 
     private void SaveSeatHeight()
     {
-        try
-        {
-            float seatHeight = partManager.GetSeatHeight();
-            saveData += seatHeight + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.seatHeight = partManager.GetSeatHeight();
     }
 
     private void LoadSeatHeight()
     {
-        try
-        {
-            float set = (float)scan.nextDouble();
-            partManager.SetSeatHeight(set);
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        partManager.SetSeatHeight(loadList.seatHeight);
     }
 
     private void SaveDriveSide()
     {
-        try
-        {
-            if (partManager.GetDriveSide())
-            {
-                saveData += "1 ";
-            }
-            else
-            {
-                saveData += "0 ";
-            }
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+        saveList.LHD = partManager.GetDriveSide();
     }
 
     private void LoadDriveSide()
     {
-        try
+        if (loadList.LHD)
         {
-            int num = this.scan.nextInt();
-            bool flag = num == 1;
-            if (flag)
-            {
-                this.partManager.SetLHD();
-            }
-            else
-            {
-                this.partManager.SetRHD();
-            }
+            this.partManager.SetLHD();
         }
-        catch (Exception e)
+        else
         {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
+            this.partManager.SetRHD();
         }
     }
 
@@ -650,55 +454,43 @@ public class SavingManager : MonoBehaviour
                 switch (mat.name.ToLower())
                 {
                     case "a_glossy (instance)":
-                        saveData += i + " 0 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(0, i));
                         break;
                     case "a_glossy (instance) (instance)":
-                        saveData += i + " 0 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(0, i));
                         break;
                     case "jetfuel (instance)":
-                        saveData += i + " 1 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(1, i));
                         break;
                     case "flat (instance)":
-                        saveData += i + " 2 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(2, i));
                         break;
                     case "chrome (instance)":
-                        saveData += i + " 3 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(3, i));
                         break;
                     case "bubble (instance)":
-                        saveData += i + " 4 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(4, i));
                         break;
                     case "rusty (instance)":
-                        saveData += i + " 5 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(5, i));
                         break;
                     case "green jetfuel (instance)":
-                        saveData += i + " 6 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(6, i));
                         break;
                     case "spokes (instance)":
-                        saveData += i + " 0 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(0, i));
                         break;
                     case "forks (instance)":
-                        saveData += i + " 0 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(0, i));
                         break;
                     case "nipples (instance)":
-                        saveData += i + " 0 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(0, i));
                         break;
                     case "wheels (instance)":
-                        saveData += i + " 7 ";
-                        partsCount++;
+                        saveList.partMaterials.Add(new PartMaterial(7, i));
                         break;
                     default:
-                        saveData += i + " 9 ";
+                        saveList.partMaterials.Add(new PartMaterial(9, i));
                         break;
                 }
             }
@@ -707,31 +499,31 @@ public class SavingManager : MonoBehaviour
             switch (text2)
             {
                 case "a_glossy (instance)":
-                    saveData += "0 ";
+                    saveList.seatPostMat = 0;
                     break;
                 case "a_glossy (instance) (instance)":
-                    saveData += " 0 ";
+                    saveList.seatPostMat = 0;
                     break;
                 case "jetfuel (instance)":
-                    saveData += "1 ";
+                    saveList.seatPostMat = 1;
                     break;
                 case "flat (instance)":
-                    saveData += "2 ";
+                    saveList.seatPostMat = 2;
                     break;
                 case "chrome (instance)":
-                    saveData += "3 ";
+                    saveList.seatPostMat = 3;
                     break;
                 case "bubble (instance)":
-                    saveData += "4 ";
+                    saveList.seatPostMat = 4;
                     break;
                 case "rusty (instance)":
-                    saveData += "5 ";
+                    saveList.seatPostMat = 5;
                     break;
                 case "green jetfuel (instance)":
-                    saveData += "6 ";
+                    saveList.seatPostMat = 6;
                     break;
                 default:
-                    saveData += "9 ";
+                    saveList.seatPostMat = 9;
                     break;
             }
 
@@ -740,51 +532,46 @@ public class SavingManager : MonoBehaviour
         {
             saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
         }
-        //File.WriteAllText(Application.dataPath + "//MaterialListDebug.txt", debug);
     }
 
     private void LoadMaterials()
     {
         try
         {
-            for (int i = 0; i < 20; i++)
+            foreach (PartMaterial p in loadList.partMaterials)
             {
-
-
-                int partNum = scan.nextInt();
-                int set = scan.nextInt();
-                switch (set)
+                switch (p.matID)
                 {
                     case 0:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(MaterialManager.instance.defaultMat, partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(MaterialManager.instance.defaultMat, p.partNum, true);
                         break;
                     case 1:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[0], partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[0], p.partNum, true);
                         break;
                     case 2:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[1], partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[1], p.partNum, true);
                         break;
                     case 3:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[2], partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[2], p.partNum, true);
                         break;
                     case 4:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[3], partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[3], p.partNum, true);
                         break;
                     case 5:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[4], partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[4], p.partNum, true);
                         break;
                     case 6:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[5], partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[5], p.partNum, true);
                         break;
                     case 7:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(BetterWheelsMod.instance.betterWheelMat, partNum, true);
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(BetterWheelsMod.instance.betterWheelMat, p.partNum, true);
                         break;
                     default:
                         break;
                 }
 
             }
-            switch (this.scan.nextInt())
+            switch (loadList.seatPostMat)
             {
                 case 0:
                     GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.a_glossy;
@@ -819,43 +606,109 @@ public class SavingManager : MonoBehaviour
     {
         try
         {
-            saveData += "TEXTURES: ";
             if (TextureManager.instance.frameURL != "")
             {
-                saveData += "frame " + TextureManager.instance.frameURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.frameURL, 0, false, false));
             }
             if (TextureManager.instance.barsURL != "")
             {
-                saveData += "bars " + TextureManager.instance.barsURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.barsURL, 1, false, false));
             }
             if (TextureManager.instance.seatURL != "")
             {
-                saveData += "seat " + TextureManager.instance.seatURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.seatURL, 2, false, false));
             }
             if (TextureManager.instance.forksURL != "")
             {
-                saveData += "forks " + TextureManager.instance.forksURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.forksURL, 3, false, false));
             }
             if (TextureManager.instance.tireURL != "")
             {
-                saveData += "tire " + TextureManager.instance.tireURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireURL, 4, false, false));
             }
             if (TextureManager.instance.tireWallURL != "")
             {
-                saveData += "wall " + TextureManager.instance.tireWallURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireWallURL, 5, false, false));
             }
             if (TextureManager.instance.rimsURL != "")
             {
-                saveData += "rim " + TextureManager.instance.rimsURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.rimsURL, 6, false, false));
             }
             if (TextureManager.instance.hubsURL != "")
             {
-                saveData += "hub " + TextureManager.instance.hubsURL + " ";
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.hubsURL, 7, false, false));
             }
-            else
+
+            // Normal Maps
+
+            if (TextureManager.instance.frameURLN != "")
             {
-                return;
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.frameURLN, 0, true, false));
             }
+            if (TextureManager.instance.barsURLN != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.barsURLN, 1, true, false));
+            }
+            if (TextureManager.instance.seatURLN != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.seatURLN, 2, true, false));
+            }
+            if (TextureManager.instance.forksURLN != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.forksURLN, 3, true, false));
+            }
+            if (TextureManager.instance.tireURLN != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireURLN, 4, true, false));
+            }
+            if (TextureManager.instance.tireWallURLN != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireWallURLN, 5, true, false));
+            }
+            if (TextureManager.instance.rimsURLN != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.rimsURLN, 6, true, false));
+            }
+            if (TextureManager.instance.hubsURLN != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.hubsURLN, 7, true, false));
+            }
+
+            //Metallic Maps
+
+            if (TextureManager.instance.frameURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.frameURLM, 0, false, true));
+            }
+            if (TextureManager.instance.barsURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.barsURLM, 1, false, true));
+            }
+            if (TextureManager.instance.seatURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.seatURLM, 2, false, true));
+            }
+            if (TextureManager.instance.forksURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.forksURLM, 3, false, true));
+            }
+            if (TextureManager.instance.tireURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireURLM, 4, false, true));
+            }
+            if (TextureManager.instance.tireWallURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireWallURLM, 5, false, true));
+            }
+            if (TextureManager.instance.rimsURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.rimsURLM, 6, false, true));
+            }
+            if (TextureManager.instance.hubsURLM != "")
+            {
+                saveList.partTextures.Add(new PartTexture(TextureManager.instance.hubsURLM, 7, false, true));
+            }
+
         }
         catch (Exception e)
         {
@@ -865,91 +718,52 @@ public class SavingManager : MonoBehaviour
 
     private void LoadTextures()
     {
-        string[] words;
         try
         {
-            words = scan.ReadToEnd().Split(' ');
-            for (int i = 0; i < words.Length-1; i+=2)
+            foreach (PartTexture p in loadList.partTextures)
             {
-                string key = words[i];
-                string url = words[i+1];
-                if (key == "frame")
-                {
-                    TextureManager.instance.SetTexture(0, url);
-                }
-                else if (key == "bars")
-                {
-                    TextureManager.instance.SetTexture(1, url);
-                }
-                else if (key == "seat")
-                {
-                    TextureManager.instance.SetTexture(2, url);
-                }
-                else if (key == "forks")
-                {
-                    TextureManager.instance.SetTexture(3, url);
-                }
-                else if (key == "tire")
-                {
-                    TextureManager.instance.SetTexture(4, url);
-                }
-                else if (key == "wall")
-                {
-                    TextureManager.instance.SetTexture(5, url);
-                }
-                else if (key == "rim")
-                {
-                    TextureManager.instance.SetTexture(6, url);
-                }
-                else if (key == "hub")
-                {
-                    TextureManager.instance.SetTexture(7, url);
-                }
-
+                Debug.Log("Loading Texture: " + p.url);
+                if (!p.metallic && !p.normal)
+                    TextureManager.instance.SetTexture(p.partNum, p.url);
+                else if (p.normal)
+                    TextureManager.instance.SetNormal(p.partNum, p.url);
+                else
+                    TextureManager.instance.SetMetallic(p.partNum, p.url);
             }
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
+            Debug.Log("An error occured when loading textures. " + e.Message + " : " + e.StackTrace);
         }
     }
 
     private void SaveMeshes()
     {
-        try
-        {
-            saveData += CustomMeshManager.instance.selectedFrame - 1 + " ";
-            saveData += CustomMeshManager.instance.selectedBars - 1 + " ";
-            saveData += CustomMeshManager.instance.selectedSprocket - 1 + " ";
-            saveData += CustomMeshManager.instance.selectedStem - 1 + " ";
-            saveData += CustomMeshManager.instance.selectedCranks - 1 + " ";
-            saveData += CustomMeshManager.instance.selectedPegs - 1 + " ";
-            saveData += CustomMeshManager.instance.selectedSpokes - 1 + " ";
-        }
-        catch (Exception e)
-        {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
-        }
+            saveList.frame = CustomMeshManager.instance.selectedFrame - 1;
+            saveList.bars = CustomMeshManager.instance.selectedBars - 1;
+            saveList.sprocket = CustomMeshManager.instance.selectedSprocket - 1;
+            saveList.stem = CustomMeshManager.instance.selectedStem - 1;
+            saveList.cranks = CustomMeshManager.instance.selectedCranks - 1;
+            saveList.spokes = CustomMeshManager.instance.selectedSpokes - 1;
+            saveList.pedals = CustomMeshManager.instance.selectedPedals - 1;
+            saveList.forks = CustomMeshManager.instance.selectedForks - 1;
+            saveList.frontPegs = CustomMeshManager.instance.selectedFrontPegs - 1;
+            saveList.rearPegs = CustomMeshManager.instance.selectedRearPegs - 1;
     }
 
     private void LoadMeshes()
     {
         try
         {
-            int num = this.scan.nextInt();
-            CustomMeshManager.instance.SetFrameMesh(num);
-            num = this.scan.nextInt();
-            CustomMeshManager.instance.SetBarsMesh(num);
-            num = this.scan.nextInt();
-            CustomMeshManager.instance.SetSprocketMesh(num);
-            num = this.scan.nextInt();
-            CustomMeshManager.instance.SetStemMesh(num);
-            num = this.scan.nextInt();
-            CustomMeshManager.instance.SetCranksMesh(num);
-            num = this.scan.nextInt();
-            CustomMeshManager.instance.SetPegsMesh(num);
-            num = this.scan.nextInt();
-            CustomMeshManager.instance.SetSpokesMesh(num);
+            CustomMeshManager.instance.SetFrameMesh(loadList.frame);
+            CustomMeshManager.instance.SetBarsMesh(loadList.bars);
+            CustomMeshManager.instance.SetSprocketMesh(loadList.sprocket);
+            CustomMeshManager.instance.SetStemMesh(loadList.stem);
+            CustomMeshManager.instance.SetCranksMesh(loadList.cranks);
+            CustomMeshManager.instance.SetSpokesMesh(loadList.spokes);
+            CustomMeshManager.instance.SetPedalsMesh(loadList.pedals);
+            CustomMeshManager.instance.SetForksMesh(loadList.forks);
+            CustomMeshManager.instance.SetFrontPegsMesh(loadList.frontPegs);
+            CustomMeshManager.instance.SetRearPegsMesh(loadList.rearPegs);
         }
         catch (Exception e)
         {

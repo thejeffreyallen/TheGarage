@@ -12,7 +12,6 @@ public class MainManager : MonoBehaviour
     public bool isOpen;
     void Awake()
     {
-
         instance = this;
     }
     void Start()
@@ -30,13 +29,8 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
-        /*  if (MenuManager.instance == null)
-               SetOpen();
-           else if (!MenuManager.instance.IsMenuActive(MenuManager.instance.saveMenu))
-               SetOpen();
-
-        if (Input.GetKeyDown(KeyCode.F8))
-            transform.GetChild(0).gameObject.SetActive(!transform.GetChild(0).gameObject.activeSelf);*/
+        if(Input.GetKeyDown(KeyCode.B))
+            SetOpen();
     }
 
     public void SetOpen()

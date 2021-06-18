@@ -9,7 +9,9 @@ using System.IO;
 
 public class PresetLister : MonoBehaviour
 {
+    string path;
     string[] presets;
+    string empty;
 
     public GameObject buttonPrefab;
     public Transform buttonParent;
@@ -19,9 +21,9 @@ public class PresetLister : MonoBehaviour
         CheckFolder();
     }
 
-    void CheckFolder()
+    public void CheckFolder()
     {
-        string path = Path.Combine(Application.dataPath, "TheHouseContent/GarageSaves");
+        path = Application.dataPath + "//GarageContent/GarageSaves/";
         presets = Directory.GetFiles(path);
 
         //Remove Missing Buttons
@@ -36,6 +38,10 @@ public class PresetLister : MonoBehaviour
         //Create buttons
         for (int i = 0; i < presets.Length; i++)
         {
+            if (presets[i] == ".preset") {
+                empty = presets[i];
+                continue;
+            }
             if (presets[i].Contains(".preset"))
             {
                 GameObject button = Instantiate(buttonPrefab, buttonParent);
@@ -47,5 +53,6 @@ public class PresetLister : MonoBehaviour
                 button.GetComponent<Button>().onClick.AddListener(delegate { SavingManager.instance.Load(fileName); });
             }
         }
+        File.Delete(empty);
     }
 }

@@ -12,9 +12,12 @@ public class MaterialManager : MonoBehaviour
     public static MaterialManager instance;
     public Material[] customMats;
     private int matCount = 0;
-
+    
     [HideInInspector]
     public Material defaultMat;
+    public Material OskersFrameMat;
+    public Material OskersForksMat;
+    public Material OskersBarsMat;
 
     public Material chainMatFix;
 

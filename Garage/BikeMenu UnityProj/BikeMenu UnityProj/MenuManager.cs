@@ -27,6 +27,11 @@ public class MenuManager : MonoBehaviour
         menu.SetActive(true);
     }
 
+    public void SetMenuInactive(GameObject menu) {
+
+        menu.SetActive(false);
+    }
+
     public void ReturnMainMenu()
     {
         SetMenuActive(mainMenu);
@@ -34,9 +39,15 @@ public class MenuManager : MonoBehaviour
 
     public void DisableAllMenus()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        try
         {
-            transform.GetChild(i).gameObject.SetActive(false);
+            foreach(Transform t in transform)
+            {
+                t.gameObject.SetActive(false);
+            }
+        }
+        catch (Exception e) {
+            Debug.Log("Error in DisableAllMenus() " + e.Message + e.StackTrace);
         }
     }
 

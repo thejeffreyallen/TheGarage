@@ -30,6 +30,8 @@ public class PartManager : MonoBehaviour
 
     private GameObject leftHandTarget;
     private GameObject rightHandTarget;
+
+    public InputField filename;
     
 
 
@@ -144,16 +146,8 @@ public class PartManager : MonoBehaviour
 
     public void ChangeSeat()
     {
-        if (seatCount < FindObjectOfType<SeatApplyMod>().seatCovers.Length)
-        {
-            FindObjectOfType<SeatApplyMod>().SetSeatCoverID(seatCount);
-            seatCount++;
-        }
-        else
-        {
-            FindObjectOfType<SeatApplyMod>().SetSeatCoverID(0);
-            seatCount = 1;
-        }
+        FindObjectOfType<SeatApplyMod>().SetSeatCoverID(seatCount % FindObjectOfType<SeatApplyMod>().seatCovers.Length);
+        seatCount++;
     }
 
     public void BarsAngle()
@@ -191,7 +185,7 @@ public class PartManager : MonoBehaviour
             FindObjectOfType<BikeLoadOut>().SetBackTireTextureID(id);
             tiresCount = id + 1;
         }
-        else if (id == 3)
+        else
         {
             BetterWheelsMod.instance.SetTireTread();
             tiresCount = 0;
@@ -201,46 +195,22 @@ public class PartManager : MonoBehaviour
 
     public void SetSeatID(int id)
     {
-        
-        FindObjectOfType<SeatApplyMod>().SetSeatCoverID(id);
-        if (id == FindObjectOfType<SeatApplyMod>().seatCovers.Length)
-        {
-            seatCount = 0;
-        }
-        else
-        {
-            seatCount = id + 1;
-        }
-        
+        FindObjectOfType<SeatApplyMod>().SetSeatCoverID(id % FindObjectOfType<SeatApplyMod>().seatCovers.Length);
+        seatCount = (id % FindObjectOfType<SeatApplyMod>().seatCovers.Length) + 1;
     }
 
     public void ChangeGrips()
     {
-        if (gripsCount < FindObjectOfType<BarsApplyMod>().gripMats.Length)
-        {
-            FindObjectOfType<BarsApplyMod>().SetGripsID(gripsCount);
-            gripsCount++;
-        }
-        else
-        {
-            FindObjectOfType<BarsApplyMod>().SetGripsID(0);
-            gripsCount = 1;
-        }
-        
+        FindObjectOfType<BarsApplyMod>().SetGripsID(gripsCount % FindObjectOfType<BarsApplyMod>().gripMats.Length);
+        gripsCount++;
+   
     }
 
     public void SetGripsId(int id)
     {
 
-        FindObjectOfType<BarsApplyMod>().SetGripsID(id);
-        if (id == FindObjectOfType<BarsApplyMod>().gripMats.Length)
-        {
-            gripsCount = 0;
-        }
-        else
-        {
-            gripsCount = id + 1;
-        }
+        FindObjectOfType<BarsApplyMod>().SetGripsID(id % FindObjectOfType<BarsApplyMod>().gripMats.Length);
+        gripsCount++;
 
     }
 
@@ -290,19 +260,34 @@ public class PartManager : MonoBehaviour
         CustomMeshManager.instance.SetMesh("Frame Mesh", CustomMeshManager.instance.frameMeshes, CustomMeshManager.instance.selectedFrame++, CustomMeshManager.instance.selectedFrameText);
     }
 
+    public void SetForksMesh()
+    {
+        CustomMeshManager.instance.SetMesh("Forks Mesh", CustomMeshManager.instance.forksMeshes, CustomMeshManager.instance.selectedForks++, CustomMeshManager.instance.selectedForksText);
+    }
+
     public void SetBarsMesh()
     {
         CustomMeshManager.instance.SetMesh("Bars Mesh", CustomMeshManager.instance.barMeshes, CustomMeshManager.instance.selectedBars++, CustomMeshManager.instance.selectedBarsText);
     }
 
-    public void SetPegsMesh()
+    public void SetFrontPegsMesh()
     {
-        CustomMeshManager.instance.SetMultipleMesh("Pegs Mesh", CustomMeshManager.instance.pegMeshes, CustomMeshManager.instance.selectedPegs++, CustomMeshManager.instance.selectedPegsText);
+        CustomMeshManager.instance.SetPegsMesh("Pegs Mesh", CustomMeshManager.instance.pegMeshes, CustomMeshManager.instance.selectedFrontPegs++, CustomMeshManager.instance.selectedFrontPegsText, 0);
+    }
+
+    public void SetRearPegsMesh()
+    {
+        CustomMeshManager.instance.SetPegsMesh("Pegs Mesh", CustomMeshManager.instance.pegMeshes, CustomMeshManager.instance.selectedRearPegs++, CustomMeshManager.instance.selectedRearPegsText, 1);
     }
 
     public void SetSpokesMesh()
     {
         CustomMeshManager.instance.SetMultipleMesh("Spokes Mesh", CustomMeshManager.instance.spokesMeshes, CustomMeshManager.instance.selectedSpokes++, CustomMeshManager.instance.selectedSpokesText);
+    }
+
+    public void SetPedalsMesh()
+    {
+        CustomMeshManager.instance.SetMultipleMesh("Pedal Mesh", CustomMeshManager.instance.pedalMeshes, CustomMeshManager.instance.selectedPedals++, CustomMeshManager.instance.selectedPedalsText);
     }
 
     public void SetSprocketMesh()

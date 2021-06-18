@@ -9,9 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BikeWorkshopMenu</RootNamespace>
     <AssemblyName>BikeWorkshopMenu</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,14 +23,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\PIPE BikeMenu\Assets\VS Project\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BetterWheelsMod.cs" />
@@ -41,13 +45,13 @@
     <Compile Include="MaterialManager.cs" />
     <Compile Include="MenuManager.cs" />
     <Compile Include="MeshBlend.cs" />
-    <Compile Include="MTBSetter.cs" />
+    <Compile Include="ObjImporter.cs" />
     <Compile Include="PartManager.cs" />
     <Compile Include="PresetLister.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoomLoader.cs" />
+    <Compile Include="GarageRoomLoader.cs" />
+    <Compile Include="SaveList.cs" />
     <Compile Include="SavingManager.cs" />
-    <Compile Include="Scanner.cs" />
     <Compile Include="TextureManager.cs" />
     <Compile Include="VehicleDriver.cs" />
     <Compile Include="VehicleSpawner.cs" />
@@ -142,13 +146,20 @@
       <HintPath>..\..\..\DllsForReferencing\Substance.Game.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TheHouse">
-      <HintPath>C:\Pipe1.9.9Beta\depot_815781\PIPE_Data\TheHouse.dll</HintPath>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
@@ -387,38 +398,9 @@
       <HintPath>..\..\..\DllsForReferencing\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.WebModule">
-      <HintPath>..\..\..\DllsForReferencing\UnityEngine.WebModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.WindModule">
-      <HintPath>..\..\..\DllsForReferencing\UnityEngine.WindModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.XRModule">
-      <HintPath>..\..\..\DllsForReferencing\UnityEngine.XRModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEtx">
-      <HintPath>..\..\..\DllsForReferencing\UnityEtx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityModManager">
-      <HintPath>..\..\..\DllsForReferencing\UnityModManager.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityPluginLogImport">
-      <HintPath>..\..\..\DllsForReferencing\UnityPluginLogImport.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UsersImport">
-      <HintPath>..\..\..\DllsForReferencing\UsersImport.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="XboxOneCommonImport">
-      <HintPath>..\..\..\DllsForReferencing\XboxOneCommonImport.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

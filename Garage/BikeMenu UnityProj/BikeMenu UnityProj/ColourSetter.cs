@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 public class ColourSetter : MonoBehaviour
 {
     public static ColourSetter instance;
-    public int currentPart;
+    public int currentPart = 0;
 
     public Slider slider;
 
@@ -158,7 +158,14 @@ public class ColourSetter : MonoBehaviour
             }
             else
             {
-                FindObjectOfType<BikeLoadOut>().SetColor(col, currentPart);
+                try
+                {
+                    FindObjectOfType<BikeLoadOut>().SetColor(col, currentPart);
+                }
+                catch (Exception e) {
+                    Logger.Log("Error setting color " + e.Message + e.StackTrace);
+                }
+                
             }
         }
     }
@@ -174,6 +181,12 @@ public class ColourSetter : MonoBehaviour
         GameObject.Find("Seat Post").GetComponent<Renderer>().material.color = seatPostCol;
     }
 
+    public void SetSeatPostColor(Color c)
+    {
+        this.seatPostCol = c; 
+        GameObject.Find("Seat Post").GetComponent<Renderer>().material.color = seatPostCol;
+    }
+
     public Color GetChainColor()
     {
         return this.chainColor;
@@ -182,6 +195,12 @@ public class ColourSetter : MonoBehaviour
     public void SetChainColor(float r, float g, float b, float a)
     {
         this.chainColor = new Color(r, g, b, a);
+        GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color = chainColor;
+    }
+
+    public void SetChainColor(Color c)
+    {
+        this.chainColor = c;
         GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color = chainColor;
     }
 
@@ -194,6 +213,14 @@ public class ColourSetter : MonoBehaviour
     {
         this.barBrakesColor = new Color(r, g, b, a);
         this.frameBrakesColor = new Color(r, g, b, a);
+        BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].color = frameBrakesColor;
+        BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].color = barBrakesColor;
+    }
+
+    public void SetBrakesColor(Color c)
+    {
+        this.barBrakesColor = c;
+        this.frameBrakesColor = c;
         BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].color = frameBrakesColor;
         BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].color = barBrakesColor;
     }
