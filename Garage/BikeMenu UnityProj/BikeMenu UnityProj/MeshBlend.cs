@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// Class to blend two meshes together
+/// </summary>
 public class MeshBlend : MonoBehaviour
 {
     public bool debug;

@@ -22,11 +22,13 @@ public class ColourSetter : MonoBehaviour
     private Color frameBrakesColor;
     private Color cableColor;
     private Color col;
+    private Color seatColor;
 
     private bool chain = false;
     private bool seatPost = false;
     private bool brakes = false;
-    private bool cable = true;
+    private bool cable = false;
+    private bool seat = false;
 
     private bool active = false;
 
@@ -40,7 +42,8 @@ public class ColourSetter : MonoBehaviour
         col = new Color(0f, 0f, 0f, 1f);
         this.seatPostCol = GameObject.Find("Seat Post").GetComponent<Renderer>().material.color;
         this.chainColor = GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color;
-        
+        this.seatColor = GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.color;
+
     }
 
     void OnEnable()
@@ -55,6 +58,7 @@ public class ColourSetter : MonoBehaviour
         seatPost = false;
         brakes = false;
         cable = false;
+        this.seat = false;
     }
 
     public void SetText(String txt)
@@ -68,6 +72,17 @@ public class ColourSetter : MonoBehaviour
         this.seatPost = false;
         this.brakes = false;
         cable = false;
+        this.seat = false;
+
+    }
+
+    public void setSeatColor()
+    {
+        this.chain = false;
+        this.seatPost = false;
+        this.brakes = false;
+        this.cable = false;
+        this.seat = true;
     }
 
     public void setSeatPostColor()
@@ -76,6 +91,7 @@ public class ColourSetter : MonoBehaviour
         this.chain = false;
         this.brakes = false;
         cable = false;
+        this.seat = false;
     }
 
     public bool getSeatPostBool()
@@ -89,6 +105,7 @@ public class ColourSetter : MonoBehaviour
         this.seatPost = false;
         this.chain = false;
         cable = false;
+        this.seat = false;
     }
 
     public void SetCableColor()
@@ -96,7 +113,8 @@ public class ColourSetter : MonoBehaviour
         cable = true;
         this.brakes = false;
         this.seatPost = false;
-        this.chain = false;   
+        this.chain = false;
+        this.seat = false;
     }
 
     public Color GetCableColor()
@@ -111,6 +129,11 @@ public class ColourSetter : MonoBehaviour
     public bool GetBrakesBool()
     {
         return this.brakes;
+    }
+
+    public bool GetSeatBool()
+    {
+        return this.seat;
     }
 
     public void SetActive(bool isActive)
@@ -156,16 +179,22 @@ public class ColourSetter : MonoBehaviour
                 BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].color = cableColor;
                 BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].color = cableColor;
             }
+            else if (this.seat == true)
+            {
+                seatColor = col;
+                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.color = seatColor;
+            }
             else
             {
                 try
                 {
                     FindObjectOfType<BikeLoadOut>().SetColor(col, currentPart);
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     Logger.Log("Error setting color " + e.Message + e.StackTrace);
                 }
-                
+
             }
         }
     }

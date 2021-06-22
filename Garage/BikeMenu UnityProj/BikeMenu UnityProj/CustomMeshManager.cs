@@ -29,9 +29,11 @@ public class CustomMeshManager : MonoBehaviour
     public Text selectedRearPegsText;
 
     [Header("Spokes")]
-    public int selectedSpokes;
+    public int selectedFrontSpokes;
+    public int selectedRearSpokes;
     public Mesh[] spokesMeshes;
-    public Text selectedSpokesText;
+    public Text selectedFrontSpokesText;
+    public Text selectedRearSpokesText;
 
     [Header("Sprocket")]
     public int selectedSprocket;
@@ -71,8 +73,27 @@ public class CustomMeshManager : MonoBehaviour
     [Header("Stem Bolts")]
     public Mesh[] stemBoltMeshes;
 
-    [Header("crank Bolts")]
+    [Header("Crank Bolts")]
     public Mesh[] crankBoltMeshes;
+
+    [Header("Hubs")]
+    public int selectedFrontHub;
+    public int selectedRearHub;
+    public Mesh[] hubMeshes;
+    public Text selectedFrontHubText;
+    public Text selectedRearHubText;
+
+    [Header("Spoke Accessories")]
+    public int selectedFrontAccessory;
+    public int selectedRearAccessory;
+    public Mesh[] accessoryMeshes;
+    public Text selectedFrontAccessoryText;
+    public Text selectedRearAccessoryText;
+
+    [Header("Seat")]
+    public int selectedSeat;
+    public Mesh[] seatMeshes;
+    public Text selectedSeatText;
 
     private GameObject rightCrankBolts;
     private GameObject leftCrankBolts;
@@ -80,6 +101,14 @@ public class CustomMeshManager : MonoBehaviour
     private String basePath;
 
     private ObjImporter objImporter;
+
+    List<GameObject> origSpokes = new List<GameObject>();
+    List<GameObject> origHubs = new List<GameObject>();
+    List<GameObject> origPegs = new List<GameObject>();
+    GameObject origSeatPost;
+
+    public Mesh seatPostClamp;
+    public Mesh longSeatPost;
 
     void Awake()
     {
@@ -98,6 +127,11 @@ public class CustomMeshManager : MonoBehaviour
         leftCrankBolts.GetComponent<MeshFilter>().mesh = crankBoltMeshes[1];
         objImporter = new ObjImporter();
 
+        GameObject.Find("Seat_Clamp_Bolt").SetActive(false);
+        GameObject.Find("Seat Clamp Mesh").GetComponent<MeshFilter>().mesh = seatPostClamp;
+
+        
+
         frameMeshes = LoadFromFile("Frames/", frameMeshes);
         barMeshes = LoadFromFile("Bars/", barMeshes);
         pegMeshes = LoadFromFile("Pegs/", pegMeshes);
@@ -108,9 +142,38 @@ public class CustomMeshManager : MonoBehaviour
         forksMeshes = LoadFromFile("Forks/", forksMeshes);
         stemBoltMeshes = LoadFromFile("StemBolts/", stemBoltMeshes);
         crankBoltMeshes = LoadFromFile("CrankBolts/", crankBoltMeshes);
+        hubMeshes = LoadFromFile("Hubs/", hubMeshes);
+        seatMeshes = LoadFromFile("Seats/", seatMeshes);
         //pedalMeshes = LoadFromFile("Frames/", customFrames, customFrameMeshes, pedalMeshes);
         //frontHubGuardMeshes = LoadFromFile("Bars/", customBars, customBarsMeshes, frontHubGuardMeshes);
 
+        Transform[] barsJoint = GameObject.Find("BMX:Bars_Joint").GetComponentsInChildren<Transform>(true);
+        Transform[] frameJoint = GameObject.Find("BMX:Frame_Joint").GetComponentsInChildren<Transform>(true);
+
+        foreach (Transform t in barsJoint)
+        {
+            if (t.gameObject.name.Equals("Pegs Mesh"))
+                origPegs.Add(t.gameObject);
+            if (t.gameObject.name.Equals("Hub Mesh"))
+                origHubs.Add(t.gameObject);
+            if (t.gameObject.name.Equals("Spokes Mesh"))
+                origSpokes.Add(t.gameObject);
+            
+        }
+
+        foreach (Transform t in frameJoint)
+        {
+            if (t.gameObject.name.Equals("Pegs Mesh"))
+                origPegs.Add(t.gameObject);
+            if (t.gameObject.name.Equals("Hub Mesh"))
+                origHubs.Add(t.gameObject);
+            if (t.gameObject.name.Equals("Spokes Mesh"))
+                origSpokes.Add(t.gameObject);
+            if (t.gameObject.name.Equals("Seat Post"))
+                origSeatPost = t.gameObject;
+        }
+
+        origSeatPost.GetComponent<MeshFilter>().mesh = longSeatPost;
     }
 
     /// <summary>
@@ -318,14 +381,7 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="j"> the index of the mesh to change to </param>
     public void SetFrontPegsMesh(int j)
     {
-        List<GameObject> partObjects = new List<GameObject>();
-
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Pegs Mesh")
-                partObjects.Add(go);
-        }
-        partObjects[0].GetComponent<MeshFilter>().mesh = pegMeshes[j % pegMeshes.Length];
+        origPegs[0].GetComponent<MeshFilter>().mesh = pegMeshes[j % pegMeshes.Length];
 
         selectedFrontPegsText.text = pegMeshes[j % pegMeshes.Length].name;
 
@@ -339,15 +395,7 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="k"> the index of the mesh to change to </param>
     public void SetRearPegsMesh(int k)
     {
-        List<GameObject> partObjects = new List<GameObject>();
-
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Pegs Mesh")
-                partObjects.Add(go);
-        }
-
-        partObjects[1].GetComponent<MeshFilter>().mesh = pegMeshes[k % pegMeshes.Length];
+        origPegs[1].GetComponent<MeshFilter>().mesh = pegMeshes[k % pegMeshes.Length];
 
         selectedRearPegsText.text = pegMeshes[k % pegMeshes.Length].name;
 
@@ -358,21 +406,52 @@ public class CustomMeshManager : MonoBehaviour
     /// SetSpokesMesh method - Change the bike spokes mesh at runtime
     /// </summary>
     /// <param name="j"> the index of the mesh to change to </param>
-    public void SetSpokesMesh(int j)
-    {
-        List<GameObject> partObjects = new List<GameObject>();
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == "Spokes Mesh")
-                partObjects.Add(go);
-        }
+    public void SetFrontSpokesMesh(int j)
+    { 
+        origSpokes[0].GetComponent<MeshFilter>().mesh = spokesMeshes[j % spokesMeshes.Length];
+        selectedFrontSpokesText.text = spokesMeshes[j % spokesMeshes.Length].name;
+        selectedFrontSpokes = (j % spokesMeshes.Length) +1;
+    }
 
-        for (int i = 0; i < partObjects.Count; i++)
-        {
-            partObjects[i].GetComponent<MeshFilter>().mesh = spokesMeshes[j % spokesMeshes.Length];
-        }
-        selectedSpokesText.text = spokesMeshes[j % spokesMeshes.Length].name;
-        selectedSpokes = (j % spokesMeshes.Length) +1;
+    /// <summary>
+    /// SetSpokesMesh method - Change the bike spokes mesh at runtime
+    /// </summary>
+    /// <param name="j"> the index of the mesh to change to </param>
+    public void SetRearSpokesMesh(int j)
+    { 
+        origSpokes[1].GetComponent<MeshFilter>().mesh = spokesMeshes[j % spokesMeshes.Length];
+        selectedRearSpokesText.text = spokesMeshes[j % spokesMeshes.Length].name;
+        selectedRearSpokes = (j % spokesMeshes.Length) + 1;
+    }
+
+    /// <summary>
+    /// Set front hub at runtime
+    /// </summary>
+    /// <param name="j"> the index of the mesh to change to </param>
+    public void SetFrontHubMesh(int j)
+    {
+        origHubs[0].GetComponent<MeshFilter>().mesh = hubMeshes[j % hubMeshes.Length];
+        selectedFrontHubText.text = hubMeshes[j % hubMeshes.Length].name;
+        selectedFrontHub = (j % hubMeshes.Length) + 1;
+    }
+
+    /// <summary>
+    /// Set rear Hub at runtime
+    /// </summary>
+    /// <param name="j"> the index of the mesh to change to </param>
+    public void SetRearHubMesh(int j)
+    {
+        origHubs[1].GetComponent<MeshFilter>().mesh = hubMeshes[j % hubMeshes.Length];
+        selectedRearHubText.text = hubMeshes[j % hubMeshes.Length].name;
+        selectedRearHub = (j % hubMeshes.Length) + 1;
+    }
+
+    public void SetSeatMesh(int i)
+    {
+        GameObject partObject = GameObject.Find("Seat Mesh");
+        partObject.GetComponent<MeshFilter>().mesh = seatMeshes[i % seatMeshes.Length];
+        selectedSeatText.text = seatMeshes[i % seatMeshes.Length].name;
+        selectedSeat = (i % seatMeshes.Length) + 1;
     }
 
 }

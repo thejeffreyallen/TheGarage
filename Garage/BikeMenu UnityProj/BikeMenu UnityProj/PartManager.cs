@@ -26,12 +26,18 @@ public class PartManager : MonoBehaviour
     public Slider bikeScaleSlider;
     public Slider barsAngleSlider;
     public Slider tireWidth;
+
+    //TODO
+    public Slider frontTireWidth;
+    public Slider rearTireWidth;
+
     public int partCount = 0;
 
     private GameObject leftHandTarget;
     private GameObject rightHandTarget;
 
     public InputField filename;
+    float maxSeatHeight = 1f;
     
 
 
@@ -56,17 +62,48 @@ public class PartManager : MonoBehaviour
 
     }
 
-    public void TireWidth()
+    public void SetSeatHeight(float f)
     {
-        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(tireWidth.value);
-        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(tireWidth.value);
+        GameObject.Find("Seat Post Anchor").transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, f), 0f);
+        seatHeightSlider.value = f;
+        
     }
+
+    public void SeatUpDown()
+    {
+        GameObject.Find("Seat Post Anchor").transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, seatHeightSlider.value), 0f);
+    }
+
+    public void FrontTireWidth()
+    {
+        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(frontTireWidth.value);
+    }
+
+    public void RearTireWidth()
+    {
+        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(rearTireWidth.value);
+    }
+
 
     public void SetTireWidth(float width)
     {
         FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
         FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
         tireWidth.value = width;
+    }
+
+    // Not yet implemented
+    public void SetFrontTireWidth(float width)
+    {
+        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+        frontTireWidth.value = width;
+    }
+
+    // Not yet implemented
+    public void SetRearTireWidth(float width)
+    {
+        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
+        rearTireWidth.value = width;
     }
 
     public float GetTireWidth()
@@ -120,17 +157,6 @@ public class PartManager : MonoBehaviour
     public float GetSeatHeight()
     {
         return seatHeightSlider.value;
-    }
-
-    public void SetSeatHeight(float f)
-    {
-        FindObjectOfType<SeatApplyMod>().SetSeatHeight(f);
-        seatHeightSlider.value = f;
-    }
-
-    public void SeatUpDown()
-    {
-        FindObjectOfType<SeatApplyMod>().SetSeatHeight(seatHeightSlider.value);
     }
 
     public void SeatAngle()
@@ -197,6 +223,11 @@ public class PartManager : MonoBehaviour
     {
         FindObjectOfType<SeatApplyMod>().SetSeatCoverID(id % FindObjectOfType<SeatApplyMod>().seatCovers.Length);
         seatCount = (id % FindObjectOfType<SeatApplyMod>().seatCovers.Length) + 1;
+    }
+
+    public void SetSeatMesh()
+    {
+        CustomMeshManager.instance.SetMesh("Seat Mesh", CustomMeshManager.instance.seatMeshes, CustomMeshManager.instance.selectedSeat++, CustomMeshManager.instance.selectedSeatText);
     }
 
     public void ChangeGrips()
@@ -280,9 +311,24 @@ public class PartManager : MonoBehaviour
         CustomMeshManager.instance.SetPegsMesh("Pegs Mesh", CustomMeshManager.instance.pegMeshes, CustomMeshManager.instance.selectedRearPegs++, CustomMeshManager.instance.selectedRearPegsText, 1);
     }
 
-    public void SetSpokesMesh()
+    public void SetFrontSpokesMesh()
     {
-        CustomMeshManager.instance.SetMultipleMesh("Spokes Mesh", CustomMeshManager.instance.spokesMeshes, CustomMeshManager.instance.selectedSpokes++, CustomMeshManager.instance.selectedSpokesText);
+        CustomMeshManager.instance.SetFrontSpokesMesh(CustomMeshManager.instance.selectedFrontSpokes++);
+    }
+
+    public void SetRearSpokesMesh()
+    {
+        CustomMeshManager.instance.SetRearSpokesMesh(CustomMeshManager.instance.selectedRearSpokes++);
+    }
+
+    public void SetFrontHubMesh()
+    {
+        CustomMeshManager.instance.SetFrontHubMesh(CustomMeshManager.instance.selectedFrontHub++);
+    }
+
+    public void SetRearHubMesh()
+    {
+        CustomMeshManager.instance.SetRearHubMesh(CustomMeshManager.instance.selectedRearHub++);
     }
 
     public void SetPedalsMesh()

@@ -17,9 +17,9 @@ public class TextureManager : MonoBehaviour
     public Slider shinySlide;
     public Text selectedPartText;
 
-    private List<GameObject> tires = new List<GameObject>();
-    private List<GameObject> rims = new List<GameObject>();
-    private List<GameObject> hubs = new List<GameObject>();
+    public List<GameObject> tires = new List<GameObject>();
+    public List<GameObject> rims = new List<GameObject>();
+    public List<GameObject> hubs = new List<GameObject>();
 
     Parts selectedPart;
 
@@ -169,6 +169,7 @@ public class TextureManager : MonoBehaviour
     public void SetSelectedPart(int bikePart)
     {
         selectedPart = (Parts)bikePart;
+        Debug.Log("Selected Part " + selectedPart);
     }
 
     public void SetTexture()
@@ -215,19 +216,19 @@ public class TextureManager : MonoBehaviour
 
     public void RemoveTexture()
     {
-        StartCoroutine(SetTextureBlank(FindObjectOfType<ColourSetter>().currentPart));
+        StartCoroutine(SetTextureBlank((int)selectedPart));
         Resources.UnloadUnusedAssets();
     }
 
     public void RemoveNormal()
     {
-        StartCoroutine(SetNormalBlank(FindObjectOfType<ColourSetter>().currentPart));
+        StartCoroutine(SetNormalBlank((int)selectedPart));
         Resources.UnloadUnusedAssets();
     }
 
     public void RemoveMetallic()
     {
-        StartCoroutine(SetMetallicBlank(FindObjectOfType<ColourSetter>().currentPart));
+        StartCoroutine(SetMetallicBlank((int) selectedPart));
         Resources.UnloadUnusedAssets();
     }
 
@@ -351,7 +352,7 @@ public class TextureManager : MonoBehaviour
             colours[i] = c;
         }
         normalTexture.SetPixels32(colours);
-        normalTexture.Apply();
+        normalTexture.Apply(true, false);
 
         switch (selectedPart)
         {
@@ -435,7 +436,7 @@ public class TextureManager : MonoBehaviour
             colours[i] = c;
         }
         normalTexture.SetPixels32(colours);
-        normalTexture.Apply();
+        normalTexture.Apply(true, false);
 
         switch ((Parts) partNum)
         {

@@ -7,6 +7,9 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// Class to represent all data of a saved bike preset
+/// </summary>
 [XmlRoot("BikeSave")]
 [XmlInclude(typeof(PartColor))]
 public class SaveList
@@ -20,7 +23,20 @@ public class SaveList
     public int frontPegs;
     public int rearPegs;
     public int pedals;
-    public int spokes;
+    public int frontSpokes;
+    public int rearSpokes;
+    public int frontHub;
+    public int rearHub;
+    public int seat;
+
+    //TODO
+    /*
+    public int frontHubGuards;
+    public int rearHubGuards;
+    
+    public int frontSpokeAccessories;
+    public int rearSpokeAccessories;
+    */
 
     public bool brakes;
     public bool betterWheels;
@@ -30,7 +46,8 @@ public class SaveList
     public float seatAngle;
     public float barsAngle;
     public float bikeScale;
-    public float tireWidth;
+    public float frontTireWidth;
+    public float rearTireWidth;
     public float seatHeight;
 
     public int seatID;
@@ -40,7 +57,12 @@ public class SaveList
     public Color seatPostColor;
     public Color chainColor;
     public Color brakesColor;
+    public Color seatColor;
 
+    //TODO
+    /*
+    public Color brakeCableColor;
+    */
     public int seatPostMat;
 
     public List<PartColor> partColors;
@@ -56,6 +78,9 @@ public class SaveList
 
 }
 
+/// <summary>
+/// Class to represent part number and color associated with the bike part
+/// </summary>
 [XmlType("PartColor")]
 public class PartColor
 {
@@ -80,6 +105,9 @@ public class PartColor
     }
 }
 
+/// <summary>
+/// Class to represent part number, texture url, and whether the texture is main, normal or metallic
+/// </summary>
 [XmlType("PartTexture")]
 public class PartTexture
 {
@@ -103,6 +131,9 @@ public class PartTexture
 
 }
 
+/// <summary>
+/// Class to represent a part number and associated material
+/// </summary>
 [XmlType("PartMaterial")]
 public class PartMaterial
 {

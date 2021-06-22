@@ -18,6 +18,7 @@ public class MaterialManager : MonoBehaviour
     public Material OskersFrameMat;
     public Material OskersForksMat;
     public Material OskersBarsMat;
+    private Material defaultSeatMat;
 
     public Material chainMatFix;
 
@@ -30,6 +31,7 @@ public class MaterialManager : MonoBehaviour
     public void Start()
     {
         defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
+        defaultSeatMat = GameObject.Find("Seat Mesh").GetComponent<Renderer>().material;
         GameObject.Find("Chain Mesh").GetComponent<Renderer>().material = chainMatFix;
     }
 
@@ -39,14 +41,13 @@ public class MaterialManager : MonoBehaviour
         {
             GameObject.Find("Seat Post").GetComponent<Renderer>().material = mat;
         }
-        //else if (ColourSetter.instance.GetBrakesBool())
-        //{
-         //   BrakesManager.instance.barBrakes.GetComponent<Renderer>().materials[1] = mat;
-          //  BrakesManager.instance.frameBrakes.GetComponent<Renderer>().materials[2] = mat;
-        //}
+        else if (ColourSetter.instance.GetSeatBool())
+        {
+            GameObject.Find("Seat Mesh").GetComponent<Renderer>().material = mat;
+        }
         else
         {
-            FindObjectOfType<BikeLoadOut>().SetPartMaterial(mat, FindObjectOfType<ColourSetter>().currentPart, true);
+            FindObjectOfType<BikeLoadOut>().SetPartMaterial(mat, ColourSetter.instance.currentPart, true);
         }
         
     }
@@ -57,11 +58,10 @@ public class MaterialManager : MonoBehaviour
         {
             GameObject.Find("Seat Post").GetComponent<Renderer>().material = defaultMat;
         }
-        //else if (ColourSetter.instance.GetBrakesBool())
-        //{
-        //    BrakesManager.instance.barBrakes.GetComponent<Renderer>().materials[1] = defaultMat;
-        //    BrakesManager.instance.frameBrakes.GetComponent<Renderer>().materials[2] = defaultMat;
-        //}
+        else if (ColourSetter.instance.GetSeatBool())
+        {
+            GameObject.Find("Seat Mesh").GetComponent<Renderer>().material = defaultSeatMat;
+        }
         else
             FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, FindObjectOfType<ColourSetter>().currentPart, true);
     }

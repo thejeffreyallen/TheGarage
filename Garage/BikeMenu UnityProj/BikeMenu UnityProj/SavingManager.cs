@@ -37,7 +37,7 @@ public class SavingManager : MonoBehaviour
 
     private void Awake()
     {
-        
+        // Setup
         path = Application.dataPath + "//GarageContent/GarageSaves/";
         errorPath = Application.dataPath + "//GarageContent/GarageErrorLog.txt";
         cs = FindObjectOfType<ColourSetter>();
@@ -48,7 +48,7 @@ public class SavingManager : MonoBehaviour
         instance = this;
         File.WriteAllText(errorPath, "");
         lastSelectedPreset = PlayerPrefs.GetString("lastPreset");
-        if (File.Exists(Path.Combine(path, lastSelectedPreset + ".preset")))
+        if (File.Exists(Path.Combine(path, lastSelectedPreset + ".preset"))) // Load last used preset if there is one
             StartCoroutine(LoadLastSelected());
         
     }
@@ -94,6 +94,9 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Save a new preset to file or overwrite an existing one
+    /// </summary>
     public void Save()
     {
         saveList = new SaveList();
@@ -111,7 +114,10 @@ public class SavingManager : MonoBehaviour
     }
 
     
-
+    /// <summary>
+    /// Load a preset from file
+    /// </summary>
+    /// <param name="presetName"> name of the preset to be loaded </param>
     public void Load(string presetName)
     {
         try
@@ -145,7 +151,8 @@ public class SavingManager : MonoBehaviour
                 this.LoadGripsID();
                 this.LoadBikeScale();
                 this.LoadWheels();
-                this.LoadTireWidth();
+                this.LoadFrontTireWidth();
+                this.LoadRearTireWidth();
                 this.LoadFlanges();
                 this.LoadSeatHeight();
                 this.LoadDriveSide();
@@ -158,6 +165,8 @@ public class SavingManager : MonoBehaviour
                 this.LoadBrakesColor();
                 this.LoadMeshes();
                 this.LoadTextures();
+
+                // Quick fix for weird normal map issue on left crank arm
                 Material m = GameObject.Find("Right Crank Arm Mesh").GetComponent<Renderer>().material;
                 GameObject.Find("Left Crank Arm Mesh").GetComponent<Renderer>().material = m;
                 Resources.UnloadUnusedAssets();
@@ -183,7 +192,8 @@ public class SavingManager : MonoBehaviour
             this.SaveGripsID();
             this.SaveBikeScale();
             this.SaveWheels();
-            this.SaveTireWidth();
+            this.SaveFrontTireWidth();
+            this.SaveRearTireWidth();
             this.SaveFlanges();
             this.SaveSeatHeight();
             this.SaveDriveSide();
@@ -222,18 +232,35 @@ public class SavingManager : MonoBehaviour
         Serialize(this.saveNames[0].text);
     }
 
-    private void SaveTireWidth()
+    private void SaveFrontTireWidth()
     {
-        saveList.tireWidth = FindObjectOfType<BikeLoadOut>().GetFrontTireFatness();
+        saveList.frontTireWidth = FindObjectOfType<BikeLoadOut>().GetFrontTireFatness();
     }
 
-    private void LoadTireWidth()
+    private void SaveRearTireWidth()
+    {
+        saveList.rearTireWidth = FindObjectOfType<BikeLoadOut>().GetBackTireFatness();
+    }
+
+    private void LoadFrontTireWidth()
     {
         try
         {
-            float width = loadList.tireWidth;
-            FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
+            float width = loadList.frontTireWidth;
             FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+        }
+        catch (Exception e)
+        {
+            error += e.Message + "\n " + e.StackTrace + "\n ";
+        }
+    }
+
+    private void LoadRearTireWidth()
+    {
+        try
+        {
+            float width = loadList.rearTireWidth;
+            FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
         }
         catch (Exception e)
         {
@@ -743,11 +770,15 @@ public class SavingManager : MonoBehaviour
             saveList.sprocket = CustomMeshManager.instance.selectedSprocket - 1;
             saveList.stem = CustomMeshManager.instance.selectedStem - 1;
             saveList.cranks = CustomMeshManager.instance.selectedCranks - 1;
-            saveList.spokes = CustomMeshManager.instance.selectedSpokes - 1;
+            saveList.frontSpokes = CustomMeshManager.instance.selectedFrontSpokes - 1;
+            saveList.rearSpokes = CustomMeshManager.instance.selectedRearSpokes - 1;
             saveList.pedals = CustomMeshManager.instance.selectedPedals - 1;
             saveList.forks = CustomMeshManager.instance.selectedForks - 1;
             saveList.frontPegs = CustomMeshManager.instance.selectedFrontPegs - 1;
             saveList.rearPegs = CustomMeshManager.instance.selectedRearPegs - 1;
+            saveList.frontHub = CustomMeshManager.instance.selectedFrontHub - 1;
+            saveList.rearHub = CustomMeshManager.instance.selectedRearHub - 1;
+            saveList.seat = CustomMeshManager.instance.selectedSeat - 1;
     }
 
     private void LoadMeshes()
@@ -759,11 +790,15 @@ public class SavingManager : MonoBehaviour
             CustomMeshManager.instance.SetSprocketMesh(loadList.sprocket);
             CustomMeshManager.instance.SetStemMesh(loadList.stem);
             CustomMeshManager.instance.SetCranksMesh(loadList.cranks);
-            CustomMeshManager.instance.SetSpokesMesh(loadList.spokes);
+            CustomMeshManager.instance.SetFrontSpokesMesh(loadList.frontSpokes);
+            CustomMeshManager.instance.SetRearSpokesMesh(loadList.rearSpokes);
             CustomMeshManager.instance.SetPedalsMesh(loadList.pedals);
             CustomMeshManager.instance.SetForksMesh(loadList.forks);
             CustomMeshManager.instance.SetFrontPegsMesh(loadList.frontPegs);
             CustomMeshManager.instance.SetRearPegsMesh(loadList.rearPegs);
+            CustomMeshManager.instance.SetFrontHubMesh(loadList.frontHub);
+            CustomMeshManager.instance.SetRearHubMesh(loadList.rearHub);
+            CustomMeshManager.instance.SetSeatMesh(loadList.seat);
         }
         catch (Exception e)
         {

@@ -26,8 +26,6 @@ public class GarageRoomLoader : MonoBehaviour
     Renderer[] playerRends;
     private Vector3 bikePlacement;
 
-  //  Light[] mapLights;
-
     void Start()
     {
         instance = this;
@@ -45,10 +43,10 @@ public class GarageRoomLoader : MonoBehaviour
             player = GameObject.Find("Daryien").transform.parent.gameObject;
 
             playerRends = player.GetComponentsInChildren<Renderer>();
-
+            
             foreach (Renderer r in playerRends)
             {
-                r.enabled = false;
+                r.enabled = false; // Fixes weird player twisting behaviour
             }
 
             marker = FindObjectOfType<SessionMarker>().marker;
