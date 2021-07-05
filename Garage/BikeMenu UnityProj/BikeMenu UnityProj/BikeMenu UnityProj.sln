@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.779
+VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeMenu UnityProj", "BikeMenu UnityProj\BikeMenu UnityProj.csproj", "{E11CE162-FE5F-4586-A1F4-C2E49ED5D242}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeMenu UnityProj", "BikeMenu UnityProj.csproj", "{E11CE162-FE5F-4586-A1F4-C2E49ED5D242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D50A4881-3668-41B3-9898-384A46B4B730}
+		SolutionGuid = {E54D35B3-6A77-4F0E-8350-5F9E0F2994BD}
 	EndGlobalSection
 EndGlobal

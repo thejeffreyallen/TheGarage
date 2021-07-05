@@ -40,9 +40,9 @@ public class ColourSetter : MonoBehaviour
     void Start()
     {
         col = new Color(0f, 0f, 0f, 1f);
-        this.seatPostCol = GameObject.Find("Seat Post").GetComponent<Renderer>().material.color;
-        this.chainColor = GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color;
-        this.seatColor = GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.color;
+        this.seatPostCol = PartMaster.instance.GetMaterial(PartMaster.instance.seatPost).color;
+        this.chainColor = PartMaster.instance.GetMaterial(PartMaster.instance.chain).color;
+        this.seatColor = PartMaster.instance.GetMaterial(PartMaster.instance.seat).color;
 
     }
 
@@ -66,7 +66,7 @@ public class ColourSetter : MonoBehaviour
         selectedPartText.text = txt;
     }
 
-    public void setChainColor()
+    public void SetChainColor()
     {
         this.chain = true;
         this.seatPost = false;
@@ -76,7 +76,7 @@ public class ColourSetter : MonoBehaviour
 
     }
 
-    public void setSeatColor()
+    public void SetSeatColor()
     {
         this.chain = false;
         this.seatPost = false;
@@ -85,7 +85,7 @@ public class ColourSetter : MonoBehaviour
         this.seat = true;
     }
 
-    public void setSeatPostColor()
+    public void SetSeatPostColor()
     {
         this.seatPost = true;
         this.chain = false;
@@ -94,7 +94,7 @@ public class ColourSetter : MonoBehaviour
         this.seat = false;
     }
 
-    public bool getSeatPostBool()
+    public bool GetSeatPostBool()
     {
         return this.seatPost;
     }
@@ -142,14 +142,14 @@ public class ColourSetter : MonoBehaviour
         
     }
 
-    public bool isActive()
+    public bool IsActive()
     {
         return this.active;
     }
 
     void Update()
     {
-        if (this.isActive())
+        if (this.IsActive())
         {
             float hue, sat, bright;
 
@@ -159,12 +159,12 @@ public class ColourSetter : MonoBehaviour
             if (this.chain == true)
             {
                 chainColor = col;
-                GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color = chainColor;
+                PartMaster.instance.GetMaterial(PartMaster.instance.chain).color = chainColor;
             }
             else if (this.seatPost == true)
             {
                 seatPostCol = col;
-                GameObject.Find("Seat Post").GetComponent<Renderer>().material.color = seatPostCol;
+                PartMaster.instance.GetMaterial(PartMaster.instance.seatPost).color = seatPostCol;
             }
             else if (this.brakes == true)
             {
@@ -182,7 +182,7 @@ public class ColourSetter : MonoBehaviour
             else if (this.seat == true)
             {
                 seatColor = col;
-                GameObject.Find("Seat Mesh").GetComponent<Renderer>().material.color = seatColor;
+                PartMaster.instance.GetMaterial(PartMaster.instance.seat).color = seatColor;
             }
             else
             {
@@ -207,13 +207,13 @@ public class ColourSetter : MonoBehaviour
     public void SetSeatPostColor(float r, float g, float b, float a)
     {
         this.seatPostCol = new Color(r, g, b, a);
-        GameObject.Find("Seat Post").GetComponent<Renderer>().material.color = seatPostCol;
+        PartMaster.instance.GetMaterial(PartMaster.instance.seatPost).color = seatPostCol;
     }
 
     public void SetSeatPostColor(Color c)
     {
-        this.seatPostCol = c; 
-        GameObject.Find("Seat Post").GetComponent<Renderer>().material.color = seatPostCol;
+        this.seatPostCol = c;
+        PartMaster.instance.GetMaterial(PartMaster.instance.seatPost).color = seatPostCol;
     }
 
     public Color GetChainColor()
@@ -224,13 +224,13 @@ public class ColourSetter : MonoBehaviour
     public void SetChainColor(float r, float g, float b, float a)
     {
         this.chainColor = new Color(r, g, b, a);
-        GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color = chainColor;
+        PartMaster.instance.GetMaterial(PartMaster.instance.chain).color = chainColor;
     }
 
     public void SetChainColor(Color c)
     {
         this.chainColor = c;
-        GameObject.Find("Chain Mesh").GetComponent<Renderer>().material.color = chainColor;
+        PartMaster.instance.GetMaterial(PartMaster.instance.chain).color = chainColor;
     }
 
     public Color GetBrakesColor()

@@ -18,8 +18,6 @@ public class BetterWheelsMod : MonoBehaviour
     public Mesh newTire;
     public Mesh newFrontHub;
     public Mesh newRearHub;
-    private Transform[] stockFrontWheel;
-    private Transform[] stockRearWheel;
     public Material betterWheelMat;
     public Material[] tireMats;
     private Mesh oldRim;
@@ -29,26 +27,19 @@ public class BetterWheelsMod : MonoBehaviour
     private Material oldHubMat;
     private Material[] oldTireMats;
 
+    bool hasFrontHubChanged = false;
+    bool hasRearHubChanged = false;
 
     private void Start()
     {
-
-        stockFrontWheel = GameObject.Find("BMX:Wheel").GetComponentsInChildren<Transform>();
-        stockRearWheel = GameObject.Find("BMX:Wheel 1").GetComponentsInChildren<Transform>();
-
-        stockFrontWheel = GameObject.Find("BMX:Wheel").GetComponentsInChildren<Transform>(true);
-        stockRearWheel = GameObject.Find("BMX:Wheel 1").GetComponentsInChildren<Transform>(true);
-
-
-
         //Store old parts
-        oldRim = stockFrontWheel[1].gameObject.GetComponent<MeshFilter>().mesh;
-        oldHub = stockFrontWheel[3].gameObject.GetComponent<MeshFilter>().mesh;
-        oldTire = stockFrontWheel[6].gameObject.GetComponent<MeshBlendShape>().referenceMesh;
+        oldRim = PartMaster.instance.GetMesh(PartMaster.instance.frontRim);
+        oldHub = PartMaster.instance.GetMesh(PartMaster.instance.frontHub);
+        oldTire = PartMaster.instance.GetPart(PartMaster.instance.frontTire).GetComponent<MeshBlendShape>().referenceMesh;
         //Store old materials
-        oldRimMat = stockFrontWheel[1].gameObject.GetComponent<Renderer>().material;
-        oldHubMat = stockFrontWheel[3].gameObject.GetComponent<Renderer>().material;
-        oldTireMats = stockFrontWheel[6].gameObject.GetComponent<Renderer>().materials;
+        oldRimMat = PartMaster.instance.GetMaterial(PartMaster.instance.frontRim);
+        oldHubMat = PartMaster.instance.GetMaterial(PartMaster.instance.frontHub);
+        oldTireMats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire); ;
 
         instance = this;
     }
@@ -70,61 +61,96 @@ public class BetterWheelsMod : MonoBehaviour
 
     public void SetTireTread()
     {
-        stockFrontWheel[6].gameObject.GetComponent<Renderer>().materials = tireMats;
-        stockRearWheel[3].gameObject.GetComponent<Renderer>().materials = tireMats;
+        PartMaster.instance.GetPart(PartMaster.instance.frontTire).GetComponent<Renderer>().materials = tireMats;
+        PartMaster.instance.GetPart(PartMaster.instance.rearTire).GetComponent<Renderer>().materials = tireMats;
+    }
+
+    public void ChangeFrontHub()
+    {
+        this.hasFrontHubChanged = true;
+    }
+
+    public void ChangeRearHub()
+    {
+        this.hasRearHubChanged = true;
+    }
+
+    public bool CheckFront()
+    {
+        return this.hasFrontHubChanged;
+    }
+
+    public bool CheckRear()
+    {
+        return this.hasRearHubChanged;
     }
 
     public void ApplyMod()
     {
-        
-
         //Front wheel rim
-        stockFrontWheel[1].gameObject.GetComponent<MeshFilter>().mesh = newRim;
-        stockFrontWheel[1].gameObject.GetComponent<Renderer>().material = betterWheelMat;
+        PartMaster.instance.GetPart(PartMaster.instance.frontRim).GetComponent<MeshFilter>().mesh = newRim;
+        PartMaster.instance.GetPart(PartMaster.instance.frontRim).GetComponent<Renderer>().material = betterWheelMat;
         //Front Wheel hub
-        stockFrontWheel[3].gameObject.GetComponent<MeshFilter>().mesh = newFrontHub;
-        stockFrontWheel[3].gameObject.GetComponent<Renderer>().material = betterWheelMat;
+        PartMaster.instance.GetPart(PartMaster.instance.frontHub).GetComponent<MeshFilter>().mesh = newFrontHub;
+        PartMaster.instance.GetPart(PartMaster.instance.frontHub).GetComponent<Renderer>().material = betterWheelMat;
         //Front wheel tire
-        stockFrontWheel[6].gameObject.GetComponent<MeshBlendShape>().referenceMesh = newTire;
-        stockFrontWheel[6].gameObject.GetComponent<Renderer>().materials = tireMats;
+        PartMaster.instance.GetPart(PartMaster.instance.frontTire).GetComponent<MeshBlendShape>().referenceMesh = newTire;
+        PartMaster.instance.GetPart(PartMaster.instance.frontTire).GetComponent<Renderer>().materials = tireMats;
 
         //Rear wheel rim
-        stockRearWheel[1].gameObject.GetComponent<MeshFilter>().mesh = newRim;
-        stockRearWheel[1].gameObject.GetComponent<Renderer>().material = betterWheelMat;
+        PartMaster.instance.GetPart(PartMaster.instance.rearRim).GetComponent<MeshFilter>().mesh = newRim;
+        PartMaster.instance.GetPart(PartMaster.instance.rearRim).GetComponent<Renderer>().material = betterWheelMat;
         //Rear wheel tire
-        stockRearWheel[3].gameObject.GetComponent<MeshBlendShape>().referenceMesh = newTire;
-        stockRearWheel[3].gameObject.GetComponent<Renderer>().materials = tireMats;
+        PartMaster.instance.GetPart(PartMaster.instance.rearTire).GetComponent<MeshBlendShape>().referenceMesh = newTire;
+        PartMaster.instance.GetPart(PartMaster.instance.rearTire).GetComponent<Renderer>().materials = tireMats;
         //rear wheel hub
-        stockRearWheel[4].gameObject.GetComponent<MeshFilter>().mesh = newRearHub;
-        stockRearWheel[4].gameObject.GetComponent<Renderer>().material = betterWheelMat;
+        PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<MeshFilter>().mesh = newRearHub;
+        PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<Renderer>().material = betterWheelMat;
+
         this.modEnabled = true;
         PartManager.instance.tiresCount = 3;
+        hasFrontHubChanged = false;
+        hasRearHubChanged = false;
 
     }
 
     public void DisableMod()
     {
         //Front wheel rim
-        stockFrontWheel[1].gameObject.GetComponent<MeshFilter>().mesh = oldRim;
-        stockFrontWheel[1].gameObject.GetComponent<Renderer>().material = oldRimMat;
+        PartMaster.instance.GetPart(PartMaster.instance.frontRim).GetComponent<MeshFilter>().mesh = oldRim;
+        PartMaster.instance.GetPart(PartMaster.instance.frontRim).GetComponent<Renderer>().material = oldRimMat;
         //Front Wheel hub
-        stockFrontWheel[3].gameObject.GetComponent<MeshFilter>().mesh = oldHub;
-        stockFrontWheel[3].gameObject.GetComponent<Renderer>().material = oldHubMat;
+        PartMaster.instance.GetPart(PartMaster.instance.frontHub).GetComponent<MeshFilter>().mesh = oldHub;
+        PartMaster.instance.GetPart(PartMaster.instance.frontHub).GetComponent<Renderer>().material = oldHubMat;
         //Front wheel tire
-        stockFrontWheel[6].gameObject.GetComponent<MeshBlendShape>().referenceMesh = oldTire;
-        stockFrontWheel[6].gameObject.GetComponent<Renderer>().materials = oldTireMats;
+        PartMaster.instance.GetPart(PartMaster.instance.frontTire).GetComponent<MeshBlendShape>().referenceMesh = oldTire;
+        PartMaster.instance.GetPart(PartMaster.instance.frontTire).GetComponent<Renderer>().materials = oldTireMats;
 
         //Rear wheel rim
-        stockRearWheel[1].gameObject.GetComponent<MeshFilter>().mesh = oldRim;
-        stockRearWheel[1].gameObject.GetComponent<Renderer>().material = oldRimMat;
+        PartMaster.instance.GetPart(PartMaster.instance.rearRim).GetComponent<MeshFilter>().mesh = oldRim;
+        PartMaster.instance.GetPart(PartMaster.instance.rearRim).GetComponent<Renderer>().material = oldRimMat;
         //Rear wheel tire
-        stockRearWheel[3].gameObject.GetComponent<MeshBlendShape>().referenceMesh = oldTire;
-        stockRearWheel[3].gameObject.GetComponent<Renderer>().materials = oldTireMats;
+        PartMaster.instance.GetPart(PartMaster.instance.rearTire).GetComponent<MeshBlendShape>().referenceMesh = oldTire;
+        PartMaster.instance.GetPart(PartMaster.instance.rearTire).GetComponent<Renderer>().materials = oldTireMats;
         //rear wheel hub
-        stockRearWheel[4].gameObject.GetComponent<MeshFilter>().mesh = oldHub;
-        stockRearWheel[4].gameObject.GetComponent<Renderer>().material = oldHubMat;
+        PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<MeshFilter>().mesh = oldHub;
+        PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<Renderer>().material = oldHubMat;
 
         this.modEnabled = false;
+    }
+
+    public void OnChangeHubFront()
+    {
+        if (!this.modEnabled)
+            return;
+        PartMaster.instance.GetPart(PartMaster.instance.frontHub).GetComponent<Renderer>().material = oldHubMat;
+    }
+
+    public void OnChangeHubRear()
+    {
+        if (!this.modEnabled)
+            return;
+        PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<Renderer>().material = oldHubMat;
     }
 
 }

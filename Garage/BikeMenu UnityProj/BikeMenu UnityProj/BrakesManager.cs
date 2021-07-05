@@ -40,8 +40,8 @@ public class BrakesManager : MonoBehaviour
 
     void EnableBrakes()
     {
-        Transform bars = GameObject.Find("Bars Mesh").transform;
-        Transform frame = GameObject.Find("Frame Mesh").transform;
+        Transform bars = PartMaster.instance.GetPart(PartMaster.instance.bars).transform;
+        Transform frame = PartMaster.instance.GetPart(PartMaster.instance.frame).transform;
 
         barBrakes = Instantiate(barsbrakePrefab, bars.transform.position, bars.transform.rotation);
         barBrakes.transform.localScale = (new Vector3(0.8833787f,0.893016f, 1));
@@ -55,6 +55,7 @@ public class BrakesManager : MonoBehaviour
 
     void DisableBrakes()
     {
+        Debug.Log("Destroying brake prefabs");
         Destroy(barBrakes);
         Destroy(frameBrakes);
 

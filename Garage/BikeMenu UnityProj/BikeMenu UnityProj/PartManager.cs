@@ -26,8 +26,6 @@ public class PartManager : MonoBehaviour
     public Slider bikeScaleSlider;
     public Slider barsAngleSlider;
     public Slider tireWidth;
-
-    //TODO
     public Slider frontTireWidth;
     public Slider rearTireWidth;
 
@@ -36,7 +34,6 @@ public class PartManager : MonoBehaviour
     private GameObject leftHandTarget;
     private GameObject rightHandTarget;
 
-    public InputField filename;
     float maxSeatHeight = 1f;
     
 
@@ -49,29 +46,29 @@ public class PartManager : MonoBehaviour
 
     private void Start()
     {
-        ogRearWheel = GameObject.Find("Hub Mesh").transform;
-        chainMesh = GameObject.Find("Chain Mesh").transform;
-        sprocketMesh = GameObject.Find("Sprocket Mesh").transform;
-
+        ogRearWheel = PartMaster.instance.GetPart(PartMaster.instance.rearHub).transform;
+        chainMesh = PartMaster.instance.GetPart(PartMaster.instance.chain).transform;
+        sprocketMesh = PartMaster.instance.GetPart(PartMaster.instance.sprocket).transform;
+        seatHeightSlider.value = PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition.y;
         bmx = GameObject.Find("BMX").transform;
 
-        leftHandTarget = GameObject.Find("Left Anchor");
-        rightHandTarget = GameObject.Find("Right Anchor");
-        leftHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
-        rightHandTarget.transform.SetParent(GameObject.Find("Bars Mesh").transform);
+        leftHandTarget = PartMaster.instance.GetPart(PartMaster.instance.leftAnchor);
+        rightHandTarget = PartMaster.instance.GetPart(PartMaster.instance.rightAnchor);
+        leftHandTarget.transform.SetParent(PartMaster.instance.GetPart(PartMaster.instance.bars).transform);
+        rightHandTarget.transform.SetParent(PartMaster.instance.GetPart(PartMaster.instance.bars).transform);
 
     }
 
     public void SetSeatHeight(float f)
     {
-        GameObject.Find("Seat Post Anchor").transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, f), 0f);
+        PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, f), 0f);
         seatHeightSlider.value = f;
         
     }
 
     public void SeatUpDown()
     {
-        GameObject.Find("Seat Post Anchor").transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, seatHeightSlider.value), 0f);
+        PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, seatHeightSlider.value), 0f);
     }
 
     public void FrontTireWidth()
@@ -227,7 +224,7 @@ public class PartManager : MonoBehaviour
 
     public void SetSeatMesh()
     {
-        CustomMeshManager.instance.SetMesh("Seat Mesh", CustomMeshManager.instance.seatMeshes, CustomMeshManager.instance.selectedSeat++, CustomMeshManager.instance.selectedSeatText);
+        CustomMeshManager.instance.SetSeatMesh(CustomMeshManager.instance.selectedSeat++);
     }
 
     public void ChangeGrips()
@@ -241,7 +238,7 @@ public class PartManager : MonoBehaviour
     {
 
         FindObjectOfType<BarsApplyMod>().SetGripsID(id % FindObjectOfType<BarsApplyMod>().gripMats.Length);
-        gripsCount++;
+        gripsCount = id % FindObjectOfType<BarsApplyMod>().gripMats.Length + 1;
 
     }
 
@@ -271,7 +268,8 @@ public class PartManager : MonoBehaviour
 
     public void SetChainMat(Material newMat)
     {
-        GameObject.Find("Chain Mesh").GetComponent<Renderer>().material = newMat;
+        Material m = PartMaster.instance.GetMaterial(PartMaster.instance.chain);
+        m = newMat;
     }
 
     public void SetBikeScale()
@@ -288,27 +286,27 @@ public class PartManager : MonoBehaviour
 
     public void SetFrameMesh()
     {
-        CustomMeshManager.instance.SetMesh("Frame Mesh", CustomMeshManager.instance.frameMeshes, CustomMeshManager.instance.selectedFrame++, CustomMeshManager.instance.selectedFrameText);
+        CustomMeshManager.instance.SetFrameMesh(CustomMeshManager.instance.selectedFrame++);
     }
 
     public void SetForksMesh()
     {
-        CustomMeshManager.instance.SetMesh("Forks Mesh", CustomMeshManager.instance.forksMeshes, CustomMeshManager.instance.selectedForks++, CustomMeshManager.instance.selectedForksText);
+        CustomMeshManager.instance.SetForksMesh(CustomMeshManager.instance.selectedForks++);
     }
 
     public void SetBarsMesh()
     {
-        CustomMeshManager.instance.SetMesh("Bars Mesh", CustomMeshManager.instance.barMeshes, CustomMeshManager.instance.selectedBars++, CustomMeshManager.instance.selectedBarsText);
+        CustomMeshManager.instance.SetBarsMesh(CustomMeshManager.instance.selectedBars++);
     }
 
     public void SetFrontPegsMesh()
     {
-        CustomMeshManager.instance.SetPegsMesh("Pegs Mesh", CustomMeshManager.instance.pegMeshes, CustomMeshManager.instance.selectedFrontPegs++, CustomMeshManager.instance.selectedFrontPegsText, 0);
+        CustomMeshManager.instance.SetFrontPegsMesh(CustomMeshManager.instance.selectedFrontPegs++);
     }
 
     public void SetRearPegsMesh()
     {
-        CustomMeshManager.instance.SetPegsMesh("Pegs Mesh", CustomMeshManager.instance.pegMeshes, CustomMeshManager.instance.selectedRearPegs++, CustomMeshManager.instance.selectedRearPegsText, 1);
+        CustomMeshManager.instance.SetRearPegsMesh(CustomMeshManager.instance.selectedRearPegs++);
     }
 
     public void SetFrontSpokesMesh()
@@ -333,26 +331,32 @@ public class PartManager : MonoBehaviour
 
     public void SetPedalsMesh()
     {
-        CustomMeshManager.instance.SetMultipleMesh("Pedal Mesh", CustomMeshManager.instance.pedalMeshes, CustomMeshManager.instance.selectedPedals++, CustomMeshManager.instance.selectedPedalsText);
+        CustomMeshManager.instance.SetPedalsMesh(CustomMeshManager.instance.selectedPedals++);
     }
 
     public void SetSprocketMesh()
     {
-        CustomMeshManager.instance.SetMesh("Sprocket Mesh", CustomMeshManager.instance.sprocketMeshes, CustomMeshManager.instance.selectedSprocket++, CustomMeshManager.instance.selectedSprocketText);
+        CustomMeshManager.instance.SetSprocketMesh(CustomMeshManager.instance.selectedSprocket++);
     }
 
     public void SetStemMesh()
     {
-        CustomMeshManager.instance.SetMesh("Stem Mesh", CustomMeshManager.instance.stemMeshes, CustomMeshManager.instance.selectedStem++, CustomMeshManager.instance.selectedStemText);
+        CustomMeshManager.instance.SetStemMesh(CustomMeshManager.instance.selectedStem++);
+    }
+
+    public void SetFrontSpokeAcc()
+    {
+        CustomMeshManager.instance.SetFrontSpokeAccMesh(CustomMeshManager.instance.selectedFrontAccessory++);
+    }
+
+    public void SetRearSpokeAcc()
+    {
+        CustomMeshManager.instance.SetRearSpokeAccMesh(CustomMeshManager.instance.selectedRearAccessory++);
     }
 
     public void SetCranksMesh()
     {
-        int selected = CustomMeshManager.instance.selectedCranks++;
-        Material m = GameObject.Find("Right Crank Arm Mesh").GetComponent<Renderer>().material;
-        CustomMeshManager.instance.SetMesh("Right Crank Arm Mesh", CustomMeshManager.instance.cranksMeshes, selected, CustomMeshManager.instance.selectedCranksText);
-        CustomMeshManager.instance.SetMesh("Left Crank Arm Mesh", CustomMeshManager.instance.cranksMeshes, selected, CustomMeshManager.instance.selectedCranksText);
-        GameObject.Find("Left Crank Arm Mesh").GetComponent<Renderer>().material = m;
+        CustomMeshManager.instance.SetCranksMesh(CustomMeshManager.instance.selectedCranks++);
     }
 }
 

@@ -7,6 +7,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 
+public class MeshObject
+{
+    public Mesh mesh;
+    public bool isCustom;
+    public string fileName;
+
+    public MeshObject(Mesh mesh, bool isCustom, string fileName)
+    {
+        this.mesh = mesh;
+        this.isCustom = isCustom;
+        this.fileName = fileName;
+    }
+}
+
 public class CustomMeshManager : MonoBehaviour
 {
     public static CustomMeshManager instance;
@@ -90,6 +104,12 @@ public class CustomMeshManager : MonoBehaviour
     public Text selectedFrontAccessoryText;
     public Text selectedRearAccessoryText;
 
+    GameObject accFront;
+    GameObject accRear;
+    public Material tennis;
+    GameObject backPegcollider;
+    GameObject frontPegcollider;
+
     [Header("Seat")]
     public int selectedSeat;
     public Mesh[] seatMeshes;
@@ -105,75 +125,163 @@ public class CustomMeshManager : MonoBehaviour
     List<GameObject> origSpokes = new List<GameObject>();
     List<GameObject> origHubs = new List<GameObject>();
     List<GameObject> origPegs = new List<GameObject>();
-    GameObject origSeatPost;
+    public GameObject origSeatPost;
 
     public Mesh seatPostClamp;
     public Mesh longSeatPost;
 
+    public List<MeshObject> frames;
+    public List<MeshObject> bars;
+    public List<MeshObject> forks;
+    public List<MeshObject> stems;
+    public List<MeshObject> cranks;
+    public List<MeshObject> sprockets;
+    public List<MeshObject> spokes;
+    public List<MeshObject> pegs;
+    public List<MeshObject> pedals;
+    public List<MeshObject> seats;
+    public List<MeshObject> accessories;
+    public List<MeshObject> hubs;
+    public List<MeshObject> frontHubGuards;
+    public List<MeshObject> rearHubGuards;
+    public List<MeshObject> boltsCrank;
+    public List<MeshObject> boltsStem;
+
     void Awake()
     {
         instance = this;
+        InitMeshObjectLists();
     }
 
     void Start()
-    { 
-        GameObject junk = GameObject.Find("Stem Mesh");
-        junk.SetActive(false);
+    {
+        objImporter = new ObjImporter();
         basePath = Application.dataPath + "/GarageContent/";
-        rightCrankBolts = GameObject.Find("Right_Crankarm_Cap");
-        leftCrankBolts = GameObject.Find("Left_Crankarm_Cap");
-        stemBolts = GameObject.Find("Stem Bolts Mesh");
+
+        rightCrankBolts = PartMaster.instance.GetPart(PartMaster.instance.rightCrankBolt);
+        leftCrankBolts = PartMaster.instance.GetPart(PartMaster.instance.leftCrankBolt);
+        stemBolts = PartMaster.instance.GetPart(PartMaster.instance.stemBolts);
         rightCrankBolts.GetComponent<MeshFilter>().mesh = crankBoltMeshes[1];
         leftCrankBolts.GetComponent<MeshFilter>().mesh = crankBoltMeshes[1];
-        objImporter = new ObjImporter();
-
-        GameObject.Find("Seat_Clamp_Bolt").SetActive(false);
-        GameObject.Find("Seat Clamp Mesh").GetComponent<MeshFilter>().mesh = seatPostClamp;
-
+        GameObject SeatClampBolt = PartMaster.instance.GetPart(PartMaster.instance.seatClampBolt);
+        SeatClampBolt.SetActive(false);
+        PartMaster.instance.SetMesh(PartMaster.instance.seatClamp, seatPostClamp);
+        PartMaster.instance.SetMesh(PartMaster.instance.seatPost, longSeatPost);
+        LoadFiles(); // Load meshes from file
         
 
-        frameMeshes = LoadFromFile("Frames/", frameMeshes);
-        barMeshes = LoadFromFile("Bars/", barMeshes);
-        pegMeshes = LoadFromFile("Pegs/", pegMeshes);
-        spokesMeshes = LoadFromFile("Spokes/", spokesMeshes);
-        sprocketMeshes = LoadFromFile("Sprockets/", sprocketMeshes);
-        stemMeshes = LoadFromFile("Stems/", stemMeshes);
-        cranksMeshes = LoadFromFile("Cranks/", cranksMeshes);
-        forksMeshes = LoadFromFile("Forks/", forksMeshes);
-        stemBoltMeshes = LoadFromFile("StemBolts/", stemBoltMeshes);
-        crankBoltMeshes = LoadFromFile("CrankBolts/", crankBoltMeshes);
-        hubMeshes = LoadFromFile("Hubs/", hubMeshes);
-        seatMeshes = LoadFromFile("Seats/", seatMeshes);
-        //pedalMeshes = LoadFromFile("Frames/", customFrames, customFrameMeshes, pedalMeshes);
-        //frontHubGuardMeshes = LoadFromFile("Bars/", customBars, customBarsMeshes, frontHubGuardMeshes);
+        
+        accFront = new GameObject("FrontAccessory");
+        accFront.AddComponent<MeshRenderer>();
+        accFront.GetComponent<MeshRenderer>().material = tennis;
+        accFront.AddComponent<MeshFilter>();
 
-        Transform[] barsJoint = GameObject.Find("BMX:Bars_Joint").GetComponentsInChildren<Transform>(true);
-        Transform[] frameJoint = GameObject.Find("BMX:Frame_Joint").GetComponentsInChildren<Transform>(true);
+        accRear = new GameObject("RearAccessory");
+        accRear.AddComponent<MeshRenderer>();
+        accRear.GetComponent<MeshRenderer>().material = tennis;
+        accRear.AddComponent<MeshFilter>();
 
-        foreach (Transform t in barsJoint)
+        Instantiate(accFront, PartMaster.instance.GetPart(PartMaster.instance.frontSpokes).transform);
+        Instantiate(accRear, PartMaster.instance.GetPart(PartMaster.instance.rearSpokes).transform);
+        
+    }
+
+    public void InitMeshObjectLists()
+    {
+        try
         {
-            if (t.gameObject.name.Equals("Pegs Mesh"))
-                origPegs.Add(t.gameObject);
-            if (t.gameObject.name.Equals("Hub Mesh"))
-                origHubs.Add(t.gameObject);
-            if (t.gameObject.name.Equals("Spokes Mesh"))
-                origSpokes.Add(t.gameObject);
-            
-        }
+            frames = new List<MeshObject>();
+            bars = new List<MeshObject>();
+            forks = new List<MeshObject>();
+            stems = new List<MeshObject>();
+            cranks = new List<MeshObject>();
+            sprockets = new List<MeshObject>();
+            spokes = new List<MeshObject>();
+            pegs = new List<MeshObject>();
+            pedals = new List<MeshObject>();
+            seats = new List<MeshObject>();
+            accessories = new List<MeshObject>();
+            hubs = new List<MeshObject>();
+            frontHubGuards = new List<MeshObject>();
+            rearHubGuards = new List<MeshObject>();
+            boltsCrank = new List<MeshObject>();
+            boltsStem = new List<MeshObject>();
 
-        foreach (Transform t in frameJoint)
+            foreach (Mesh m in frameMeshes)
+                frames.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in barMeshes)
+                bars.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in forksMeshes)
+                forks.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in stemMeshes)
+                stems.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in cranksMeshes)
+                cranks.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in sprocketMeshes)
+                sprockets.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in spokesMeshes)
+                spokes.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in pegMeshes)
+                pegs.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in pedalMeshes)
+                pedals.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in accessoryMeshes)
+                accessories.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in hubMeshes)
+                hubs.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in frontHubGuardMeshes)
+                frontHubGuards.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in rearHubGuardMeshes)
+                rearHubGuards.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in crankBoltMeshes)
+                boltsCrank.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in stemBoltMeshes)
+                boltsStem.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in seatMeshes)
+                seats.Add(new MeshObject(m, false, ""));
+        }
+        catch (Exception e)
         {
-            if (t.gameObject.name.Equals("Pegs Mesh"))
-                origPegs.Add(t.gameObject);
-            if (t.gameObject.name.Equals("Hub Mesh"))
-                origHubs.Add(t.gameObject);
-            if (t.gameObject.name.Equals("Spokes Mesh"))
-                origSpokes.Add(t.gameObject);
-            if (t.gameObject.name.Equals("Seat Post"))
-                origSeatPost = t.gameObject;
+            Debug.Log("Error on initialization of CustomMeshManager: " + e.Message + e.StackTrace);
         }
+    }
 
-        origSeatPost.GetComponent<MeshFilter>().mesh = longSeatPost;
+    public void LoadFiles()
+    {
+        try
+        {
+            frames = LoadFromFile("Frames/", frames);
+            bars = LoadFromFile("Bars/", bars);
+            pegs = LoadFromFile("Pegs/", pegs);
+            spokes = LoadFromFile("Spokes/", spokes);
+            sprockets = LoadFromFile("Sprockets/", sprockets);
+            stems = LoadFromFile("Stems/", stems);
+            cranks = LoadFromFile("Cranks/", cranks);
+            forks = LoadFromFile("Forks/", forks);
+            boltsStem = LoadFromFile("StemBolts/", boltsStem);
+            boltsCrank = LoadFromFile("CrankBolts/", boltsCrank);
+            hubs = LoadFromFile("Hubs/", hubs);
+            seats = LoadFromFile("Seats/", seats);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error while loading meshes from file: " + e.Message + "\n" + e.StackTrace);
+        }
+    }
+
+    public void SetFrontSpokeAccMesh(int i)
+    {    
+        accFront.GetComponent<MeshFilter>().mesh = accessoryMeshes[i % accessoryMeshes.Length];
+        selectedFrontAccessoryText.text = accessoryMeshes[i % accessoryMeshes.Length].name;
+        selectedFrontAccessory = (i % accessoryMeshes.Length) + 1;
+        
+    }
+
+    public void SetRearSpokeAccMesh(int i)
+    {
+        accRear.GetComponent<MeshFilter>().mesh = accessoryMeshes[i % accessoryMeshes.Length];
+        selectedRearAccessoryText.text = accessoryMeshes[i % accessoryMeshes.Length].name;
+        selectedRearAccessory = (i % accessoryMeshes.Length) + 1;
     }
 
     /// <summary>
@@ -182,107 +290,24 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="folder"> The folder to load meshes from </param>
     /// <param name="fileNameArray"> An array to hold any file names that are found in the folder </param>
     /// <param name="origMeshArray"> The original mesh array to merge into </param>
-    public Mesh[] LoadFromFile(String folder, Mesh[] origMeshArray)
+    public List<MeshObject> LoadFromFile(String folder, List<MeshObject> meshObjectList)
     {
         try
         {
             String[] fileNameArray = Directory.GetFiles(basePath + folder); // Get the file names
-            Mesh[] customMeshArray = new Mesh[fileNameArray.Length]; // instantiate a new Mesh array
-            
-            
             for (int i = 0; i < fileNameArray.Length; i++)
             {
                 Mesh temp = objImporter.ImportFile(fileNameArray[i]); // Import each file name as a mesh
-                customMeshArray[i] = temp; // Add the mesh to the custom mesh array
-                customMeshArray[i].name = Path.GetFileName(fileNameArray[i]).Replace(".obj", ""); // Remove the .obj extension for cleaner look when updating the button text
-            }
-            if (fileNameArray.Length > 0) // If any meshes were found in the folder
-            { 
-                // Merge the custom mesh array with the built-in mesh array
-                Mesh[] newArray = new Mesh[origMeshArray.Length + customMeshArray.Length];
-                Array.Copy(origMeshArray, newArray, origMeshArray.Length);
-                Array.Copy(customMeshArray, 0, newArray, origMeshArray.Length, customMeshArray.Length);
-                return newArray;
+                temp.name = Path.GetFileName(fileNameArray[i]).Replace(".obj", ""); // Remove the .obj extension for cleaner look when updating the button text
+                meshObjectList.Add(new MeshObject(temp, true, fileNameArray[i]));
             }
         }
         catch (Exception e)
         {
             Debug.Log("Error in LoadFromFile method: " + e.Message + e.StackTrace);
         }
-        return origMeshArray;
+        return meshObjectList;
 
-    }
-
-    /// <summary>
-    /// SetMultipleMesh method - Used for setting two or more meshes that have the same name, i.e. crank arms
-    /// </summary>
-    /// <param name="objectNames"> string that is the shared name of the objects </param>
-    /// <param name="meshArray"> the mesh array to select meshes from </param>
-    /// <param name="selectedMesh"> which mesh to select from the array </param>
-    /// <param name="buttonText"> button text to update on mesh change </param>
-    public void SetMultipleMesh(string objectNames, Mesh[] meshArray, int selectedMesh, Text buttonText)
-    {
-        List<GameObject> partObjects = new List<GameObject>();
-
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == objectNames)
-                partObjects.Add(go);
-        }
-
-        for (int i = 0; i < partObjects.Count; i++)
-        {
-            partObjects[i].GetComponent<MeshFilter>().mesh = meshArray[selectedMesh % meshArray.Length];
-        }
-
-        buttonText.text = meshArray[selectedMesh % meshArray.Length].name;
-    }
-
-    /// <summary>
-    /// SetPegsMesh method - Similar to the SetMultipleMesh method, but specific to the pegs
-    /// </summary>
-    /// <param name="objectNames"> string that is the shared name of the objects </param>
-    /// <param name="meshArray"> the mesh array to select meshes from </param>
-    /// <param name="selectedMesh"> which mesh to select from the array </param>
-    /// <param name="buttonText"> button text to update on mesh change </param>
-    /// <param name="partNum"> part num indicates which of the two peg meshes to change. This allows for front and back pegs to be changed independently </param>
-    public void SetPegsMesh(string objectNames, Mesh[] meshArray, int selectedMesh, Text buttonText, int partNum)
-    {
-        List<GameObject> partObjects = new List<GameObject>();
-
-        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
-        {
-            if (go.name == objectNames)
-                partObjects.Add(go);
-        }
-
-        partObjects[partNum].GetComponent<MeshFilter>().mesh = meshArray[selectedMesh % meshArray.Length];
-        buttonText.text = meshArray[selectedMesh % meshArray.Length].name;
-    }
-
-    /// <summary>
-    /// SetMesh method - General use method for changing a mesh on the bike at runtime
-    /// </summary>
-    /// <param name="objectName"> string that is the name of the object </param>
-    /// <param name="meshArray"> the mesh array to select meshes from </param>
-    /// <param name="selectedMesh"> which mesh to select from the array </param>
-    /// <param name="buttonText"> button text to update on mesh change </param>
-    public void SetMesh(string objectName, Mesh[] meshArray, int selectedMesh, Text buttonText)
-    {
-        // Update additional bolt meshes if changing the crank or stem meshes
-        if (objectName.Contains("Crank"))
-        {
-            rightCrankBolts.GetComponent<MeshFilter>().mesh = crankBoltMeshes[selectedMesh % meshArray.Length];
-            leftCrankBolts.GetComponent<MeshFilter>().mesh = crankBoltMeshes[selectedMesh % meshArray.Length];
-        }
-        if(objectName.Contains("Stem"))
-        {
-            stemBolts.GetComponent<MeshFilter>().mesh = stemBoltMeshes[selectedMesh % meshArray.Length];
-        }
-
-        buttonText.text = meshArray[selectedMesh % meshArray.Length].name;
-        GameObject partObject = GameObject.Find(objectName);
-        partObject.GetComponent<MeshFilter>().mesh = meshArray[selectedMesh % meshArray.Length];
     }
 
     /// <summary>
@@ -291,10 +316,17 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetFrameMesh(int i)
     {
-        GameObject partObject = GameObject.Find("Frame Mesh");
-        partObject.GetComponent<MeshFilter>().mesh = frameMeshes[i % frameMeshes.Length];
-        selectedFrameText.text = frameMeshes[i % frameMeshes.Length].name;
-        selectedFrame = (i % frameMeshes.Length) + 1;
+        GameObject partObject = PartMaster.instance.GetPart(PartMaster.instance.frame);
+        if (i == frameMeshes.Length) {
+            partObject.transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
+        if (i % frames.Count == 0) {
+            partObject.transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+
+        partObject.GetComponent<MeshFilter>().mesh = frames[i % frames.Count].mesh;
+        selectedFrameText.text = frames[i % frames.Count].mesh.name;
+        selectedFrame = (i % frames.Count) + 1;
     }
 
     /// <summary>
@@ -303,10 +335,9 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetForksMesh(int i)
     {
-        GameObject partObject = GameObject.Find("Forks Mesh");
-        partObject.GetComponent<MeshFilter>().mesh = forksMeshes[i % forksMeshes.Length];
-        selectedForksText.text = forksMeshes[i % forksMeshes.Length].name;
-        selectedForks = (i % forksMeshes.Length) + 1;
+        PartMaster.instance.SetMesh(PartMaster.instance.forks, forks[i % forks.Count].mesh);
+        selectedForksText.text = forks[i % forks.Count].mesh.name;
+        selectedForks = (i % forks.Count) + 1;
     }
 
     /// <summary>
@@ -315,10 +346,9 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetBarsMesh(int i)
     {
-        GameObject partObject = GameObject.Find("Bars Mesh");
-        partObject.GetComponent<MeshFilter>().mesh = barMeshes[i % barMeshes.Length];
-        selectedBarsText.text = barMeshes[i % barMeshes.Length].name;
-        selectedBars = (i % barMeshes.Length) + 1;
+        PartMaster.instance.SetMesh(PartMaster.instance.bars, bars[i % bars.Count].mesh);
+        selectedBarsText.text = bars[i % bars.Count].mesh.name;
+        selectedBars = (i % bars.Count) + 1;
     }
 
     /// <summary>
@@ -327,7 +357,10 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetPedalsMesh(int i)
     {
-        SetMultipleMesh("Pedal Mesh", pedalMeshes, i, selectedPedalsText);
+        PartMaster.instance.SetMesh(PartMaster.instance.leftPedal, pedals[i % pedals.Count].mesh);
+        PartMaster.instance.SetMesh(PartMaster.instance.rightPedal, pedals[i % pedals.Count].mesh);
+        selectedPedalsText.text = pedals[i % pedals.Count].mesh.name;
+        selectedPedals = (i % pedals.Count) + 1;
     }
 
     /// <summary>
@@ -337,10 +370,9 @@ public class CustomMeshManager : MonoBehaviour
     public void SetSprocketMesh(int i)
     {
 
-        GameObject partObject = GameObject.Find("Sprocket Mesh");
-        partObject.GetComponent<MeshFilter>().mesh = sprocketMeshes[i % sprocketMeshes.Length];
-        selectedSprocketText.text = sprocketMeshes[i % sprocketMeshes.Length].name;
-        selectedSprocket = (i % sprocketMeshes.Length) + 1;
+        PartMaster.instance.SetMesh(PartMaster.instance.sprocket, sprockets[i % sprockets.Count].mesh);
+        selectedSprocketText.text = sprockets[i % sprockets.Count].mesh.name;
+        selectedSprocket = (i % sprockets.Count) + 1;
     }
 
     /// <summary>
@@ -349,11 +381,10 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetStemMesh(int i)
     {
-        GameObject partObject = GameObject.Find("Stem Mesh");
-        partObject.GetComponent<MeshFilter>().mesh = stemMeshes[i % stemMeshes.Length];
-        stemBolts.GetComponent<MeshFilter>().mesh = stemBoltMeshes[i % stemMeshes.Length];
-        selectedStemText.text = stemMeshes[i % stemMeshes.Length].name;
-        selectedStem = (i % stemMeshes.Length) +1;
+        PartMaster.instance.SetMesh(PartMaster.instance.stem, stems[i % stems.Count].mesh);
+        PartMaster.instance.SetMesh(PartMaster.instance.stemBolts, boltsStem[i % boltsStem.Count].mesh);
+        selectedStemText.text = stems[i % stems.Count].mesh.name;
+        selectedStem = (i % stems.Count) +1;
     }
 
     /// <summary>
@@ -362,17 +393,12 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetCranksMesh(int i)
     {
-        GameObject partObject = GameObject.Find("Right Crank Arm Mesh");
-        GameObject partObject2 = GameObject.Find("Left Crank Arm Mesh");
-        partObject.GetComponent<MeshFilter>().mesh = cranksMeshes[i % cranksMeshes.Length];
-        partObject2.GetComponent<MeshFilter>().mesh = cranksMeshes[i % cranksMeshes.Length];
-
-
-        rightCrankBolts.GetComponent<MeshFilter>().mesh = crankBoltMeshes[i % cranksMeshes.Length];
-        leftCrankBolts.GetComponent<MeshFilter>().mesh = crankBoltMeshes[i % cranksMeshes.Length];
-
-        selectedCranksText.text = cranksMeshes[i % cranksMeshes.Length].name;
-        selectedCranks = (i % cranksMeshes.Length) +1;
+        PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, cranks[i % cranks.Count].mesh);
+        PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, cranks[i % cranks.Count].mesh);
+        PartMaster.instance.SetMesh(PartMaster.instance.rightCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
+        PartMaster.instance.SetMesh(PartMaster.instance.leftCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
+        selectedCranksText.text = cranks[i % cranks.Count].mesh.name;
+        selectedCranks = (i % cranks.Count) +1;
     }
 
     /// <summary>
@@ -381,25 +407,26 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="j"> the index of the mesh to change to </param>
     public void SetFrontPegsMesh(int j)
     {
-        origPegs[0].GetComponent<MeshFilter>().mesh = pegMeshes[j % pegMeshes.Length];
-
-        selectedFrontPegsText.text = pegMeshes[j % pegMeshes.Length].name;
-
-        selectedFrontPegs = (j % pegMeshes.Length) +1;
+        //frontPegcollider.GetComponent<CapsuleCollider>().center = new Vector3(0.1f, 0f, 0f);
+        //frontPegcollider.GetComponent<CapsuleCollider>().height = 0.25f;
+        PartMaster.instance.SetMesh(PartMaster.instance.frontPegs, pegs[j % pegs.Count].mesh);
+        selectedFrontPegsText.text = pegs[j % pegs.Count].mesh.name;
+        selectedFrontPegs = (j % pegs.Count) +1;
 
     }
 
     /// <summary>
     /// SetPegsMesh method - Change the bike pegs mesh at runtime
     /// </summary>
-    /// <param name="k"> the index of the mesh to change to </param>
-    public void SetRearPegsMesh(int k)
+    /// <param name="j"> the index of the mesh to change to </param>
+    public void SetRearPegsMesh(int j)
     {
-        origPegs[1].GetComponent<MeshFilter>().mesh = pegMeshes[k % pegMeshes.Length];
 
-        selectedRearPegsText.text = pegMeshes[k % pegMeshes.Length].name;
-
-        selectedRearPegs = (k % pegMeshes.Length) + 1;
+        //backPegcollider.GetComponent<CapsuleCollider>().center = new Vector3(0.1f, 0f, 0f);
+        //backPegcollider.GetComponent<CapsuleCollider>().height = 0.25f;
+        PartMaster.instance.SetMesh(PartMaster.instance.rearPegs, pegs[j % pegs.Count].mesh);
+        selectedRearPegsText.text = pegs[j % pegs.Count].mesh.name;
+        selectedRearPegs = (j % pegs.Count) + 1;
     }
 
     /// <summary>
@@ -407,10 +434,10 @@ public class CustomMeshManager : MonoBehaviour
     /// </summary>
     /// <param name="j"> the index of the mesh to change to </param>
     public void SetFrontSpokesMesh(int j)
-    { 
-        origSpokes[0].GetComponent<MeshFilter>().mesh = spokesMeshes[j % spokesMeshes.Length];
-        selectedFrontSpokesText.text = spokesMeshes[j % spokesMeshes.Length].name;
-        selectedFrontSpokes = (j % spokesMeshes.Length) +1;
+    {
+        PartMaster.instance.SetMesh(PartMaster.instance.frontSpokes, spokes[j % spokes.Count].mesh);
+        selectedFrontSpokesText.text = spokes[j % spokes.Count].mesh.name;
+        selectedFrontSpokes = (j % spokes.Count) +1;
     }
 
     /// <summary>
@@ -418,10 +445,10 @@ public class CustomMeshManager : MonoBehaviour
     /// </summary>
     /// <param name="j"> the index of the mesh to change to </param>
     public void SetRearSpokesMesh(int j)
-    { 
-        origSpokes[1].GetComponent<MeshFilter>().mesh = spokesMeshes[j % spokesMeshes.Length];
-        selectedRearSpokesText.text = spokesMeshes[j % spokesMeshes.Length].name;
-        selectedRearSpokes = (j % spokesMeshes.Length) + 1;
+    {
+        PartMaster.instance.SetMesh(PartMaster.instance.rearSpokes, spokes[j % spokes.Count].mesh);
+        selectedRearSpokesText.text = spokes[j % spokes.Count].mesh.name;
+        selectedRearSpokes = (j % spokes.Count) + 1;
     }
 
     /// <summary>
@@ -430,9 +457,12 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="j"> the index of the mesh to change to </param>
     public void SetFrontHubMesh(int j)
     {
-        origHubs[0].GetComponent<MeshFilter>().mesh = hubMeshes[j % hubMeshes.Length];
-        selectedFrontHubText.text = hubMeshes[j % hubMeshes.Length].name;
-        selectedFrontHub = (j % hubMeshes.Length) + 1;
+        BetterWheelsMod.instance.OnChangeHubFront();
+        PartMaster.instance.SetMesh(PartMaster.instance.frontHub, hubs[j % hubs.Count].mesh);
+        selectedFrontHubText.text = hubs[j % hubs.Count].mesh.name;
+        selectedFrontHub = (j % hubs.Count) + 1;
+        if(BetterWheelsMod.instance.GetBetterWheels())
+            BetterWheelsMod.instance.ChangeFrontHub();
     }
 
     /// <summary>
@@ -441,17 +471,19 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="j"> the index of the mesh to change to </param>
     public void SetRearHubMesh(int j)
     {
-        origHubs[1].GetComponent<MeshFilter>().mesh = hubMeshes[j % hubMeshes.Length];
-        selectedRearHubText.text = hubMeshes[j % hubMeshes.Length].name;
-        selectedRearHub = (j % hubMeshes.Length) + 1;
+        BetterWheelsMod.instance.OnChangeHubRear();
+        PartMaster.instance.SetMesh(PartMaster.instance.rearHub, hubs[j % hubs.Count].mesh);
+        selectedRearHubText.text = hubs[j % hubs.Count].mesh.name;
+        selectedRearHub = (j % hubs.Count) + 1;
+        if (BetterWheelsMod.instance.GetBetterWheels())
+            BetterWheelsMod.instance.ChangeRearHub();
     }
 
     public void SetSeatMesh(int i)
     {
-        GameObject partObject = GameObject.Find("Seat Mesh");
-        partObject.GetComponent<MeshFilter>().mesh = seatMeshes[i % seatMeshes.Length];
-        selectedSeatText.text = seatMeshes[i % seatMeshes.Length].name;
-        selectedSeat = (i % seatMeshes.Length) + 1;
+        PartMaster.instance.SetMesh(PartMaster.instance.seat, seats[i % seats.Count].mesh);
+        selectedSeatText.text = seats[i % seats.Count].mesh.name;
+        selectedSeat = (i % seats.Count) + 1;
     }
 
 }

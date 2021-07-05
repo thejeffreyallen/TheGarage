@@ -17,9 +17,13 @@ public class SavingManager : MonoBehaviour
     public SaveList saveList;
     public SaveList loadList;
     public static SavingManager instance;
-    public Text[] saveNames;
+    public Text saveName;
     public InputField saveField;
     public Text placeHolder;
+    public GameObject infoBox;
+    public Text infoBoxText;
+    string origInfotxt;
+
     private string path;
     private string errorPath;
     private string error;
@@ -50,7 +54,7 @@ public class SavingManager : MonoBehaviour
         lastSelectedPreset = PlayerPrefs.GetString("lastPreset");
         if (File.Exists(Path.Combine(path, lastSelectedPreset + ".preset"))) // Load last used preset if there is one
             StartCoroutine(LoadLastSelected());
-        
+        origInfotxt = infoBoxText.text;
     }
 
     /// <summary>
@@ -82,11 +86,15 @@ public class SavingManager : MonoBehaviour
     {
         try
         {
+            Debug.Log("Serializing " + name + ".preset");
+            if (String.IsNullOrEmpty(name))
+                return;
             Debug.Log("Starting save of: " + name + ".preset");
             var serializer = new XmlSerializer(typeof(SaveList));
             var stream = new FileStream(Application.dataPath + "//GarageContent/GarageSaves/" + name+".preset", FileMode.Create); // Will create new file if file doesn't exist, else overwrites file
             serializer.Serialize(stream, saveList);
             stream.Close();
+            saveField.text = "";
         }
         catch (Exception e)
         {
@@ -103,13 +111,12 @@ public class SavingManager : MonoBehaviour
         if (!Directory.Exists(path)) {
             Directory.CreateDirectory(path);
         }
-        if(saveField.text == "") {
+        if(String.IsNullOrEmpty(saveField.text)) {
             Debug.Log("Save Field cannot be blank. ");
             return;
         }
         SaveSlotNames();
         FindObjectOfType<PresetLister>().CheckFolder();
-        saveField.text = "";
         File.AppendAllText(errorPath, "\n"+DateTime.Now + "\nSAVING ERRORS: " + saveErrors);
     }
 
@@ -167,8 +174,8 @@ public class SavingManager : MonoBehaviour
                 this.LoadTextures();
 
                 // Quick fix for weird normal map issue on left crank arm
-                Material m = GameObject.Find("Right Crank Arm Mesh").GetComponent<Renderer>().material;
-                GameObject.Find("Left Crank Arm Mesh").GetComponent<Renderer>().material = m;
+                Material m = PartMaster.instance.GetMaterial(PartMaster.instance.rightCrank);
+                PartMaster.instance.GetPart(PartMaster.instance.leftCrank).GetComponent<MeshRenderer>().material = m;
                 Resources.UnloadUnusedAssets();
             }
             catch (Exception e)
@@ -185,40 +192,56 @@ public class SavingManager : MonoBehaviour
         this.saveErrors = "";
         try
         {
+            Debug.Log("Saving Brakes On/Off...");
             this.SaveBrakes();
+            Debug.Log("Saving Seat Angle...");
             this.SaveSeatAngle();
+            Debug.Log("Saving Bars Angle...");
             this.SaveBarsAngle();
+            Debug.Log("Saving Seat ID...");
             this.SaveSeatID();
+            Debug.Log("Saving Grips ID...");
             this.SaveGripsID();
+            Debug.Log("Saving Bike Scale...");
             this.SaveBikeScale();
+            Debug.Log("Saving Wheels...");
             this.SaveWheels();
+            Debug.Log("Saving Front Tire Width...");
             this.SaveFrontTireWidth();
+            Debug.Log("Saving Rear Tire Width...");
             this.SaveRearTireWidth();
+            Debug.Log("Saving Flanges On / Off...");
             this.SaveFlanges();
+            Debug.Log("Saving Seat Height...");
             this.SaveSeatHeight();
+            Debug.Log("Saving Drive Side...");
             this.SaveDriveSide();
+            Debug.Log("Saving Materials...");
             this.SaveMaterials();
+            Debug.Log("Saving Tire Tread...");
             this.SaveTireTread();
+            Debug.Log("Saving Bike Colors...");
             for (int i = 0; i < 20; i++)
             {
                saveList.partColors.Add(new PartColor(i, FindObjectOfType<BikeLoadOut>().GetColor(i)));
             }
             this.SaveSeatPostChainColors();
             this.SaveBrakeColor();
+            Debug.Log("Saving Meshes...");
             this.SaveMeshes();
+            Debug.Log("Saving Textures...");
             this.SaveTextures();
-            for (int j = 0; j < this.saveNames.Length; j++)
-            {
-                bool flag = !File.Exists(this.path + this.saveNames[j].text + ".preset") && this.saveNames[j].text != "";
+            Debug.Log("Writing " + this.saveName.text + " to File...");
+
+                bool flag = !File.Exists(this.path + this.saveName.text + ".preset");
                 if (flag)
                 {
-                    Serialize(this.saveNames[j].text);
+                    Serialize(this.saveName.text);
                 }
                 else
                 {
                     this.overwriteWarning.SetActive(true);
                 }
-            }
         }
         catch (Exception e)
         {
@@ -229,7 +252,7 @@ public class SavingManager : MonoBehaviour
 
     public void SetOverwrite()
     {
-        Serialize(this.saveNames[0].text);
+        Serialize(this.saveName.text);
     }
 
     private void SaveFrontTireWidth()
@@ -397,6 +420,8 @@ public class SavingManager : MonoBehaviour
     private void SaveWheels()
     {
         saveList.betterWheels = betterWheels.GetBetterWheels();
+        saveList.hasFrontHubChanged = betterWheels.CheckFront();
+        saveList.hasRearHubChanged = betterWheels.CheckRear();
     }
 
     private void LoadWheels()
@@ -409,6 +434,11 @@ public class SavingManager : MonoBehaviour
         {
             betterWheels.DisableMod();
         }
+
+        if (loadList.hasFrontHubChanged)
+            betterWheels.ChangeFrontHub();
+        if (loadList.hasRearHubChanged)
+            betterWheels.ChangeRearHub();
     }
 
 
@@ -521,7 +551,7 @@ public class SavingManager : MonoBehaviour
                         break;
                 }
             }
-            Material material = GameObject.Find("Seat Post").GetComponent<Renderer>().material;
+            Material material = PartMaster.instance.GetMaterial(PartMaster.instance.seatPost);
             string text2 = material.name.ToLower();
             switch (text2)
             {
@@ -601,25 +631,25 @@ public class SavingManager : MonoBehaviour
             switch (loadList.seatPostMat)
             {
                 case 0:
-                    GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.a_glossy;
+                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.a_glossy;
                     break;
                 case 1:
-                    GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.matManager.customMats[0];
+                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[0];
                     break;
                 case 2:
-                    GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.matManager.customMats[1];
+                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[1];
                     break;
                 case 3:
-                    GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.matManager.customMats[2];
+                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[2];
                     break;
                 case 4:
-                    GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.matManager.customMats[3];
+                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[3];
                     break;
                 case 5:
-                    GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.matManager.customMats[4];
+                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[4];
                     break;
                 case 6:
-                    GameObject.Find("Seat Post").GetComponent<Renderer>().material = this.matManager.customMats[5];
+                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[5];
                     break;
             }
         }
@@ -765,40 +795,169 @@ public class SavingManager : MonoBehaviour
 
     private void SaveMeshes()
     {
-            saveList.frame = CustomMeshManager.instance.selectedFrame - 1;
-            saveList.bars = CustomMeshManager.instance.selectedBars - 1;
-            saveList.sprocket = CustomMeshManager.instance.selectedSprocket - 1;
-            saveList.stem = CustomMeshManager.instance.selectedStem - 1;
-            saveList.cranks = CustomMeshManager.instance.selectedCranks - 1;
-            saveList.frontSpokes = CustomMeshManager.instance.selectedFrontSpokes - 1;
-            saveList.rearSpokes = CustomMeshManager.instance.selectedRearSpokes - 1;
-            saveList.pedals = CustomMeshManager.instance.selectedPedals - 1;
-            saveList.forks = CustomMeshManager.instance.selectedForks - 1;
-            saveList.frontPegs = CustomMeshManager.instance.selectedFrontPegs - 1;
-            saveList.rearPegs = CustomMeshManager.instance.selectedRearPegs - 1;
-            saveList.frontHub = CustomMeshManager.instance.selectedFrontHub - 1;
-            saveList.rearHub = CustomMeshManager.instance.selectedRearHub - 1;
-            saveList.seat = CustomMeshManager.instance.selectedSeat - 1;
+        int index = (CustomMeshManager.instance.selectedFrame - 1) % CustomMeshManager.instance.frames.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.frames[index].isCustom, CustomMeshManager.instance.frames[index].fileName, "frame"));
+
+        index = (CustomMeshManager.instance.selectedBars - 1) % CustomMeshManager.instance.bars.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.bars[index].isCustom, CustomMeshManager.instance.bars[index].fileName, "bars"));
+
+        index = (CustomMeshManager.instance.selectedSprocket - 1) % CustomMeshManager.instance.sprockets.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.sprockets[index].isCustom, CustomMeshManager.instance.sprockets[index].fileName, "sprocket"));
+
+        index = (CustomMeshManager.instance.selectedStem - 1) % CustomMeshManager.instance.stems.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.stems[index].isCustom, CustomMeshManager.instance.stems[index].fileName, "stem"));
+
+        index = (CustomMeshManager.instance.selectedCranks - 1) % CustomMeshManager.instance.cranks.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.cranks[index].isCustom, CustomMeshManager.instance.cranks[index].fileName, "cranks"));
+
+        index = (CustomMeshManager.instance.selectedFrontSpokes - 1) % CustomMeshManager.instance.spokes.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.spokes[index].isCustom, CustomMeshManager.instance.spokes[index].fileName, "frontSpokes"));
+
+        index = (CustomMeshManager.instance.selectedRearSpokes - 1) % CustomMeshManager.instance.spokes.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.spokes[index].isCustom, CustomMeshManager.instance.spokes[index].fileName, "rearSpokes"));
+
+        index = (CustomMeshManager.instance.selectedForks - 1) % CustomMeshManager.instance.forks.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.forks[index].isCustom, CustomMeshManager.instance.forks[index].fileName, "forks"));
+
+        index = (CustomMeshManager.instance.selectedFrontPegs - 1) % CustomMeshManager.instance.pegs.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.pegs[index].isCustom, CustomMeshManager.instance.pegs[index].fileName, "frontPegs"));
+
+        index = (CustomMeshManager.instance.selectedRearPegs - 1) % CustomMeshManager.instance.pegs.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.pegs[index].isCustom, CustomMeshManager.instance.pegs[index].fileName, "rearPegs"));
+
+        index = (CustomMeshManager.instance.selectedFrontHub - 1) % CustomMeshManager.instance.hubs.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.hubs[index].isCustom, CustomMeshManager.instance.hubs[index].fileName, "frontHub"));
+
+        index = (CustomMeshManager.instance.selectedRearHub - 1) % CustomMeshManager.instance.hubs.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.hubs[index].isCustom, CustomMeshManager.instance.hubs[index].fileName, "rearHub"));
+
+        index = (CustomMeshManager.instance.selectedSeat - 1) % CustomMeshManager.instance.seats.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.seats[index].isCustom, CustomMeshManager.instance.seats[index].fileName, "seat"));
+
+        index = (CustomMeshManager.instance.selectedPedals - 1) % CustomMeshManager.instance.pedals.Count;
+        saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.pedals[index].isCustom, CustomMeshManager.instance.pedals[index].fileName, "pedals"));
+    }
+
+    public void ChangeAlertText(string message)
+    {
+        infoBoxText.text = message;
     }
 
     private void LoadMeshes()
     {
         try
         {
-            CustomMeshManager.instance.SetFrameMesh(loadList.frame);
-            CustomMeshManager.instance.SetBarsMesh(loadList.bars);
-            CustomMeshManager.instance.SetSprocketMesh(loadList.sprocket);
-            CustomMeshManager.instance.SetStemMesh(loadList.stem);
-            CustomMeshManager.instance.SetCranksMesh(loadList.cranks);
-            CustomMeshManager.instance.SetFrontSpokesMesh(loadList.frontSpokes);
-            CustomMeshManager.instance.SetRearSpokesMesh(loadList.rearSpokes);
-            CustomMeshManager.instance.SetPedalsMesh(loadList.pedals);
-            CustomMeshManager.instance.SetForksMesh(loadList.forks);
-            CustomMeshManager.instance.SetFrontPegsMesh(loadList.frontPegs);
-            CustomMeshManager.instance.SetRearPegsMesh(loadList.rearPegs);
-            CustomMeshManager.instance.SetFrontHubMesh(loadList.frontHub);
-            CustomMeshManager.instance.SetRearHubMesh(loadList.rearHub);
-            CustomMeshManager.instance.SetSeatMesh(loadList.seat);
+            foreach (PartMesh pm in loadList.partMeshes)
+            {
+                if (pm.isCustom) {
+                    if (!File.Exists(pm.fileName)) {
+                        ChangeAlertText("Error loading mesh: " + pm.fileName + " is a dependancy of this save file and could not be found. The save will continue to load, but it will load the default mesh in place of the missing custom mesh.");
+                        if(!infoBox.activeSelf)
+                            infoBox.SetActive(true);
+                    }
+                }
+                switch (pm.partName)
+                {
+                    case "frame":
+                        if((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetFrameMesh(pm.partNum);
+                        else if(pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetFrameMesh(0);
+                        break;
+                    case "bars":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetBarsMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetBarsMesh(0);
+                        break;
+                    case "sprocket":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetSprocketMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetSprocketMesh(0);
+                        break;
+                    case "stem":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetStemMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetStemMesh(0);
+                        break;
+                    case "cranks":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetCranksMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetCranksMesh(0);
+                        break;
+                    case "frontSpokes":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetFrontSpokesMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetFrontSpokesMesh(0);
+                        break;
+                    case "rearSpokes":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetRearSpokesMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetRearSpokesMesh(0);
+                        break;
+                    case "pedals":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetPedalsMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetPedalsMesh(0);
+                        break;
+                    case "forks":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetForksMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetForksMesh(0);
+                        break;
+                    case "frontPegs":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetFrontPegsMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetFrontPegsMesh(0);
+                        break;
+                    case "rearPegs":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetRearPegsMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetRearPegsMesh(0);
+                        break;
+                    case "frontHub":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                        {
+                            if (betterWheels.CheckFront())
+                                CustomMeshManager.instance.SetFrontHubMesh(pm.partNum);
+                        }
+                        else if (pm.isCustom && !File.Exists(pm.fileName)) {
+
+                            if (betterWheels.CheckFront())
+                                CustomMeshManager.instance.SetFrontHubMesh(0);
+                        }
+                            break;
+                    case "rearHub":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                        {
+                            if (betterWheels.CheckRear())
+                                CustomMeshManager.instance.SetRearHubMesh(pm.partNum);
+                        }
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                        {
+                            if (betterWheels.CheckRear())
+                                CustomMeshManager.instance.SetRearHubMesh(0);
+                        }
+                            break;
+                    case "seat":
+                        if ((pm.isCustom && File.Exists(pm.fileName)) || !pm.isCustom)
+                            CustomMeshManager.instance.SetSeatMesh(pm.partNum);
+                        else if (pm.isCustom && !File.Exists(pm.fileName))
+                            CustomMeshManager.instance.SetSeatMesh(0);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         catch (Exception e)
         {

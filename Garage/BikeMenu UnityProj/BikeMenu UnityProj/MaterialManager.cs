@@ -31,19 +31,19 @@ public class MaterialManager : MonoBehaviour
     public void Start()
     {
         defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
-        defaultSeatMat = GameObject.Find("Seat Mesh").GetComponent<Renderer>().material;
-        GameObject.Find("Chain Mesh").GetComponent<Renderer>().material = chainMatFix;
+        defaultSeatMat = PartMaster.instance.GetMaterial(PartMaster.instance.seat);
+        PartMaster.instance.SetMaterial(PartMaster.instance.chain, chainMatFix);
     }
 
     public void SetMaterial(Material mat)
     {
-        if (ColourSetter.instance.getSeatPostBool())
+        if (ColourSetter.instance.GetSeatPostBool())
         {
-            GameObject.Find("Seat Post").GetComponent<Renderer>().material = mat;
+            PartMaster.instance.SetMaterial(PartMaster.instance.seatPost,mat);
         }
         else if (ColourSetter.instance.GetSeatBool())
         {
-            GameObject.Find("Seat Mesh").GetComponent<Renderer>().material = mat;
+            PartMaster.instance.SetMaterial(PartMaster.instance.seat, mat);
         }
         else
         {
@@ -54,30 +54,29 @@ public class MaterialManager : MonoBehaviour
 
     public void SetDefaultMat()
     {
-        if (ColourSetter.instance.getSeatPostBool())
+        if (ColourSetter.instance.GetSeatPostBool())
         {
-            GameObject.Find("Seat Post").GetComponent<Renderer>().material = defaultMat;
+            PartMaster.instance.SetMaterial(PartMaster.instance.seatPost, defaultMat);
         }
         else if (ColourSetter.instance.GetSeatBool())
         {
-            GameObject.Find("Seat Mesh").GetComponent<Renderer>().material = defaultSeatMat;
+            PartMaster.instance.SetMaterial(PartMaster.instance.seat, defaultMat);
         }
         else
             FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, FindObjectOfType<ColourSetter>().currentPart, true);
     }
 
-    public void SwapMaterial(String name)
+    public void SwapMaterial(int part)
     {
         if (matCount < customMats.Length)
         {
-            GameObject.Find(name + " Mesh").GetComponent<Renderer>().material = customMats[matCount];
-            
+            PartMaster.instance.SetMaterial(part, customMats[matCount]);
             matCount++;
         }
         else
         {
             matCount = 0;
-            GameObject.Find(name + " Mesh").GetComponent<Renderer>().material = defaultMat;
+            PartMaster.instance.SetMaterial(part, defaultMat);
         }
     }
 

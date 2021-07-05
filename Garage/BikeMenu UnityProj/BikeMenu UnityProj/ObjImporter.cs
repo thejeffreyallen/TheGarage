@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEngine.Rendering;
 
 public class ObjImporter
 {
@@ -45,14 +46,12 @@ public class ObjImporter
             newVerts[i] = newMesh.vertices[(int)v.x - 1];
             if (v.y >= 1)
                 newUVs[i] = newMesh.uv[(int)v.y - 1];
-
             if (v.z >= 1)
                 newNormals[i] = newMesh.normals[(int)v.z - 1];
             i++;
         }
 
         Mesh mesh = new Mesh();
-
         mesh.vertices = newVerts;
         mesh.uv = newUVs;
         mesh.normals = newNormals;
@@ -209,9 +208,14 @@ public class ObjImporter
                                 Vector3 temp = new Vector3();
                                 brokenBrokenString = brokenString[j].Split(splitIdentifier2, 3);    //Separate the face into individual components (vert, uv, normal)
                                 temp.x = System.Convert.ToInt32(brokenBrokenString[0]);
-                                if (brokenBrokenString.Length > 1)                                  //Some .obj files skip UV and normal
+                                if (brokenBrokenString.Length == 2) //Some .obj files skip UV and normal
                                 {
-                                    if (brokenBrokenString[1] != "")                                    //Some .obj files skip the uv and not the normal
+                                    temp.y = System.Convert.ToInt32(brokenBrokenString[1]);
+                                }
+
+                                if (brokenBrokenString.Length == 3) //Some .obj files skip UV and normal
+                                {
+                                    if (brokenBrokenString[1] != "") //Some .obj files skip the uv and not the normal
                                     {
                                         temp.y = System.Convert.ToInt32(brokenBrokenString[1]);
                                     }

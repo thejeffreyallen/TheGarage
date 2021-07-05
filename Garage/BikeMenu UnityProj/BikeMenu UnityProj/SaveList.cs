@@ -14,21 +14,6 @@ using UnityEngine;
 [XmlInclude(typeof(PartColor))]
 public class SaveList
 {
-    public int frame;
-    public int bars;
-    public int forks;
-    public int sprocket;
-    public int stem;
-    public int cranks;
-    public int frontPegs;
-    public int rearPegs;
-    public int pedals;
-    public int frontSpokes;
-    public int rearSpokes;
-    public int frontHub;
-    public int rearHub;
-    public int seat;
-
     //TODO
     /*
     public int frontHubGuards;
@@ -38,6 +23,8 @@ public class SaveList
     public int rearSpokeAccessories;
     */
 
+    public bool hasFrontHubChanged;
+    public bool hasRearHubChanged;
     public bool brakes;
     public bool betterWheels;
     public bool flanges;
@@ -65,12 +52,14 @@ public class SaveList
     */
     public int seatPostMat;
 
+    public List<PartMesh> partMeshes;
     public List<PartColor> partColors;
     public List<PartMaterial> partMaterials;
     public List<PartTexture> partTextures;
 
     public SaveList()
     {
+        partMeshes = new List<PartMesh>();
         partColors = new List<PartColor>();
         partMaterials = new List<PartMaterial>();
         partTextures = new List<PartTexture>();
@@ -147,6 +136,29 @@ public class PartMaterial
     }
 
     public PartMaterial()
+    {
+
+    }
+
+}
+
+[XmlType("PartMesh")]
+public class PartMesh
+{
+    public int partNum;
+    public bool isCustom;
+    public string fileName;
+    public string partName;
+
+    public PartMesh(int partNum, bool isCustom, string fileName, string partName)
+    {
+        this.partNum = partNum;
+        this.isCustom = isCustom;
+        this.fileName = fileName;
+        this.partName = partName;
+    }
+
+    public PartMesh()
     {
 
     }
