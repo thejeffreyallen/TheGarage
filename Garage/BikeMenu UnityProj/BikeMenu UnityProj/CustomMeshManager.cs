@@ -3,6 +3,7 @@
 */
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
@@ -106,9 +107,7 @@ public class CustomMeshManager : MonoBehaviour
 
     GameObject accFront;
     GameObject accRear;
-    public Material tennis;
-    GameObject backPegcollider;
-    GameObject frontPegcollider;
+    public Material[] accMats;
 
     [Header("Seat")]
     public int selectedSeat;
@@ -130,6 +129,8 @@ public class CustomMeshManager : MonoBehaviour
     public Mesh seatPostClamp;
     public Mesh longSeatPost;
 
+    Dictionary<string, int> customMeshList;
+
     public List<MeshObject> frames;
     public List<MeshObject> bars;
     public List<MeshObject> forks;
@@ -147,6 +148,9 @@ public class CustomMeshManager : MonoBehaviour
     public List<MeshObject> boltsCrank;
     public List<MeshObject> boltsStem;
 
+    private float nextActionTime = 0.0f;
+    public float period = 0.1f;
+
     void Awake()
     {
         instance = this;
@@ -157,7 +161,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         objImporter = new ObjImporter();
         basePath = Application.dataPath + "/GarageContent/";
-
+        customMeshList = new Dictionary<string, int>();
         rightCrankBolts = PartMaster.instance.GetPart(PartMaster.instance.rightCrankBolt);
         leftCrankBolts = PartMaster.instance.GetPart(PartMaster.instance.leftCrankBolt);
         stemBolts = PartMaster.instance.GetPart(PartMaster.instance.stemBolts);
@@ -168,21 +172,32 @@ public class CustomMeshManager : MonoBehaviour
         PartMaster.instance.SetMesh(PartMaster.instance.seatClamp, seatPostClamp);
         PartMaster.instance.SetMesh(PartMaster.instance.seatPost, longSeatPost);
         LoadFiles(); // Load meshes from file
-        
 
-        
         accFront = new GameObject("FrontAccessory");
-        accFront.AddComponent<MeshRenderer>();
-        accFront.GetComponent<MeshRenderer>().material = tennis;
         accFront.AddComponent<MeshFilter>();
+        accFront.GetComponent<MeshFilter>().mesh = accessoryMeshes[0];
+        accFront.AddComponent<MeshRenderer>();
+        accFront.GetComponent<MeshRenderer>().material = accMats[0];
+        accFront = Instantiate(accFront, PartMaster.instance.GetPart(PartMaster.instance.frontSpokes).transform);
 
         accRear = new GameObject("RearAccessory");
-        accRear.AddComponent<MeshRenderer>();
-        accRear.GetComponent<MeshRenderer>().material = tennis;
         accRear.AddComponent<MeshFilter>();
+        accRear.GetComponent<MeshFilter>().mesh = accessoryMeshes[0];
+        accRear.AddComponent<MeshRenderer>();
+        accRear.GetComponent<MeshRenderer>().material = accMats[0];
+        accRear = Instantiate(accRear, PartMaster.instance.GetPart(PartMaster.instance.rearSpokes).transform);
+    }
 
-        Instantiate(accFront, PartMaster.instance.GetPart(PartMaster.instance.frontSpokes).transform);
-        Instantiate(accRear, PartMaster.instance.GetPart(PartMaster.instance.rearSpokes).transform);
+    void Update()
+    {
+        if (Time.time > nextActionTime)
+        {
+            nextActionTime += period;
+            float f = 10f;
+            Color color = new Color(UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), 1f) * f;
+            accMats[3].color = color/f;
+            accMats[3].SetColor("_EmissionColor", color);
+        }
         
     }
 
@@ -262,6 +277,7 @@ public class CustomMeshManager : MonoBehaviour
             boltsCrank = LoadFromFile("CrankBolts/", boltsCrank);
             hubs = LoadFromFile("Hubs/", hubs);
             seats = LoadFromFile("Seats/", seats);
+            pedals = LoadFromFile("Pedals/", pedals);
         }
         catch (Exception e)
         {
@@ -270,18 +286,20 @@ public class CustomMeshManager : MonoBehaviour
     }
 
     public void SetFrontSpokeAccMesh(int i)
-    {    
-        accFront.GetComponent<MeshFilter>().mesh = accessoryMeshes[i % accessoryMeshes.Length];
-        selectedFrontAccessoryText.text = accessoryMeshes[i % accessoryMeshes.Length].name;
-        selectedFrontAccessory = (i % accessoryMeshes.Length) + 1;
-        
+    {
+        accFront.GetComponent<MeshFilter>().mesh = accessories[i % accessories.Count].mesh;
+        accFront.GetComponent<MeshRenderer>().material = accMats[i % accessories.Count];
+        selectedFrontAccessoryText.text = accessories[i % accessories.Count].mesh.name;
+        selectedFrontAccessory = (i % accessories.Count) + 1;
+
     }
 
     public void SetRearSpokeAccMesh(int i)
     {
-        accRear.GetComponent<MeshFilter>().mesh = accessoryMeshes[i % accessoryMeshes.Length];
-        selectedRearAccessoryText.text = accessoryMeshes[i % accessoryMeshes.Length].name;
-        selectedRearAccessory = (i % accessoryMeshes.Length) + 1;
+        accRear.GetComponent<MeshFilter>().mesh = accessories[i % accessories.Count].mesh;
+        accRear.GetComponent<MeshRenderer>().material = accMats[i % accessories.Count];
+        selectedRearAccessoryText.text = accessories[i % accessories.Count].mesh.name;
+        selectedRearAccessory = (i % accessories.Count) + 1;
     }
 
     /// <summary>
@@ -292,20 +310,27 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="origMeshArray"> The original mesh array to merge into </param>
     public List<MeshObject> LoadFromFile(String folder, List<MeshObject> meshObjectList)
     {
-        try
-        {
+        
             String[] fileNameArray = Directory.GetFiles(basePath + folder); // Get the file names
             for (int i = 0; i < fileNameArray.Length; i++)
             {
+                if (customMeshList.ContainsKey(fileNameArray[i]) || !fileNameArray[i].Contains(".obj")) {
+                    continue;
+                }
+            try
+            {
+                customMeshList.Add(fileNameArray[i], 0);
                 Mesh temp = objImporter.ImportFile(fileNameArray[i]); // Import each file name as a mesh
                 temp.name = Path.GetFileName(fileNameArray[i]).Replace(".obj", ""); // Remove the .obj extension for cleaner look when updating the button text
                 meshObjectList.Add(new MeshObject(temp, true, fileNameArray[i]));
             }
+            catch (Exception e)
+            {
+                Debug.Log("Error in loading " + fileNameArray[i] +": " + e.Message + e.StackTrace);
+                continue;
+            }
         }
-        catch (Exception e)
-        {
-            Debug.Log("Error in LoadFromFile method: " + e.Message + e.StackTrace);
-        }
+        
         return meshObjectList;
 
     }
@@ -317,13 +342,6 @@ public class CustomMeshManager : MonoBehaviour
     public void SetFrameMesh(int i)
     {
         GameObject partObject = PartMaster.instance.GetPart(PartMaster.instance.frame);
-        if (i == frameMeshes.Length) {
-            partObject.transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
-        if (i % frames.Count == 0) {
-            partObject.transform.localScale = new Vector3(1f, 1f, 1f);
-        }
-
         partObject.GetComponent<MeshFilter>().mesh = frames[i % frames.Count].mesh;
         selectedFrameText.text = frames[i % frames.Count].mesh.name;
         selectedFrame = (i % frames.Count) + 1;

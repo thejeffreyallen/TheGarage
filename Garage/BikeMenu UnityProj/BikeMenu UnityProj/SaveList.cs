@@ -41,16 +41,19 @@ public class SaveList
     public int gripsID;
     public int treadID;
 
-    public Color seatPostColor;
-    public Color chainColor;
-    public Color brakesColor;
-    public Color seatColor;
-
-    //TODO
-    /*
-    public Color brakeCableColor;
-    */
     public int seatPostMat;
+    public int frontTireMat;
+    public int rearTireMat;
+    public int frontTireWallMat;
+    public int rearTireWallMat;
+    public int frontRimMat;
+    public int rearRimMat;
+    public int frontHubMat;
+    public int rearHubMat;
+    public int frontSpokesMat;
+    public int rearSpokesMat;
+    public int frontNipplesMat;
+    public int rearNipplesMat;
 
     public List<PartMesh> partMeshes;
     public List<PartColor> partColors;
@@ -82,10 +85,10 @@ public class PartColor
     public PartColor(int partNum, Color col)
     {
         this.partNum = partNum;
-        this.r = col.r;
-        this.g = col.g;
-        this.b = col.b;
-        this.a = col.a;
+        r = col.r;
+        g = col.g;
+        b = col.b;
+        a = col.a;
     }
 
     public PartColor()

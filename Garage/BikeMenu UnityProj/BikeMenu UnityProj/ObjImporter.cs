@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System;
 using System.Text;
 using UnityEngine.Rendering;
 
@@ -52,12 +53,12 @@ public class ObjImporter
         }
 
         Mesh mesh = new Mesh();
+        
         mesh.vertices = newVerts;
         mesh.uv = newUVs;
         mesh.normals = newNormals;
         mesh.triangles = newMesh.triangles;
-
-        mesh.RecalculateBounds();
+        //mesh.RecalculateBounds();
 
         return mesh;
     }
@@ -176,7 +177,7 @@ public class ObjImporter
                         case "mtllib":
                             break;
                         case "v":
-                            mesh.vertices[v] = new Vector3(System.Convert.ToSingle(brokenString[1]), System.Convert.ToSingle(brokenString[2]),
+                            mesh.vertices[v] = new Vector3(-1 * System.Convert.ToSingle(brokenString[1]), System.Convert.ToSingle(brokenString[2]),
                                                      System.Convert.ToSingle(brokenString[3]));
                             v++;
                             break;
@@ -230,11 +231,11 @@ public class ObjImporter
                             j = 1;
                             while (j + 2 < brokenString.Length)     //Create triangles out of the face data.  There will generally be more than 1 triangle per face.
                             {
-                                mesh.triangles[f] = intArray[0];
+                                mesh.triangles[f] = intArray[j + 1];
                                 f++;
                                 mesh.triangles[f] = intArray[j];
                                 f++;
-                                mesh.triangles[f] = intArray[j + 1];
+                                mesh.triangles[f] = intArray[0];
                                 f++;
 
                                 j++;

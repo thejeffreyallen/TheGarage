@@ -22,50 +22,50 @@ public class MeshBlend : MonoBehaviour
 
     private void Awake()
     {
-        this.filter = base.GetComponent<MeshFilter>();
-        this.baseMesh = new Mesh();
-        this.baseMesh.name = "Instanced Tire";
-        this.baseMesh.vertices = new Vector3[this.referenceMesh.vertices.Length];
-        this.baseMesh.vertices = this.referenceMesh.vertices;
-        this.baseMesh.triangles = new int[this.referenceMesh.triangles.Length];
-        this.baseMesh.triangles = this.referenceMesh.triangles;
-        this.baseMesh.normals = new Vector3[this.referenceMesh.normals.Length];
-        this.baseMesh.normals = this.referenceMesh.normals;
-        this.baseMesh.tangents = new Vector4[this.referenceMesh.tangents.Length];
-        this.baseMesh.tangents = this.referenceMesh.tangents;
-        this.baseMesh.uv = new Vector2[this.referenceMesh.uv.Length];
-        this.baseMesh.uv = this.referenceMesh.uv;
-        this.baseMesh.uv2 = new Vector2[this.referenceMesh.uv2.Length];
-        this.baseMesh.uv2 = this.referenceMesh.uv2;
-        this.baseMesh.subMeshCount = 2;
-        this.baseMesh.SetIndices(this.referenceMesh.GetIndices(0), MeshTopology.Triangles, 0);
-        this.baseMesh.SetIndices(this.referenceMesh.GetIndices(1), MeshTopology.Triangles, 1);
-        this.vertices = new Vector3[this.baseMesh.vertices.Length];
-        this.vertices = this.baseMesh.vertices;
-        if (this.debug)
+        filter = base.GetComponent<MeshFilter>();
+        baseMesh = new Mesh();
+        baseMesh.name = "Instanced Tire";
+        baseMesh.vertices = new Vector3[referenceMesh.vertices.Length];
+        baseMesh.vertices = referenceMesh.vertices;
+        baseMesh.triangles = new int[referenceMesh.triangles.Length];
+        baseMesh.triangles = referenceMesh.triangles;
+        baseMesh.normals = new Vector3[referenceMesh.normals.Length];
+        baseMesh.normals = referenceMesh.normals;
+        baseMesh.tangents = new Vector4[referenceMesh.tangents.Length];
+        baseMesh.tangents = referenceMesh.tangents;
+        baseMesh.uv = new Vector2[referenceMesh.uv.Length];
+        baseMesh.uv = referenceMesh.uv;
+        baseMesh.uv2 = new Vector2[referenceMesh.uv2.Length];
+        baseMesh.uv2 = referenceMesh.uv2;
+        baseMesh.subMeshCount = 2;
+        baseMesh.SetIndices(referenceMesh.GetIndices(0), MeshTopology.Triangles, 0);
+        baseMesh.SetIndices(referenceMesh.GetIndices(1), MeshTopology.Triangles, 1);
+        vertices = new Vector3[baseMesh.vertices.Length];
+        vertices = baseMesh.vertices;
+        if (debug)
         {
-            this.SetMeshBlend(this.perc);
+            SetMeshBlend(perc);
         }
-        this.filter.mesh = this.baseMesh;
+        filter.mesh = baseMesh;
     }
 
 
     public void SetMeshBlend(float percent)
     {
-        this.perc = Mathf.Clamp01(percent);
-        Vector3[] array = this.shape01.vertices;
-        Vector3[] array2 = this.shape02.vertices;
-        for (int i = 0; i < this.vertices.Length; i++)
+        perc = Mathf.Clamp01(percent);
+        Vector3[] array = shape01.vertices;
+        Vector3[] array2 = shape02.vertices;
+        for (int i = 0; i < vertices.Length; i++)
         {
-            this.vertices[i] = Vector3.Lerp(array[i], array2[i], this.perc);
+            vertices[i] = Vector3.Lerp(array[i], array2[i], perc);
         }
-        this.baseMesh.vertices = this.vertices;
+        baseMesh.vertices = vertices;
     }
 
 
     public float GetPercent()
     {
-        return this.perc;
+        return perc;
     }
 
 

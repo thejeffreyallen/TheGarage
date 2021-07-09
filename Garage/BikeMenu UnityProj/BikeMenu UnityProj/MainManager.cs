@@ -19,7 +19,7 @@ public class MainManager : MonoBehaviour
     {
         MenuManager.instance.DisableAllMenus();
 
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
         
     }
 

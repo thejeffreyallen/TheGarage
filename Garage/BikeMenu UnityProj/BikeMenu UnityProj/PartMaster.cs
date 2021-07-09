@@ -69,6 +69,9 @@ class PartMaster : MonoBehaviour
         InitPartList();
     }
 
+    /// <summary>
+    /// Finds and stores all bike parts for use in other classes
+    /// </summary>
     public void InitPartList()
     {
         string errorPath = Application.dataPath + "//GarageContent/GarageErrorLog.txt";
@@ -260,51 +263,76 @@ class PartMaster : MonoBehaviour
             Debug.Log("Total number of parts found: " + partList.Count);
     }
 
+    /// <summary>
+    ///  Get a bike part's GameObject
+    /// </summary>
+    /// <param name="key"> The part number associated with the bike part </param>
+    /// <returns> The GameObject at partList[key] </returns>
     public GameObject GetPart(int key)
     {
         if (!partList.ContainsKey(key))
         {
-            Debug.Log("Key not found in part list");
+            Debug.Log("Key not found in part list at GetPart() method");
             return null;
         }
         return partList[key];
     }
 
+    /// <summary>
+    /// Get a bike part's mesh
+    /// </summary>
+    /// <param name="key"> The part number associated with the bike part </param>
+    /// <returns> The mesh at partList[key] </returns>
     public Mesh GetMesh(int key)
     {
-        if (!partList.ContainsKey(key))
+        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshFilter>() == null)
         {
-            Debug.Log("Key not found in part list");
+            Debug.Log("Key not found in part list at GetMesh() method");
             return null;
         }
         return partList[key].GetComponent<MeshFilter>().mesh;
     }
 
+    /// <summary>
+    /// Change the mesh of a bike part
+    /// </summary>
+    /// <param name="key"> The part number associated with the bike part </param>
+    /// <param name="mesh"> The new mesh to change to </param>
     public void SetMesh(int key, Mesh mesh)
     {
-        if (!partList.ContainsKey(key))
+        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshFilter>() == null)
         {
-            Debug.Log("Key not found in part list");
+            Debug.Log("Key not found in part list at SetMesh() method");
             return;
         }
         partList[key].GetComponent<MeshFilter>().mesh = mesh;
     }
 
+    /// <summary>
+    /// Get the bike part's main material
+    /// </summary>
+    /// <param name="key"> The part number associated with the bike part </param>
+    /// <returns> The Material at partList[key]</returns>
     public Material GetMaterial(int key)
     {
-        if (!partList.ContainsKey(key))
+        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
         {
-            Debug.Log("Key not found in part list");
+            Debug.Log("Key not found in part list at GetMaterial() method");
             return null;
         }
         return partList[key].GetComponent<MeshRenderer>().material;
     }
 
+    /// <summary>
+    /// Change the material of a bike part
+    /// </summary>
+    /// <param name="key"> The part number associated with the bike part </param>
+    /// <param name="mat"> The material to change to </param>
     public void SetMaterial(int key, Material mat)
     {
-        if (!partList.ContainsKey(key))
+        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
         {
-            Debug.Log("Key not found in part list");
+            Debug.Log("Key not found in part list at SetMaterial() method");
             return;
         }
         Material[] mats = partList[key].GetComponent<MeshRenderer>().materials;
@@ -316,25 +344,47 @@ class PartMaster : MonoBehaviour
         partList[key].GetComponent<Renderer>().material = mat;
     }
 
+    /// <summary>
+    /// Change a specific material of a bike part that uses more than one material
+    /// </summary>
+    /// <param name="index"> index of the list of materials associated with the bike part</param>
+    /// <param name="key"> The part number associated with the bike part </param>
+    /// <param name="mat"> The material to change to </param>
+    public void SetMaterial(int index, int key, Material mat)
+    {
+        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
+        {
+            Debug.Log("Key not found in part list at SetMaterial(index, key, mat) method");
+            return;
+        }
+        Material[] mats = partList[key].GetComponent<MeshRenderer>().materials;
+        mats[index] = mat;
+    }
+
+    /// <summary>
+    /// Get all the materials assigned to a bike part
+    /// </summary>
+    /// <param name="key"> The part number associated with the bike part </param>
+    /// <returns> The material array at partList[key] </returns>
     public Material[] GetMaterials(int key)
     {
-        if (!partList.ContainsKey(key))
+        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
         {
-            Debug.Log("Key not found in part list");
+            Debug.Log("Key not found in part list at GetMaterials() method");
             return null;
         }
         return partList[key].GetComponent<MeshRenderer>().materials;
     }
 
     /// <summary>
-    /// Experimental method
+    /// Experimental method to add collision to a bike part
     /// </summary>
     /// <param name="key"></param>
     public void AddCollision(int key)
     {
         if (!partList.ContainsKey(key))
         {
-            Debug.Log("Key not found in part list");
+            Debug.Log("Key not found in part list at AddCollision() method");
             return;
         }
         partList[key].AddComponent<MeshCollider>();

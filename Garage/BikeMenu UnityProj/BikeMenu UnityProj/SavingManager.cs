@@ -139,11 +139,15 @@ public class SavingManager : MonoBehaviour
         File.AppendAllText(errorPath, "\n"+DateTime.Now + "\nLOADING ERRORS: " + error);
     }
 
+    /// <summary>
+    /// Load a bike save from a .preset file
+    /// </summary>
+    /// <param name="presetName"> name of the .preset file </param>
     private void LoadSlotNames(string presetName)
     {
         error = "";
         
-        bool flag = File.Exists(this.path + presetName + ".preset");
+        bool flag = File.Exists(path + presetName + ".preset");
         if (flag)
         {
             Deserialize(presetName);
@@ -151,27 +155,25 @@ public class SavingManager : MonoBehaviour
             {
                 
                 TextureManager.instance.SetOriginalTextures();
-                this.LoadBrakes();
-                this.LoadSeatAngle();
-                this.LoadBarsAngle();
-                this.LoadSeatID();
-                this.LoadGripsID();
-                this.LoadBikeScale();
-                this.LoadWheels();
-                this.LoadFrontTireWidth();
-                this.LoadRearTireWidth();
-                this.LoadFlanges();
-                this.LoadSeatHeight();
-                this.LoadDriveSide();
-                this.LoadMaterials();
-                this.LoadTireTread();
+                LoadBrakes();
+                LoadSeatAngle();
+                LoadBarsAngle();
+                LoadSeatID();
+                LoadGripsID();
+                LoadBikeScale();
+                LoadWheels();
+                LoadFrontTireWidth();
+                LoadRearTireWidth();
+                LoadFlanges();
+                LoadSeatHeight();
+                LoadDriveSide();
+                LoadMaterials();
+                LoadTireTread();
                 foreach (PartColor p in loadList.partColors) {
-                    FindObjectOfType<BikeLoadOut>().SetColor(new Color(p.r, p.g, p.b, p.a), p.partNum);
+                    cs.SetColor(p.partNum, new Color(p.r, p.g, p.b, p.a));
                 }
-                this.LoadSeatChainColors();
-                this.LoadBrakesColor();
-                this.LoadMeshes();
-                this.LoadTextures();
+                LoadMeshes();
+                LoadTextures();
 
                 // Quick fix for weird normal map issue on left crank arm
                 Material m = PartMaster.instance.GetMaterial(PartMaster.instance.rightCrank);
@@ -187,84 +189,102 @@ public class SavingManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Save a bike to a .preset file
+    /// </summary>
     private void SaveSlotNames()
     {
-        this.saveErrors = "";
+        saveErrors = "";
         try
         {
             Debug.Log("Saving Brakes On/Off...");
-            this.SaveBrakes();
+            SaveBrakes();
             Debug.Log("Saving Seat Angle...");
-            this.SaveSeatAngle();
+            SaveSeatAngle();
             Debug.Log("Saving Bars Angle...");
-            this.SaveBarsAngle();
+            SaveBarsAngle();
             Debug.Log("Saving Seat ID...");
-            this.SaveSeatID();
+            SaveSeatID();
             Debug.Log("Saving Grips ID...");
-            this.SaveGripsID();
+            SaveGripsID();
             Debug.Log("Saving Bike Scale...");
-            this.SaveBikeScale();
+            SaveBikeScale();
             Debug.Log("Saving Wheels...");
-            this.SaveWheels();
+            SaveWheels();
             Debug.Log("Saving Front Tire Width...");
-            this.SaveFrontTireWidth();
+            SaveFrontTireWidth();
             Debug.Log("Saving Rear Tire Width...");
-            this.SaveRearTireWidth();
+            SaveRearTireWidth();
             Debug.Log("Saving Flanges On / Off...");
-            this.SaveFlanges();
+            SaveFlanges();
             Debug.Log("Saving Seat Height...");
-            this.SaveSeatHeight();
+            SaveSeatHeight();
             Debug.Log("Saving Drive Side...");
-            this.SaveDriveSide();
+            SaveDriveSide();
             Debug.Log("Saving Materials...");
-            this.SaveMaterials();
+            SaveMaterials();
             Debug.Log("Saving Tire Tread...");
-            this.SaveTireTread();
-            Debug.Log("Saving Bike Colors...");
-            for (int i = 0; i < 20; i++)
+            SaveTireTread();
+            Debug.Log("Saving Main Bike Colors...");
+            for (int i = 0; i < 44; i++)
             {
-               saveList.partColors.Add(new PartColor(i, FindObjectOfType<BikeLoadOut>().GetColor(i)));
+                Material m = PartMaster.instance.GetMaterial(i);
+                if (m != null)
+                {
+                    saveList.partColors.Add(new PartColor(i, m.color));
+                }
             }
-            this.SaveSeatPostChainColors();
-            this.SaveBrakeColor();
+            Debug.Log("Saving Other Colors");
+            SaveOtherColors();
             Debug.Log("Saving Meshes...");
-            this.SaveMeshes();
+            SaveMeshes();
             Debug.Log("Saving Textures...");
-            this.SaveTextures();
-            Debug.Log("Writing " + this.saveName.text + " to File...");
+            SaveTextures();
+            Debug.Log("Writing " + saveName.text + " to File...");
 
-                bool flag = !File.Exists(this.path + this.saveName.text + ".preset");
+                bool flag = !File.Exists(path + saveName.text + ".preset");
                 if (flag)
                 {
-                    Serialize(this.saveName.text);
+                    Serialize(saveName.text);
                 }
                 else
                 {
-                    this.overwriteWarning.SetActive(true);
+                    overwriteWarning.SetActive(true);
                 }
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n "; 
+            saveErrors += "In SaveSlotNames() method: " + e.Message + "\n " + e.StackTrace + "\n "; 
         }
     }
 
-
+    /// <summary>
+    /// Overwrite a current save
+    /// </summary>
     public void SetOverwrite()
     {
-        Serialize(this.saveName.text);
+        Serialize(saveName.text);
     }
 
+    /// <summary>
+    /// Save the front tire width
+    /// </summary>
     private void SaveFrontTireWidth()
     {
         saveList.frontTireWidth = FindObjectOfType<BikeLoadOut>().GetFrontTireFatness();
     }
 
+    /// <summary>
+    /// Save the rear tire width
+    /// </summary>
     private void SaveRearTireWidth()
     {
         saveList.rearTireWidth = FindObjectOfType<BikeLoadOut>().GetBackTireFatness();
     }
 
+    /// <summary>
+    /// Load the front tire width
+    /// </summary>
     private void LoadFrontTireWidth()
     {
         try
@@ -278,6 +298,9 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Load the rear tire width
+    /// </summary>
     private void LoadRearTireWidth()
     {
         try
@@ -291,11 +314,17 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Save the seat angle
+    /// </summary>
     private void SaveSeatAngle()
     {
         saveList.seatAngle = FindObjectOfType<SeatApplyMod>().GetSeatAnglePerc();
     }
 
+    /// <summary>
+    /// Load the seat angle
+    /// </summary>
     private void LoadSeatAngle()
     {
         try
@@ -310,11 +339,17 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Save the bars angle
+    /// </summary>
     private void SaveBarsAngle()
     {
         saveList.barsAngle = FindObjectOfType<BarsApplyMod>().GetBarsAnglePerc();
     }
 
+    /// <summary>
+    /// Load the bars angle
+    /// </summary>
     private void LoadBarsAngle()
     {
         try
@@ -329,94 +364,107 @@ public class SavingManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Save brakes either off or on
+    /// </summary>
     private void SaveBrakes()
     {
-        saveList.brakes = BrakesManager.instance.brakesEnabled;
+        saveList.brakes = BrakesManager.instance.IsEnabled();
     }
 
+    /// <summary>
+    /// Load brakes either off or on
+    /// </summary>
     private void LoadBrakes()
     {
         BrakesManager.instance.SetBrakes(loadList.brakes);
     }
 
+    /// <summary>
+    /// Save the tire tread material
+    /// </summary>
     private void SaveTireTread()
     {
-        saveList.treadID = betterWheels.GetBetterWheels() ? saveList.treadID = 3 : saveList.treadID = this.partManager.tiresCount - 1;
+        saveList.treadID = betterWheels.GetBetterWheels() ? saveList.treadID = 3 : saveList.treadID = partManager.tiresCount - 1;
     }
 
+    /// <summary>
+    /// Load the tire tread material
+    /// </summary>
     private void LoadTireTread()
     {
-        this.partManager.SetTireTread(loadList.treadID);
+        partManager.SetTireTread(loadList.treadID);
     }
 
+    /// <summary>
+    /// Save the seat material
+    /// </summary>
     private void SaveSeatID()
     {
-        saveList.seatID = this.partManager.seatCount - 1;
+        saveList.seatID = partManager.seatCount - 1;
     }
 
+    /// <summary>
+    /// Load the seat material
+    /// </summary>
     private void LoadSeatID()
     {
-        this.partManager.SetSeatID(loadList.seatID);
+        partManager.SetSeatID(loadList.seatID);
     }
 
+    /// <summary>
+    /// Save the grips material
+    /// </summary>
     private void SaveGripsID()
     {
-        saveList.gripsID = this.partManager.gripsCount - 1;
+        saveList.gripsID = partManager.gripsCount - 1;
     }
 
+    /// <summary>
+    /// Load the grips material
+    /// </summary>
     private void LoadGripsID()
     {
-        this.partManager.SetGripsId(loadList.gripsID);
+        partManager.SetGripsId(loadList.gripsID);
     }
 
+    /// <summary>
+    /// Save the scale (size) of the bike
+    /// </summary>
     private void SaveBikeScale()
     {
-        saveList.bikeScale = this.partManager.bikeScaleSlider.value;
+        saveList.bikeScale = partManager.bikeScaleSlider.value;
     }
 
+    /// <summary>
+    /// Load the scale (size) of the bike
+    /// </summary>
     private void LoadBikeScale()
     {
-        this.partManager.SetBikeScale(loadList.bikeScale);
+        partManager.SetBikeScale(loadList.bikeScale);
     }
 
-
-    private void SaveBrakeColor()
+    /// <summary>
+    /// Save the colors of the bike parts that were split into separate parts
+    /// </summary>
+    private void SaveOtherColors()
     {
         try
         {
-            if (BrakesManager.instance.brakesEnabled)
-            {
-                saveList.brakesColor = cs.GetBrakesColor();
-            }
+            saveList.partColors.Add(new PartColor(-1, PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].color));
+            saveList.partColors.Add(new PartColor(-2, PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].color));
+            saveList.partColors.Add(new PartColor(-3, cs.GetBrakeColor()));
+            saveList.partColors.Add(new PartColor(-4, cs.GetCableColor()));
         }
         catch (Exception e)
         {
-            saveErrors += e.Message + "\n " + e.StackTrace + "\n ";
+            saveErrors += "In SaveOtherColors() method: " + e.Message + "\n " + e.StackTrace + "\n ";
         }
     }
 
-    private void LoadBrakesColor()
-    {
-        try
-        {
-            if (BrakesManager.instance.brakesEnabled)
-            {
-                cs.SetBrakesColor(loadList.brakesColor);
-            }
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
-    }
-
-    private void SaveSeatPostChainColors()
-    {
-        saveList.seatPostColor = cs.GetSeatPostColor();
-        saveList.chainColor = cs.GetChainColor();
-    }
-
+    /// <summary>
+    /// Save whether the better wheels mod is on
+    /// </summary>
     private void SaveWheels()
     {
         saveList.betterWheels = betterWheels.GetBetterWheels();
@@ -424,6 +472,9 @@ public class SavingManager : MonoBehaviour
         saveList.hasRearHubChanged = betterWheels.CheckRear();
     }
 
+    /// <summary>
+    /// Load whether the better wheels mod is on
+    /// </summary>
     private void LoadWheels()
     {
         if (loadList.betterWheels)
@@ -441,64 +492,71 @@ public class SavingManager : MonoBehaviour
             betterWheels.ChangeRearHub();
     }
 
-
-    private void LoadSeatChainColors()
-    {
-        try
-        {
-            cs.SetSeatPostColor(loadList.seatPostColor);
-            cs.SetChainColor(loadList.chainColor);
-        }
-        catch (Exception e)
-        {
-            error += e.Message + "\n " + e.StackTrace + "\n ";
-        }
-    }
-
+    /// <summary>
+    /// Save grip flanges on or off
+    /// </summary>
     private void SaveFlanges()
     {
         saveList.flanges = partManager.GetFlangesVisible();
     }
 
+    /// <summary>
+    /// Load grip flanges on or off
+    /// </summary>
     private void LoadFlanges()
     {
             if (!loadList.flanges)
             {
-                this.partManager.SetFlangesOff();
+                partManager.SetFlangesOff();
             }
             else
             {
-                this.partManager.SetFlangesOn();
+                partManager.SetFlangesOn();
             }
     }
 
+    /// <summary>
+    /// Save seat height
+    /// </summary>
     private void SaveSeatHeight()
     {
         saveList.seatHeight = partManager.GetSeatHeight();
     }
 
+    /// <summary>
+    /// Load seat height
+    /// </summary>
     private void LoadSeatHeight()
     {
         partManager.SetSeatHeight(loadList.seatHeight);
     }
 
+    /// <summary>
+    /// Save the drive side either left hand drive or right hand drive
+    /// </summary>
     private void SaveDriveSide()
     {
         saveList.LHD = partManager.GetDriveSide();
     }
 
+    /// <summary>
+    /// Load the drive side either left hand drive or right hand drive
+    /// </summary>
     private void LoadDriveSide()
     {
         if (loadList.LHD)
         {
-            this.partManager.SetLHD();
+            partManager.SetLHD();
         }
         else
         {
-            this.partManager.SetRHD();
+            partManager.SetRHD();
         }
     }
 
+    /// <summary>
+    /// Save the part materials
+    /// </summary>
     private void SaveMaterials()
     {
         string debug = "";
@@ -551,39 +609,20 @@ public class SavingManager : MonoBehaviour
                         break;
                 }
             }
-            Material material = PartMaster.instance.GetMaterial(PartMaster.instance.seatPost);
-            string text2 = material.name.ToLower();
-            switch (text2)
-            {
-                case "a_glossy (instance)":
-                    saveList.seatPostMat = 0;
-                    break;
-                case "a_glossy (instance) (instance)":
-                    saveList.seatPostMat = 0;
-                    break;
-                case "jetfuel (instance)":
-                    saveList.seatPostMat = 1;
-                    break;
-                case "flat (instance)":
-                    saveList.seatPostMat = 2;
-                    break;
-                case "chrome (instance)":
-                    saveList.seatPostMat = 3;
-                    break;
-                case "bubble (instance)":
-                    saveList.seatPostMat = 4;
-                    break;
-                case "rusty (instance)":
-                    saveList.seatPostMat = 5;
-                    break;
-                case "green jetfuel (instance)":
-                    saveList.seatPostMat = 6;
-                    break;
-                default:
-                    saveList.seatPostMat = 9;
-                    break;
-            }
 
+            saveList.seatPostMat = GetMaterialHelper(PartMaster.instance.seatPost);
+            saveList.frontTireMat = GetMaterialHelper(PartMaster.instance.frontTire);
+            saveList.rearTireMat = GetMaterialHelper(PartMaster.instance.rearTire);
+            saveList.frontTireWallMat = GetMaterialHelper(PartMaster.instance.frontTire, 1);
+            saveList.rearTireWallMat = GetMaterialHelper(PartMaster.instance.rearTire, 1);
+            saveList.frontRimMat = GetMaterialHelper(PartMaster.instance.frontRim);
+            saveList.rearRimMat = GetMaterialHelper(PartMaster.instance.rearRim);
+            saveList.frontHubMat = GetMaterialHelper(PartMaster.instance.frontHub);
+            saveList.rearHubMat = GetMaterialHelper(PartMaster.instance.rearHub);
+            saveList.frontSpokesMat = GetMaterialHelper(PartMaster.instance.frontSpokes);
+            saveList.rearSpokesMat = GetMaterialHelper(PartMaster.instance.rearSpokes);
+            saveList.frontNipplesMat = GetMaterialHelper(PartMaster.instance.frontNipples);
+            saveList.rearNipplesMat = GetMaterialHelper(PartMaster.instance.rearNipples);
         }
         catch (Exception e)
         {
@@ -591,6 +630,54 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Helper method to save part materials
+    /// </summary>
+    /// <param name="key"> The key to get the bike part from the PartMaster class </param>
+    /// <param name="index"> Optional parameter to select a material from a material array </param>
+    /// <returns> Material ID number </returns>
+    private int GetMaterialHelper(int key, int index = 0)
+    {
+
+        Material material = PartMaster.instance.GetMaterials(key)[index];
+        int result;
+        string text = material.name.ToLower();
+        switch (text)
+        {
+            case "a_glossy (instance)":
+                result = 0;
+                break;
+            case "a_glossy (instance) (instance)":
+                result = 0;
+                break;
+            case "jetfuel (instance)":
+                result = 1;
+                break;
+            case "flat (instance)":
+                result = 2;
+                break;
+            case "chrome (instance)":
+                result = 3;
+                break;
+            case "bubble (instance)":
+                result = 4;
+                break;
+            case "rusty (instance)":
+                result = 5;
+                break;
+            case "green jetfuel (instance)":
+                result = 6;
+                break;
+            default:
+                result = 9;
+                break;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Load bike part materials
+    /// </summary>
     private void LoadMaterials()
     {
         try
@@ -602,56 +689,31 @@ public class SavingManager : MonoBehaviour
                     case 0:
                         FindObjectOfType<BikeLoadOut>().SetPartMaterial(MaterialManager.instance.defaultMat, p.partNum, true);
                         break;
-                    case 1:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[0], p.partNum, true);
-                        break;
-                    case 2:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[1], p.partNum, true);
-                        break;
-                    case 3:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[2], p.partNum, true);
-                        break;
-                    case 4:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[3], p.partNum, true);
-                        break;
-                    case 5:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[4], p.partNum, true);
-                        break;
-                    case 6:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[5], p.partNum, true);
-                        break;
                     case 7:
                         FindObjectOfType<BikeLoadOut>().SetPartMaterial(BetterWheelsMod.instance.betterWheelMat, p.partNum, true);
                         break;
+                    case 9:
+                        break;
                     default:
+                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[p.matID-1], p.partNum, true);
                         break;
                 }
 
             }
-            switch (loadList.seatPostMat)
-            {
-                case 0:
-                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.a_glossy;
-                    break;
-                case 1:
-                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[0];
-                    break;
-                case 2:
-                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[1];
-                    break;
-                case 3:
-                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[2];
-                    break;
-                case 4:
-                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[3];
-                    break;
-                case 5:
-                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[4];
-                    break;
-                case 6:
-                    PartMaster.instance.GetPart(PartMaster.instance.seatPost).GetComponent<MeshRenderer>().material = this.matManager.customMats[5];
-                    break;
-            }
+            SetMaterialHelper(PartMaster.instance.seatPost, loadList.seatPostMat);
+            SetMaterialHelper(PartMaster.instance.frontTire, loadList.frontTireMat);
+            SetMaterialHelper(PartMaster.instance.rearTire, loadList.rearTireMat);
+            SetMaterialHelper(PartMaster.instance.frontTire, loadList.frontTireWallMat, 1);
+            SetMaterialHelper(PartMaster.instance.rearTire, loadList.rearTireWallMat, 1);
+            SetMaterialHelper(PartMaster.instance.frontRim, loadList.frontRimMat);
+            SetMaterialHelper(PartMaster.instance.rearRim, loadList.rearRimMat);
+            SetMaterialHelper(PartMaster.instance.frontHub, loadList.frontHubMat);
+            SetMaterialHelper(PartMaster.instance.rearHub, loadList.rearHubMat);
+            SetMaterialHelper(PartMaster.instance.frontSpokes, loadList.frontSpokesMat);
+            SetMaterialHelper(PartMaster.instance.rearSpokes, loadList.rearSpokesMat);
+            SetMaterialHelper(PartMaster.instance.frontNipples, loadList.frontNipplesMat);
+            SetMaterialHelper(PartMaster.instance.rearNipples, loadList.rearNipplesMat);
+
         }
         catch (Exception e)
         {
@@ -659,111 +721,41 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Helper method to load bike part materials
+    /// </summary>
+    /// <param name="key"> Key to use to get bike part from PartMaster class </param>
+    /// <param name="mat"> Material ID to set </param>
+    /// <param name="index"> Optional parameter to set a specific material in a material array </param>
+    public void SetMaterialHelper(int key, int mat, int index = 0)
+    {
+        if (mat == 0)
+            PartMaster.instance.GetPart(key).GetComponent<MeshRenderer>().materials[index] = a_glossy;
+        else if (mat == 9)
+            return;
+        else
+            PartMaster.instance.GetPart(key).GetComponent<MeshRenderer>().materials[index] = matManager.customMats[mat - 1];
+    }
+
     private void SaveTextures()
     {
         try
         {
-            if (TextureManager.instance.frameURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.frameURL, 0, false, false));
-            }
-            if (TextureManager.instance.barsURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.barsURL, 1, false, false));
-            }
-            if (TextureManager.instance.seatURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.seatURL, 2, false, false));
-            }
-            if (TextureManager.instance.forksURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.forksURL, 3, false, false));
-            }
-            if (TextureManager.instance.tireURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireURL, 4, false, false));
-            }
-            if (TextureManager.instance.tireWallURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireWallURL, 5, false, false));
-            }
-            if (TextureManager.instance.rimsURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.rimsURL, 6, false, false));
-            }
-            if (TextureManager.instance.hubsURL != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.hubsURL, 7, false, false));
+            foreach (KeyValuePair<int, string> entry in TextureManager.instance.albedoList) {
+                saveList.partTextures.Add(new PartTexture(entry.Value, entry.Key, false, false));
             }
 
             // Normal Maps
-
-            if (TextureManager.instance.frameURLN != "")
+            foreach (KeyValuePair<int, string> entry in TextureManager.instance.normalList)
             {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.frameURLN, 0, true, false));
-            }
-            if (TextureManager.instance.barsURLN != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.barsURLN, 1, true, false));
-            }
-            if (TextureManager.instance.seatURLN != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.seatURLN, 2, true, false));
-            }
-            if (TextureManager.instance.forksURLN != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.forksURLN, 3, true, false));
-            }
-            if (TextureManager.instance.tireURLN != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireURLN, 4, true, false));
-            }
-            if (TextureManager.instance.tireWallURLN != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireWallURLN, 5, true, false));
-            }
-            if (TextureManager.instance.rimsURLN != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.rimsURLN, 6, true, false));
-            }
-            if (TextureManager.instance.hubsURLN != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.hubsURLN, 7, true, false));
+                saveList.partTextures.Add(new PartTexture(entry.Value, entry.Key, true, false));
             }
 
             //Metallic Maps
 
-            if (TextureManager.instance.frameURLM != "")
+            foreach (KeyValuePair<int, string> entry in TextureManager.instance.metallicList)
             {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.frameURLM, 0, false, true));
-            }
-            if (TextureManager.instance.barsURLM != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.barsURLM, 1, false, true));
-            }
-            if (TextureManager.instance.seatURLM != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.seatURLM, 2, false, true));
-            }
-            if (TextureManager.instance.forksURLM != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.forksURLM, 3, false, true));
-            }
-            if (TextureManager.instance.tireURLM != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireURLM, 4, false, true));
-            }
-            if (TextureManager.instance.tireWallURLM != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.tireWallURLM, 5, false, true));
-            }
-            if (TextureManager.instance.rimsURLM != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.rimsURLM, 6, false, true));
-            }
-            if (TextureManager.instance.hubsURLM != "")
-            {
-                saveList.partTextures.Add(new PartTexture(TextureManager.instance.hubsURLM, 7, false, true));
+                saveList.partTextures.Add(new PartTexture(entry.Value, entry.Key, false, true));
             }
 
         }
@@ -773,6 +765,9 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Load bike part textures
+    /// </summary>
     private void LoadTextures()
     {
         try
@@ -780,12 +775,24 @@ public class SavingManager : MonoBehaviour
             foreach (PartTexture p in loadList.partTextures)
             {
                 Debug.Log("Loading Texture: " + p.url);
-                if (!p.metallic && !p.normal)
-                    TextureManager.instance.SetTexture(p.partNum, p.url);
-                else if (p.normal)
-                    TextureManager.instance.SetNormal(p.partNum, p.url);
-                else
-                    TextureManager.instance.SetMetallic(p.partNum, p.url);
+                if (!p.url.Equals("") && !p.url.Equals("."))
+                {
+                    if (!p.metallic && !p.normal)
+                        TextureManager.instance.SetTexture(p.partNum, p.url);
+                    else if (p.normal)
+                        TextureManager.instance.SetNormal(p.partNum, p.url);
+                    else
+                        TextureManager.instance.SetMetallic(p.partNum, p.url);
+                }
+                else if(p.url.Equals("."))
+                {
+                    if (!p.metallic && !p.normal)
+                        TextureManager.instance.RemoveTexture(p.partNum);
+                    else if (p.normal)
+                        TextureManager.instance.RemoveNormal(p.partNum);
+                    else
+                        TextureManager.instance.RemoveMetallic(p.partNum);
+                }
             }
         } catch (Exception e)
         {
@@ -793,6 +800,9 @@ public class SavingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Save bike part meshes
+    /// </summary>
     private void SaveMeshes()
     {
         int index = (CustomMeshManager.instance.selectedFrame - 1) % CustomMeshManager.instance.frames.Count;
@@ -838,11 +848,18 @@ public class SavingManager : MonoBehaviour
         saveList.partMeshes.Add(new PartMesh(index, CustomMeshManager.instance.pedals[index].isCustom, CustomMeshManager.instance.pedals[index].fileName, "pedals"));
     }
 
+    /// <summary>
+    /// Change the text that is displayed on the alert box
+    /// </summary>
+    /// <param name="message"> Message to display </param>
     public void ChangeAlertText(string message)
     {
         infoBoxText.text = message;
     }
 
+    /// <summary>
+    /// Load bike part meshes
+    /// </summary>
     private void LoadMeshes()
     {
         try
@@ -965,7 +982,10 @@ public class SavingManager : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// Loads the last selected preset
+    /// </summary>
+    /// <returns>null</returns>
     IEnumerator LoadLastSelected()
     {
         yield return new WaitForSeconds(1);

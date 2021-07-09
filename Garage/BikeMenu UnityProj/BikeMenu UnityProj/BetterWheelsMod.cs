@@ -56,7 +56,7 @@ public class BetterWheelsMod : MonoBehaviour
 
     public bool GetBetterWheels()
     {
-        return this.modEnabled;
+        return modEnabled;
     }
 
     public void SetTireTread()
@@ -67,22 +67,22 @@ public class BetterWheelsMod : MonoBehaviour
 
     public void ChangeFrontHub()
     {
-        this.hasFrontHubChanged = true;
+        hasFrontHubChanged = true;
     }
 
     public void ChangeRearHub()
     {
-        this.hasRearHubChanged = true;
+        hasRearHubChanged = true;
     }
 
     public bool CheckFront()
     {
-        return this.hasFrontHubChanged;
+        return hasFrontHubChanged;
     }
 
     public bool CheckRear()
     {
-        return this.hasRearHubChanged;
+        return hasRearHubChanged;
     }
 
     public void ApplyMod()
@@ -107,7 +107,7 @@ public class BetterWheelsMod : MonoBehaviour
         PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<MeshFilter>().mesh = newRearHub;
         PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<Renderer>().material = betterWheelMat;
 
-        this.modEnabled = true;
+        modEnabled = true;
         PartManager.instance.tiresCount = 3;
         hasFrontHubChanged = false;
         hasRearHubChanged = false;
@@ -136,19 +136,19 @@ public class BetterWheelsMod : MonoBehaviour
         PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<MeshFilter>().mesh = oldHub;
         PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<Renderer>().material = oldHubMat;
 
-        this.modEnabled = false;
+        modEnabled = false;
     }
 
     public void OnChangeHubFront()
     {
-        if (!this.modEnabled)
+        if (!modEnabled)
             return;
         PartMaster.instance.GetPart(PartMaster.instance.frontHub).GetComponent<Renderer>().material = oldHubMat;
     }
 
     public void OnChangeHubRear()
     {
-        if (!this.modEnabled)
+        if (!modEnabled)
             return;
         PartMaster.instance.GetPart(PartMaster.instance.rearHub).GetComponent<Renderer>().material = oldHubMat;
     }

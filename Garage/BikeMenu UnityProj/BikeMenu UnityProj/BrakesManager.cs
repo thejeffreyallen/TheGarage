@@ -32,10 +32,15 @@ public class BrakesManager : MonoBehaviour
 
     public void SetBrakes(bool enabled)
     {
-        if (enabled)
+        if (enabled && !brakesEnabled)
             EnableBrakes();
-        else
+        else if(!enabled && brakesEnabled)
             DisableBrakes();
+    }
+
+    public bool IsEnabled()
+    {
+        return brakesEnabled;
     }
 
     void EnableBrakes()
@@ -56,21 +61,23 @@ public class BrakesManager : MonoBehaviour
     void DisableBrakes()
     {
         Debug.Log("Destroying brake prefabs");
+        Transform TempParent = new GameObject().transform;
+        barBrakes.transform.parent = TempParent;
+        frameBrakes.transform.parent = TempParent;
         Destroy(barBrakes);
         Destroy(frameBrakes);
-
-        barBrakes = null;
-        frameBrakes = null;
+        Destroy(TempParent.gameObject);
+        Debug.Log("Brake prefabs destroyed");
         brakesEnabled = false;
     }
 
     public GameObject GetBarBrakes()
     {
-        return this.barBrakes;
+        return barBrakes;
     }
 
     public GameObject GetFrameBrakes()
     {
-        return this.frameBrakes;
+        return frameBrakes;
     }
 }

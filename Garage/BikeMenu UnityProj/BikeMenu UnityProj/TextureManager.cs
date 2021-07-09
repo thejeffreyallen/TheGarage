@@ -17,34 +17,11 @@ public class TextureManager : MonoBehaviour
     public Slider shinySlide;
     public Text selectedPartText;
 
-    Parts selectedPart;
+    int selectedPart;
 
-    public string frameURL ="";
-    public string barsURL ="";
-    public string seatURL = "";
-    public string forksURL = "";
-    public string tireURL = "";
-    public string tireWallURL = "";
-    public string rimsURL = "";
-    public string hubsURL = "";
-
-    public string frameURLN = "";
-    public string barsURLN = "";
-    public string seatURLN = "";
-    public string forksURLN = "";
-    public string tireURLN = "";
-    public string tireWallURLN = "";
-    public string rimsURLN = "";
-    public string hubsURLN = "";
-
-    public string frameURLM = "";
-    public string barsURLM = "";
-    public string seatURLM = "";
-    public string forksURLM = "";
-    public string tireURLM = "";
-    public string tireWallURLM = "";
-    public string rimsURLM = "";
-    public string hubsURLM = "";
+    public Dictionary<int, string> albedoList = new Dictionary<int, string>();
+    public Dictionary<int, string> normalList = new Dictionary<int, string>();
+    public Dictionary<int, string> metallicList = new Dictionary<int, string>();
 
     public Texture OriginalFrameTex;
     public Texture OriginalBarsTex;
@@ -57,21 +34,10 @@ public class TextureManager : MonoBehaviour
     public Texture OriginalRimTex;
     public Texture OriginalHubTex;
 
-    public enum Parts
-    {
-        Frame,
-        Bars,
-        Seat,
-        Forks,
-        Tires,
-        Tire_Wall,
-        Rims,
-        Hubs
-    }
-
     void Awake()
     {
         instance = this;
+        InitDictionaries();
     }
 
     void Start()
@@ -79,61 +45,81 @@ public class TextureManager : MonoBehaviour
         StoreOriginalTextures();
     }
 
-    public void SetUrlsEmpty()
+    void InitDictionaries()
     {
-        frameURL = "";
-        barsURL = "";
-        forksURL = "";
-        seatURL = "";
-        tireURL = "";
-        tireWallURL = "";
-        rimsURL = "";
-        hubsURL = "";
+        albedoList.Add(0, "");
+        albedoList.Add(1, "");
+        albedoList.Add(36, "");
+        albedoList.Add(2, "");
+        albedoList.Add(10, "");
+        albedoList.Add(11, "");
+        albedoList.Add(6, "");
+        albedoList.Add(7, "");
+        albedoList.Add(8, "");
+        albedoList.Add(9, "");
+        albedoList.Add(-1, "");
+        albedoList.Add(-2, "");
+
+        normalList.Add(0, "");
+        normalList.Add(1, "");
+        normalList.Add(36, "");
+        normalList.Add(2, "");
+        normalList.Add(10, "");
+        normalList.Add(11, "");
+        normalList.Add(6, "");
+        normalList.Add(7, "");
+        normalList.Add(8, "");
+        normalList.Add(9, "");
+        normalList.Add(-1, "");
+        normalList.Add(-2, "");
+
+        metallicList.Add(0, "");
+        metallicList.Add(1, "");
+        metallicList.Add(36, "");
+        metallicList.Add(2, "");
+        metallicList.Add(10, "");
+        metallicList.Add(11, "");
+        metallicList.Add(6, "");
+        metallicList.Add(7, "");
+        metallicList.Add(8, "");
+        metallicList.Add(9, "");
+        metallicList.Add(-1, "");
+        metallicList.Add(-2, "");
     }
 
+    
     public void Update()
     {
-        if (this.shinySlide.IsActive())
+        if (shinySlide.gameObject.transform.parent.gameObject.activeInHierarchy)
         {
-            switch (selectedPart)
+            Debug.Log("Setting glossiness for part number: " + selectedPart);
+            if (selectedPart == -1)
             {
-                case Parts.Bars:
-                    PartMaster.instance.GetMaterial(PartMaster.instance.bars).SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                case Parts.Forks:
-                    PartMaster.instance.GetMaterial(PartMaster.instance.forks).SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                case Parts.Frame:
-                    PartMaster.instance.GetMaterial(PartMaster.instance.frame).SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                case Parts.Seat:
-                    PartMaster.instance.GetMaterial(PartMaster.instance.seat).SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                case Parts.Tires:
-                    PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].SetFloat("_Glossiness", shinySlide.value);
-                    PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                case Parts.Tire_Wall:
-                    PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
-                    PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                case Parts.Rims:
-                    PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).SetFloat("_Glossiness", shinySlide.value);
-                    PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                case Parts.Hubs:
-                    PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetFloat("_Glossiness", shinySlide.value);
-                    PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetFloat("_Glossiness", shinySlide.value);
-                    break;
-                default:
-                    break;
-            }   
+                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
+            }
+            else if (selectedPart == -2)
+            {
+                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
+            }
+            else if (selectedPart == -3)
+            {
+                Debug.Log("Do nothing yet for part number " + selectedPart);
+            }
+            else if (selectedPart == -4)
+            {
+                Debug.Log("Do nothing yet for part number " + selectedPart);
+            }
+            else
+            {
+                PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Glossiness", shinySlide.value);
+            }
         }
     }
+    
 
     public void SetSelectedPart(int bikePart)
     {
-        selectedPart = (Parts)bikePart;
+        selectedPart = bikePart;
         Debug.Log("Selected Part " + selectedPart);
     }
 
@@ -197,6 +183,24 @@ public class TextureManager : MonoBehaviour
         Resources.UnloadUnusedAssets();
     }
 
+    public void RemoveTexture(int partNum)
+    {
+        StartCoroutine(SetTextureBlank(partNum));
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void RemoveNormal(int partNum)
+    {
+        StartCoroutine(SetNormalBlank(partNum));
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void RemoveMetallic(int partNum)
+    {
+        StartCoroutine(SetMetallicBlank(partNum));
+        Resources.UnloadUnusedAssets();
+    }
+
     public void StoreOriginalTextures()
     {
         OriginalFrameTex = PartMaster.instance.GetMaterial(PartMaster.instance.frame).GetTexture("_MainTex");
@@ -236,6 +240,46 @@ public class TextureManager : MonoBehaviour
         Resources.UnloadUnusedAssets();
     }
 
+    /// <summary>
+    /// Helper method for setting all types of textures
+    /// </summary>
+    /// <param name="tex"></param>
+    /// <param name="list"></param>
+    /// <param name="inputField"></param>
+    /// <param name="partNum"></param>
+    /// <param name="texType"></param>
+    /// <param name="url"></param>
+    /// <param name="matIndex"></param>
+    /// <param name="enableKeyword"></param>
+    void TexHelper(Texture2D tex, Dictionary<int, string> list, InputField inputField, int partNum, string texType, string enableKeyword = "", string url = "")
+    {
+        if (partNum == -1) //Front Tire Wall
+        {
+            if(!enableKeyword.Equals(""))
+                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].EnableKeyword(enableKeyword);
+            PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture(texType, tex);
+        }
+        else if (partNum == -2) // Rear Tire Wall
+        {
+            if (!enableKeyword.Equals(""))
+                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].EnableKeyword(enableKeyword);
+            PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture(texType, tex);
+        }
+        else // Everything else
+        {
+            if (!enableKeyword.Equals(""))
+                PartMaster.instance.GetMaterials(partNum)[0].EnableKeyword(enableKeyword);
+            PartMaster.instance.GetMaterials(partNum)[0].SetTexture(texType, tex);
+        }
+        if (inputField == null)
+            list[partNum] = url;
+        else
+        {
+            list[partNum] = inputField.text;
+            inputField.text = "";
+        }
+    }
+
 
     IEnumerator SetTextureEnum()
     {
@@ -244,48 +288,7 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-
-        switch (selectedPart)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).mainTexture = www.texture;
-                barsURL = urlInput.text;
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).mainTexture = www.texture;
-                forksURL = urlInput.text;
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).mainTexture = www.texture;
-                frameURL = urlInput.text;
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).mainTexture = www.texture;
-                seatURL = urlInput.text;
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].mainTexture = www.texture;
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].mainTexture = www.texture;
-                tireURL = urlInput.text;
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].mainTexture = www.texture;
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].mainTexture = www.texture;
-                tireWallURL = urlInput.text;
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).mainTexture = www.texture;
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).mainTexture = www.texture;
-                rimsURL = urlInput.text;
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).mainTexture = www.texture;
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).mainTexture = www.texture;
-                hubsURL = urlInput.text;
-                break;
-        }
-
-        urlInput.text = "";
+        TexHelper(www.texture, albedoList, urlInput, selectedPart, "_MainTex");
     }
 
     IEnumerator SetNormalEnum()
@@ -308,61 +311,7 @@ public class TextureManager : MonoBehaviour
         }
         normalTexture.SetPixels32(colours);
         normalTexture.Apply(true, false);
-
-        switch (selectedPart)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).SetTexture("_BumpMap", normalTexture);
-                barsURLN = urlNorm.text;
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).SetTexture("_BumpMap", normalTexture);
-                forksURLN = urlNorm.text;
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).SetTexture("_BumpMap", normalTexture);
-                StartCoroutine(SetMetallicEnum());
-                frameURLN = urlNorm.text;
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).SetTexture("_BumpMap", normalTexture);
-                seatURLN = urlNorm.text;
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].SetTexture("_BumpMap", normalTexture);
-                tireURLN = urlNorm.text;
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture("_BumpMap", normalTexture);
-                tireWallURLN = urlNorm.text;
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).SetTexture("_BumpMap", normalTexture);
-                rimsURLN = urlNorm.text;
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetTexture("_BumpMap", normalTexture);
-                hubsURLN = urlNorm.text;
-                break;
-        }
-
-        urlNorm.text = "";
+        TexHelper(normalTexture, normalList, urlNorm, selectedPart, "_BumpMap", "_NORMALMAP");
     }
 
     IEnumerator SetNormalEnum(int partNum, string url)
@@ -372,8 +321,6 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-
-
         Texture2D normalTexture = new Texture2D(www.texture.width, www.texture.height, TextureFormat.ARGB32, true, true);
         Color32[] colours = www.texture.GetPixels32();
         for (int i = 0; i < colours.Length; i++)
@@ -385,59 +332,7 @@ public class TextureManager : MonoBehaviour
         }
         normalTexture.SetPixels32(colours);
         normalTexture.Apply(true, false);
-
-        switch ((Parts) partNum)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).SetTexture("_BumpMap", normalTexture);
-                barsURLN = url;
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).SetTexture("_BumpMap", normalTexture);
-                forksURLN = url;
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).SetTexture("_BumpMap", normalTexture);
-                StartCoroutine(SetMetallicEnum());
-                frameURLN = url;
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).SetTexture("_BumpMap", normalTexture);
-                seatURLN = url;
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].SetTexture("_BumpMap", normalTexture);
-                tireURLN = urlNorm.text;
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture("_BumpMap", normalTexture);
-                tireWallURLN = urlNorm.text;
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).SetTexture("_BumpMap", normalTexture);
-                rimsURLN = urlNorm.text;
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetTexture("_BumpMap", normalTexture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).EnableKeyword("_NORMALMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetTexture("_BumpMap", normalTexture);
-                hubsURLN = urlNorm.text;
-                break;
-        }
+        TexHelper(normalTexture, normalList, null, partNum, "_BumpMap", "_NORMALMAP", url);
     }
 
     IEnumerator SetMetallicEnum()
@@ -447,59 +342,7 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-
-        switch (selectedPart)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).SetTexture("_MetallicGlossMap", www.texture);
-                barsURLM = urlMet.text;
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).SetTexture("_MetallicGlossMap", www.texture);
-                forksURLM = urlMet.text;
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).SetTexture("_MetallicGlossMap", www.texture);
-                frameURLM = urlMet.text;
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).SetTexture("_MetallicGlossMap", www.texture);
-                seatURLM = urlMet.text;
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].SetTexture("_MetallicGlossMap", www.texture);
-                tireURLM = urlMet.text;
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture("_MetallicGlossMap", www.texture);
-                tireWallURLM = urlMet.text;
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).SetTexture("_MetallicGlossMap", www.texture);
-                rimsURLM = urlMet.text;
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetTexture("_MetallicGlossMap", www.texture);
-                hubsURLM = urlMet.text;
-                break;
-        }
-        urlMet.text = "";
+        TexHelper(www.texture, metallicList, urlMet, selectedPart, "_MetallicGlossMap", "_METALLICGLOSSMAP");
     }
 
     IEnumerator SetMetallicEnum(int partNum, string url)
@@ -509,58 +352,7 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-
-        switch ((Parts) partNum)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).SetTexture("_MetallicGlossMap", www.texture);
-                barsURLM = url;
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).SetTexture("_MetallicGlossMap", www.texture);
-                forksURLM = url;
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).SetTexture("_MetallicGlossMap", www.texture);
-                frameURLM = url;
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).SetTexture("_MetallicGlossMap", www.texture);
-                seatURLM = url;
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].SetTexture("_MetallicGlossMap", www.texture);
-                tireURLM = urlMet.text;
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture("_MetallicGlossMap", www.texture);
-                tireWallURLM = urlMet.text;
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).SetTexture("_MetallicGlossMap", www.texture);
-                rimsURLM = urlMet.text;
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetTexture("_MetallicGlossMap", www.texture);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).EnableKeyword("_METALLICGLOSSMAP");
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetTexture("_MetallicGlossMap", www.texture);
-                hubsURLM = urlMet.text;
-                break;
-        }
+        TexHelper(www.texture, metallicList, null, partNum, "_MetallicGlossMap", "_METALLICGLOSSMAP", url);
     }
 
     IEnumerator SetTextureEnum(int partNum, string url)
@@ -570,202 +362,27 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-
-        switch ((Parts)partNum)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).mainTexture = www.texture;
-                barsURL = url;
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).mainTexture = www.texture;
-                forksURL = url;
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).mainTexture = www.texture;
-                frameURL = url;
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).mainTexture = www.texture;
-                seatURL = url;
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].mainTexture = www.texture;
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].mainTexture = www.texture;
-                tireURL = url;
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].mainTexture = www.texture;
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].mainTexture = www.texture;
-                tireWallURL = url;
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).mainTexture = www.texture;
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).mainTexture = www.texture;
-                rimsURL = url;
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).mainTexture = www.texture;
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).mainTexture = www.texture;
-                hubsURL = url;
-                break;
-        }
+        TexHelper(www.texture, albedoList, null, partNum, "_MainTex", "", url);
     }
 
     IEnumerator SetTextureBlank(int partNum)
     {
         yield return new WaitForEndOfFrame();
-        switch ((Parts)partNum)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).mainTexture = null;
-                barsURL = "";
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).mainTexture = null;
-                forksURL = "";
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).mainTexture = null;
-                frameURL = "";
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).mainTexture = null;
-                seatURL = "";
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].mainTexture = null;
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].mainTexture = null;
-                tireURL = "";
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].mainTexture = null;
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].mainTexture = null;
-                tireWallURL = "";
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).mainTexture = null;
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).mainTexture = null;
-                rimsURL = "";
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).mainTexture = null;
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).mainTexture = null;
-                hubsURL = "";
-                break;
-        }
+        TexHelper(null, albedoList, null, partNum, "_MainTex");
     }
+
+    
 
     IEnumerator SetNormalBlank(int partNum)
     {
         yield return new WaitForEndOfFrame();
-        switch ((Parts)partNum)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).SetTexture("_BumpMap", null);
-                barsURLN = "";
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).SetTexture("_BumpMap", null);
-                forksURLN = "";
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).SetTexture("_BumpMap", null);
-                frameURLN = "";
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).SetTexture("_BumpMap", null);
-                seatURLN = "";
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].SetTexture("_BumpMap", null);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].SetTexture("_BumpMap", null);
-                tireURLN = "";
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture("_BumpMap", null);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture("_BumpMap", null);
-                tireWallURLN = "";
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).SetTexture("_BumpMap", null);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).SetTexture("_BumpMap", null);
-                rimsURLN = "";
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetTexture("_BumpMap", null);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetTexture("_BumpMap", null);
-                hubsURLN = "";
-                break;
-        }
+        TexHelper(null, normalList, null, partNum, "_BumpMap");
     }
 
     IEnumerator SetMetallicBlank(int partNum)
     {
         yield return new WaitForEndOfFrame();
-        switch ((Parts)partNum)
-        {
-            case Parts.Bars:
-                PartMaster.instance.GetMaterial(PartMaster.instance.bars).SetTexture("_MetallicGlossMap", null);
-                barsURLM = "";
-                break;
-            case Parts.Forks:
-                PartMaster.instance.GetMaterial(PartMaster.instance.forks).SetTexture("_MetallicGlossMap", null);
-                forksURLM = "";
-                break;
-            case Parts.Frame:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frame).SetTexture("_MetallicGlossMap", null);
-                frameURLM = "";
-                break;
-            case Parts.Seat:
-                PartMaster.instance.GetMaterial(PartMaster.instance.seat).SetTexture("_MetallicGlossMap", null);
-                seatURLM = "";
-                break;
-            case Parts.Tires:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[0].SetTexture("_MetallicGlossMap", null);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[0].SetTexture("_MetallicGlossMap", null);
-                tireURLM = "";
-                break;
-            case Parts.Tire_Wall:
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture("_MetallicGlossMap", null);
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture("_MetallicGlossMap", null);
-                tireWallURLM = "";
-                break;
-            case Parts.Rims:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontRim).SetTexture("_MetallicGlossMap", null);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearRim).SetTexture("_MetallicGlossMap", null);
-                rimsURLM = "";
-                break;
-            case Parts.Hubs:
-                PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetTexture("_MetallicGlossMap", null);
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetTexture("_MetallicGlossMap", null);
-                hubsURLM = "";
-                break;
-        }
+        TexHelper(null, metallicList, null, partNum, "_MetallicGlossMap");
     }
 
-    public string GetImageLink(Parts bikePart)
-    {
-        switch (bikePart)
-        {
-            case Parts.Bars:
-                return barsURL;
-            case Parts.Forks:
-                return forksURL;
-            case Parts.Frame:
-                return frameURL;
-            case Parts.Seat:
-                return seatURL;
-            case Parts.Tires:
-                return tireURL;
-            case Parts.Tire_Wall:
-                return tireWallURL;
-            case Parts.Rims:
-                return rimsURL;
-            case Parts.Hubs:
-                return hubsURL;
-        }
-
-        return null;
-    }
 }

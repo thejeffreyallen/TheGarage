@@ -14,7 +14,7 @@ public class PartManager : MonoBehaviour
     private Transform ogRearWheel;
     private Transform chainMesh;
     private Transform sprocketMesh;
-    private bool LHD = false;
+    private bool LHD = true;
     public int seatCount = 1;
     public int gripsCount = 1;
     public int tiresCount = 1;
@@ -25,7 +25,6 @@ public class PartManager : MonoBehaviour
     public Slider seatAngleSlider;
     public Slider bikeScaleSlider;
     public Slider barsAngleSlider;
-    public Slider tireWidth;
     public Slider frontTireWidth;
     public Slider rearTireWidth;
 
@@ -35,8 +34,6 @@ public class PartManager : MonoBehaviour
     private GameObject rightHandTarget;
 
     float maxSeatHeight = 1f;
-    
-
 
     Transform bmx;
     private void Awake()
@@ -61,14 +58,14 @@ public class PartManager : MonoBehaviour
 
     public void SetSeatHeight(float f)
     {
-        PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, f), 0f);
+        PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, maxSeatHeight, f), 0f);
         seatHeightSlider.value = f;
         
     }
 
     public void SeatUpDown()
     {
-        PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, this.maxSeatHeight, seatHeightSlider.value), 0f);
+        PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, maxSeatHeight, seatHeightSlider.value), 0f);
     }
 
     public void FrontTireWidth()
@@ -82,21 +79,12 @@ public class PartManager : MonoBehaviour
     }
 
 
-    public void SetTireWidth(float width)
-    {
-        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
-        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
-        tireWidth.value = width;
-    }
-
-    // Not yet implemented
     public void SetFrontTireWidth(float width)
     {
         FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
         frontTireWidth.value = width;
     }
 
-    // Not yet implemented
     public void SetRearTireWidth(float width)
     {
         FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
@@ -112,7 +100,7 @@ public class PartManager : MonoBehaviour
     {
         LHD = !LHD;
 
-        if (LHD)
+        if (!LHD)
         {
             ogRearWheel.localRotation = (Quaternion.Euler(0, 0, 270f));
             chainMesh.localPosition = (new Vector3(0.089f, 0, 0));
@@ -128,27 +116,27 @@ public class PartManager : MonoBehaviour
         }
     }
 
-    public void SetLHD()
+    public void SetRHD()
     {
         ogRearWheel.localRotation = (Quaternion.Euler(0, 0, 270f));
         chainMesh.localPosition = (new Vector3(0.089f, 0, 0));
         sprocketMesh.localPosition = (new Vector3(0.0467f, 0.001f, 0));
         sprocketMesh.localRotation = (Quaternion.Euler(0, 0, 180f));
-        LHD = true;
+        LHD = false;
     }
 
-    public void SetRHD()
+    public void SetLHD()
     {
         ogRearWheel.localRotation = (Quaternion.Euler(0, 0, 90f));
         chainMesh.localPosition = (new Vector3(0, 0, 0)); ;
         sprocketMesh.localPosition = (new Vector3(-0.0402f, 0.0013f, 0.0001f));
         sprocketMesh.localRotation = (Quaternion.Euler(0, 0, 0));
-        LHD = false;
+        LHD = true;
     }
 
     public bool GetDriveSide()
     {
-        return this.LHD;
+        return LHD;
     }
 
     public float GetSeatHeight()
@@ -222,10 +210,7 @@ public class PartManager : MonoBehaviour
         seatCount = (id % FindObjectOfType<SeatApplyMod>().seatCovers.Length) + 1;
     }
 
-    public void SetSeatMesh()
-    {
-        CustomMeshManager.instance.SetSeatMesh(CustomMeshManager.instance.selectedSeat++);
-    }
+    
 
     public void ChangeGrips()
     {
@@ -262,7 +247,7 @@ public class PartManager : MonoBehaviour
 
     public bool GetFlangesVisible()
     {
-        return this.flangesVisible;
+        return flangesVisible;
     }
 
 
@@ -357,6 +342,11 @@ public class PartManager : MonoBehaviour
     public void SetCranksMesh()
     {
         CustomMeshManager.instance.SetCranksMesh(CustomMeshManager.instance.selectedCranks++);
+    }
+
+    public void SetSeatMesh()
+    {
+        CustomMeshManager.instance.SetSeatMesh(CustomMeshManager.instance.selectedSeat++);
     }
 }
 
