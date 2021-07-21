@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BikeWorkshopMenu</RootNamespace>
     <AssemblyName>BikeWorkshopMenu</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile>
@@ -35,7 +35,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BetterWheelsMod.cs" />
     <Compile Include="BrakesManager.cs" />
     <Compile Include="CamController.cs" />
     <Compile Include="CustomMeshManager.cs" />

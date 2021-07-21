@@ -30,7 +30,7 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.B) && !MenuManager.instance.saveMenu.activeInHierarchy)
             SetOpen();
     }
 

@@ -10,7 +10,12 @@ using UnityEngine.EventSystems;
 public class ColourSetter : MonoBehaviour
 {
     public static ColourSetter instance;
-    public int currentPart = 0;
+
+    private List<int> activeParts; // for multi part editing
+    public int currentPart;
+
+    public List<Toggle> toggleList;
+    public List<Toggle> infoToggles;
 
     public Slider slider;
 
@@ -18,17 +23,107 @@ public class ColourSetter : MonoBehaviour
     Color col;
     Color brakeColor = Color.black;
     Color cableColor = Color.black;
-
     private bool active = false;
 
     void Awake()
     {
         instance = this;
+        activeParts = new List<int>();
+        foreach (Toggle t in infoToggles)
+        {
+            if (PlayerPrefs.GetInt(t.gameObject.name) == 0)
+            {
+                t.gameObject.SetActive(true);
+            }
+            else
+            {
+                t.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Toggle a part on or off
+    /// </summary>
+    /// <param name="toggle"></param>
+    public void ToggleButton(Toggle toggle) {
+        Graphic g = toggle.targetGraphic;
+        Text t = g.gameObject.GetComponentInChildren<Text>();
+        if (toggle.isOn)
+        {
+            g.color = Color.white;
+            t.color = Color.black;
+        }
+        else {
+            g.color = new Color(0f, 0f, 0f, 0.7333f);
+            t.color = Color.white;
+        }
+    }
+
+    public void DontShowAgain(Toggle _info)
+    {
+        
+        if(!_info.isOn)
+            PlayerPrefs.SetInt(_info.gameObject.name, 0);
+        else
+            PlayerPrefs.SetInt(_info.gameObject.name, 1);
+    }
+
+    /// <summary>
+    /// Deselect all selected parts
+    /// </summary>
+    public void DeselectAll()
+    {
+        foreach (Toggle toggle in toggleList)
+        {
+            toggle.isOn = false;
+            Graphic g = toggle.targetGraphic;
+            Text t = g.gameObject.GetComponentInChildren<Text>();
+            g.color = new Color(0f, 0f, 0f, 0.7333f);
+            t.color = Color.white;
+        }
+        ClearActiveParts();
+    }
+
+    public List<int> GetActivePartList()
+    {
+        return this.activeParts;
     }
 
     void OnEnable()
     {
-        SetCurrentPart(0);
+       
+    }
+
+    public void TogglePartActive(int part)
+    {
+        if (activeParts.Contains(part))
+            RemoveActivePart(part);
+        else
+            SetPartActive(part);
+    }
+
+    public void SetCurrentPartActive()
+    {
+        activeParts.Add(currentPart);
+    }
+
+    public void SetPartActive(int part)
+    {
+        if (activeParts.Contains(part))
+            RemoveActivePart(part);
+        else
+            activeParts.Add(part);
+    }
+
+    public void RemoveActivePart(int part)
+    {
+        activeParts.Remove(part);
+    }
+
+    public void ClearActiveParts()
+    {
+        activeParts.Clear();
     }
 
     public Color GetBrakeColor()
@@ -44,6 +139,7 @@ public class ColourSetter : MonoBehaviour
     public void SetCurrentPart(int part)
     {
         currentPart = part;
+        SetPartActive(part);
     }
 
     public void SetText(String txt)
@@ -64,28 +160,58 @@ public class ColourSetter : MonoBehaviour
 
     void Update()
     {
-        if (IsActive())
+        if (IsActive() && MenuManager.instance.colourMenu.activeInHierarchy)
         {
             float hue, sat, bright;
 
             col = ColourPicker.instance.value;
             Color.RGBToHSV(col, out hue, out sat, out bright);
             col = Color.HSVToRGB(hue, sat, slider.value);
+            foreach (int key in activeParts)
+            {
+                try
+                {
+                    SetColor(key, col);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("Error setting color " + e.Message + e.StackTrace);
+                }
+            }
+        }
+        if (MenuManager.instance.experimentalMenu.activeInHierarchy)
+        {
+            foreach (int key in activeParts)
+            {
+                if (Input.GetKey(KeyCode.Keypad8))
+                    PartMaster.instance.MovePart(key, "y", 0.001f);
+                if (Input.GetKey(KeyCode.Keypad2))
+                    PartMaster.instance.MovePart(key, "y", -0.001f);
+                if (Input.GetKey(KeyCode.Keypad4))
+                    PartMaster.instance.MovePart(key, "x", 0.001f);
+                if (Input.GetKey(KeyCode.Keypad6))
+                    PartMaster.instance.MovePart(key, "x", -0.001f);
+                if (Input.GetKey(KeyCode.Keypad7))
+                    PartMaster.instance.MovePart(key, "z", 0.001f);
+                if (Input.GetKey(KeyCode.Keypad9))
+                    PartMaster.instance.MovePart(key, "z", -0.001f);
 
-            try
-            {
-                SetColor(currentPart, col);
+                GameObject obj = PartMaster.instance.GetPart(key);
+                if (Input.GetKey(KeyCode.KeypadPlus))
+                    obj.transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
+                if(Input.GetKey(KeyCode.KeypadMinus)) 
+                    obj.transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
             }
-            catch (Exception e)
-            {
-                Debug.Log("Error setting color " + e.Message + e.StackTrace);
-            }
+        }
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            PlayerPrefs.DeleteKey("ShowAgain");
         }
     }
 
     public void SetColor(int key, Color c)
     {
-        Debug.Log("Setting Color " + c + " on part number: " + key);
+       // Debug.Log("Setting Color " + c + " on part number: " + key);
         switch (key)
         {
             case -1:
@@ -113,6 +239,26 @@ public class ColourSetter : MonoBehaviour
         }
         if(key >= 0 && key < 44)
             PartMaster.instance.GetMaterial(key).color = c;
+    }
+
+    public void MovePart(string axis)
+    {
+        foreach (int key in activeParts)
+        {
+            if(axis.Equals("+y"))
+                PartMaster.instance.MovePart(key, "y", 0.01f);
+            if (axis.Equals("-y"))
+                PartMaster.instance.MovePart(key, "y", -0.01f);
+            if (axis.Equals("+x"))
+                PartMaster.instance.MovePart(key, "x", 0.01f);
+            if (axis.Equals("-x"))
+                PartMaster.instance.MovePart(key, "x", -0.01f);
+            if (axis.Equals("+z"))
+                PartMaster.instance.MovePart(key, "z", 0.01f);
+            if (axis.Equals("-z"))
+                PartMaster.instance.MovePart(key, "z", -0.01f);
+        }
+            
     }
 }
 

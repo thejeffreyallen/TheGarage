@@ -41,7 +41,7 @@ public class PresetLister : MonoBehaviour
             if (presets[i].Contains(".preset"))
             {
                 GameObject button = Instantiate(buttonPrefab, buttonParent);
-                button.transform.position = new Vector2(buttonParent.position.x, buttonParent.position.y + (350 - (35 * i)));
+                button.transform.position = new Vector2(buttonParent.position.x, buttonParent.position.y + (350 - (50 * i)));
 
                 string fileName = Path.GetFileName(presets[i]).Replace(".preset", "");
                 button.transform.GetChild(0).GetComponent<Text>().text = fileName;

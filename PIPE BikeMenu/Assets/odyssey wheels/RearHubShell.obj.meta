@@ -1,17 +1,23 @@
 fileFormatVersion: 2
 guid: 627be96264f04ef4485759a7ecdd99be
 ModelImporter:
-  serializedVersion: 23
+  serializedVersion: 22
   fileIDToRecycleName:
     100000: default
     100002: //RootNode
+    100004: Mini_Rear
     400000: default
     400002: //RootNode
+    400004: Mini_Rear
     2100000: None
     2100002: defaultMat
+    2100004: None.006
     2300000: default
+    2300002: Mini_Rear
     3300000: default
+    3300002: Mini_Rear
     4300000: default
+    4300002: Mini_Rear
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -63,8 +69,6 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

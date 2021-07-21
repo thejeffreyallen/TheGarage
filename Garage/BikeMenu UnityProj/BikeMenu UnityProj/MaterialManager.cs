@@ -26,80 +26,93 @@ public class MaterialManager : MonoBehaviour
     {
         StartCoroutine(DestroyNormal());
         instance = this;
+        defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
     }
 
     public void Start()
     {
-        defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
         defaultSeatMat = PartMaster.instance.GetMaterial(PartMaster.instance.seat);
         PartMaster.instance.SetMaterial(PartMaster.instance.chain, chainMatFix);
     }
 
     public void SetMaterial(Material mat)
     {
-        int key = ColourSetter.instance.currentPart;
-        Debug.Log("Setting material " + mat.name + " on part number: " + key);
-        switch (key)
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
         {
-            case -1:
-                PartMaster.instance.SetMaterial(1, PartMaster.instance.frontTire, mat);
-                break;
-            case -2:
-                PartMaster.instance.SetMaterial(1, PartMaster.instance.rearTire, mat);
-                break;
-            case -3:
-                if (BrakesManager.instance.IsEnabled())
-                {
-                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2] = mat;
-                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1] = mat;
-                }
-                break;
-            case -4:
-                if (BrakesManager.instance.IsEnabled())
-                {
-                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3] = mat;
-                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2] = mat;
-                }
-                break;
-            default:
-                PartMaster.instance.SetMaterial(ColourSetter.instance.currentPart, mat);
-                break;
+            Debug.Log("Setting material " + mat.name + " on part number: " + key);
+            switch (key)
+            {
+                case -1:
+                    Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
+                    mats[1] = mat;
+                    PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
+                    break;
+                case -2:
+                    Material[] mats2 = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
+                    mats2[1] = mat;
+                    PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, mats2);
+                    break;
+                case -3:
+                    if (BrakesManager.instance.IsEnabled())
+                    {
+                        BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2] = mat;
+                        BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1] = mat;
+                    }
+                    break;
+                case -4:
+                    if (BrakesManager.instance.IsEnabled())
+                    {
+                        BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3] = mat;
+                        BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2] = mat;
+                    }
+                    break;
+                default:
+                    PartMaster.instance.SetMaterial(key, mat);
+                    break;
+            }
         }
         
     }
 
     public void SetDefaultMat()
     {
-        int key = ColourSetter.instance.currentPart;
-        Debug.Log("Setting default material " + defaultMat.name + " on part number: " + key);
-        switch (key)
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
         {
-            case -1:
-                PartMaster.instance.SetMaterial(1, PartMaster.instance.frontTire, defaultMat);
-                break;
-            case -2:
-                PartMaster.instance.SetMaterial(1, PartMaster.instance.rearTire, defaultMat);
-                break;
-            case -3:
-                if (BrakesManager.instance.IsEnabled())
-                {
-                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2] = defaultMat;
-                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1] = defaultMat;
-                }
-                break;
-            case -4:
-                if (BrakesManager.instance.IsEnabled())
-                {
-                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3] = defaultMat;
-                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2] = defaultMat;
-                }
-                break;
-            default:
-                PartMaster.instance.SetMaterial(ColourSetter.instance.currentPart, defaultMat);
-                break;
+            Debug.Log("Setting default material " + defaultMat.name + " on part number: " + key);
+            switch (key)
+            {
+                case -1:
+                    Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
+                    mats[1] = defaultMat;
+                    PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
+                    break;
+                case -2:
+                    Material[] mats2 = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
+                    mats2[1] = defaultMat;
+                    PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, mats2);
+                    break;
+                case -3:
+                    if (BrakesManager.instance.IsEnabled())
+                    {
+                        BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2] = defaultMat;
+                        BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1] = defaultMat;
+                    }
+                    break;
+                case -4:
+                    if (BrakesManager.instance.IsEnabled())
+                    {
+                        BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3] = defaultMat;
+                        BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2] = defaultMat;
+                    }
+                    break;
+                default:
+                    PartMaster.instance.SetMaterial(key, defaultMat);
+                    break;
 
+            }
         }
-        
     }
 
     public void SwapMaterial(int key)

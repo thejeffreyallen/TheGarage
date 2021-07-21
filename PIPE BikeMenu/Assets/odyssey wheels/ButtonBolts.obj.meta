@@ -5,12 +5,25 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: default
+    100004: Button_Bolts_SketchUp.001_ID3.001
+    100006: Button_Bolts
     400000: //RootNode
     400002: default
+    400004: Button_Bolts_SketchUp.001_ID3.001
+    400006: Button_Bolts
     2100000: defaultMat
+    2100002: _0136_Charcoal
+    2100004: None.003
+    2100006: None.009
     2300000: default
+    2300002: Button_Bolts_SketchUp.001_ID3.001
+    2300004: Button_Bolts
     3300000: default
+    3300002: Button_Bolts_SketchUp.001_ID3.001
+    3300004: Button_Bolts
     4300000: default
+    4300002: Button_Bolts_SketchUp.001_ID3.001
+    4300004: Button_Bolts
   externalObjects: {}
   materials:
     importMaterials: 1

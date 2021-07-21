@@ -5,12 +5,18 @@ ModelImporter:
   fileIDToRecycleName:
     100000: default
     100002: //RootNode
+    100004: Longer
     400000: default
     400002: //RootNode
+    400004: Longer
     2100000: Default_OBJ
+    2100002: Default_OBJ.001
     2300000: default
+    2300002: Longer
     3300000: default
+    3300002: Longer
     4300000: default
+    4300002: Longer
   externalObjects: {}
   materials:
     importMaterials: 1

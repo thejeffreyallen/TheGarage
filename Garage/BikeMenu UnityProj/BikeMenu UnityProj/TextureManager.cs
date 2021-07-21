@@ -17,8 +17,6 @@ public class TextureManager : MonoBehaviour
     public Slider shinySlide;
     public Text selectedPartText;
 
-    int selectedPart;
-
     public Dictionary<int, string> albedoList = new Dictionary<int, string>();
     public Dictionary<int, string> normalList = new Dictionary<int, string>();
     public Dictionary<int, string> metallicList = new Dictionary<int, string>();
@@ -92,35 +90,50 @@ public class TextureManager : MonoBehaviour
     {
         if (shinySlide.gameObject.transform.parent.gameObject.activeInHierarchy)
         {
-            Debug.Log("Setting glossiness for part number: " + selectedPart);
-            if (selectedPart == -1)
+            List<int> activeList = ColourSetter.instance.GetActivePartList();
+            foreach (int selectedPart in activeList)
             {
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
-            }
-            else if (selectedPart == -2)
-            {
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
-            }
-            else if (selectedPart == -3)
-            {
-                Debug.Log("Do nothing yet for part number " + selectedPart);
-            }
-            else if (selectedPart == -4)
-            {
-                Debug.Log("Do nothing yet for part number " + selectedPart);
-            }
-            else
-            {
-                PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Glossiness", shinySlide.value);
+                //Debug.Log("Setting glossiness for part number: " + selectedPart);
+                if (selectedPart == -1)
+                {
+                    if (metallicList.ContainsKey(selectedPart))
+                    {
+                        if (String.IsNullOrEmpty(metallicList[selectedPart]))
+                            PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
+                        else
+                            PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
+                    }
+                }
+                else if (selectedPart == -2)
+                {
+                    if (metallicList.ContainsKey(selectedPart))
+                    {
+                        if(String.IsNullOrEmpty(metallicList[selectedPart]))
+                            PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
+                        else
+                            PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
+                    }
+                }
+                else if (selectedPart == -3)
+                {
+                    Debug.Log("Do nothing yet for part number " + selectedPart);
+                }
+                else if (selectedPart == -4)
+                {
+                    Debug.Log("Do nothing yet for part number " + selectedPart);
+                }
+                else
+                {
+                    if (metallicList.ContainsKey(selectedPart))
+                    {
+                        if (String.IsNullOrEmpty(metallicList[selectedPart]))
+                            PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Glossiness", shinySlide.value);
+                        else
+                            PartMaster.instance.GetMaterial(selectedPart).SetFloat("_GlossMapScale", shinySlide.value);
+                    }
+                }
             }
         }
-    }
-    
-
-    public void SetSelectedPart(int bikePart)
-    {
-        selectedPart = bikePart;
-        Debug.Log("Selected Part " + selectedPart);
     }
 
     public void SetTexture()
@@ -167,19 +180,25 @@ public class TextureManager : MonoBehaviour
 
     public void RemoveTexture()
     {
-        StartCoroutine(SetTextureBlank((int)selectedPart));
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
+            StartCoroutine(SetTextureBlank(key));
         Resources.UnloadUnusedAssets();
     }
 
     public void RemoveNormal()
     {
-        StartCoroutine(SetNormalBlank((int)selectedPart));
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
+            StartCoroutine(SetNormalBlank(key));
         Resources.UnloadUnusedAssets();
     }
 
     public void RemoveMetallic()
     {
-        StartCoroutine(SetMetallicBlank((int) selectedPart));
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
+            StartCoroutine(SetMetallicBlank(key));
         Resources.UnloadUnusedAssets();
     }
 
@@ -253,22 +272,71 @@ public class TextureManager : MonoBehaviour
     /// <param name="enableKeyword"></param>
     void TexHelper(Texture2D tex, Dictionary<int, string> list, InputField inputField, int partNum, string texType, string enableKeyword = "", string url = "")
     {
+        bool flag = (!enableKeyword.Equals("") && tex != null);
+        bool flag2 = (!enableKeyword.Equals("") && tex == null);
         if (partNum == -1) //Front Tire Wall
         {
-            if(!enableKeyword.Equals(""))
-                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].EnableKeyword(enableKeyword);
-            PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetTexture(texType, tex);
+            Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
+            if (flag)
+                mats[1].EnableKeyword(enableKeyword);
+            if(flag2)
+                mats[1].DisableKeyword(enableKeyword);   
+            mats[1].SetTexture(texType, tex);
+            PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
         }
         else if (partNum == -2) // Rear Tire Wall
         {
-            if (!enableKeyword.Equals(""))
-                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].EnableKeyword(enableKeyword);
-            PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetTexture(texType, tex);
+            Material[] mats2 = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
+            if (flag)
+                mats2[1].EnableKeyword(enableKeyword);
+            if (flag2)
+                mats2[1].DisableKeyword(enableKeyword);
+            mats2[1].SetTexture(texType, tex);
+            PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, mats2);
+        }
+        else if (partNum == -3)
+        {
+            if (BrakesManager.instance.IsEnabled())
+            {
+                if (flag)
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].EnableKeyword(enableKeyword);
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[1].EnableKeyword(enableKeyword);
+                }
+                if (flag2)
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].DisableKeyword(enableKeyword);
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[1].DisableKeyword(enableKeyword);
+                }
+                    
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].SetTexture(texType, tex);
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].SetTexture(texType, tex);
+            }
+        }
+        else if (partNum == -4)
+        {
+            if (BrakesManager.instance.IsEnabled())
+            {
+                if (flag)
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].EnableKeyword(enableKeyword);
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].EnableKeyword(enableKeyword);
+                }
+                if (flag2)
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].DisableKeyword(enableKeyword);
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].DisableKeyword(enableKeyword);
+                }
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].SetTexture(texType, tex);
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].SetTexture(texType, tex);
+            }
         }
         else // Everything else
         {
-            if (!enableKeyword.Equals(""))
+            if (flag)
                 PartMaster.instance.GetMaterials(partNum)[0].EnableKeyword(enableKeyword);
+            if (flag2)
+                PartMaster.instance.GetMaterials(partNum)[0].DisableKeyword(enableKeyword);
             PartMaster.instance.GetMaterials(partNum)[0].SetTexture(texType, tex);
         }
         if (inputField == null)
@@ -276,7 +344,6 @@ public class TextureManager : MonoBehaviour
         else
         {
             list[partNum] = inputField.text;
-            inputField.text = "";
         }
     }
 
@@ -288,7 +355,12 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        TexHelper(www.texture, albedoList, urlInput, selectedPart, "_MainTex");
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
+        {
+            TexHelper(www.texture, albedoList, urlInput, key, "_MainTex");
+        }
+        urlInput.text = "";
     }
 
     IEnumerator SetNormalEnum()
@@ -298,20 +370,14 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
+        Texture2D normalTexture = ConvertToNormalMap(www.texture);
 
-
-        Texture2D normalTexture = new Texture2D(www.texture.width, www.texture.height, TextureFormat.ARGB32, true, true);
-        Color32[] colours = www.texture.GetPixels32();
-        for (int i = 0; i < colours.Length; i++)
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
         {
-            Color32 c = colours[i];
-            c.a = c.r;
-            c.r = c.b = c.g;
-            colours[i] = c;
+            TexHelper(normalTexture, normalList, urlNorm, key, "_BumpMap", "_NORMALMAP");
         }
-        normalTexture.SetPixels32(colours);
-        normalTexture.Apply(true, false);
-        TexHelper(normalTexture, normalList, urlNorm, selectedPart, "_BumpMap", "_NORMALMAP");
+        urlNorm.text = "";
     }
 
     IEnumerator SetNormalEnum(int partNum, string url)
@@ -321,18 +387,29 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        Texture2D normalTexture = new Texture2D(www.texture.width, www.texture.height, TextureFormat.ARGB32, true, true);
-        Color32[] colours = www.texture.GetPixels32();
-        for (int i = 0; i < colours.Length; i++)
-        {
-            Color32 c = colours[i];
-            c.a = c.r;
-            c.r = c.b = c.g;
-            colours[i] = c;
-        }
-        normalTexture.SetPixels32(colours);
-        normalTexture.Apply(true, false);
+        Texture2D normalTexture = ConvertToNormalMap(www.texture);
+
         TexHelper(normalTexture, normalList, null, partNum, "_BumpMap", "_NORMALMAP", url);
+    }
+
+    private Texture2D ConvertToNormalMap(Texture2D texture)
+    {
+        Texture2D normalTexture = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, true, true);
+        normalTexture.filterMode = FilterMode.Trilinear;
+        Color[] pixels = texture.GetPixels(0, 0, texture.width, texture.height);
+        normalTexture.SetPixels(pixels);
+        normalTexture.Apply(true, false);
+
+        //SaveTextureAsPNG(normalTexture, Application.dataPath + "/TestNormals/TempNormal.png");
+
+        return normalTexture;
+    }
+
+    public static void SaveTextureAsPNG(Texture2D _texture, string _fullPath)
+    {
+        byte[] _bytes = _texture.EncodeToPNG();
+        System.IO.File.WriteAllBytes(_fullPath, _bytes);
+        Debug.Log(_bytes.Length / 1024 + "Kb was saved as: " + _fullPath);
     }
 
     IEnumerator SetMetallicEnum()
@@ -342,7 +419,12 @@ public class TextureManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        TexHelper(www.texture, metallicList, urlMet, selectedPart, "_MetallicGlossMap", "_METALLICGLOSSMAP");
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
+        {
+            TexHelper(www.texture, metallicList, urlMet, key, "_MetallicGlossMap", "_METALLICGLOSSMAP");
+        }
+        urlMet.text = "";
     }
 
     IEnumerator SetMetallicEnum(int partNum, string url)
@@ -376,13 +458,13 @@ public class TextureManager : MonoBehaviour
     IEnumerator SetNormalBlank(int partNum)
     {
         yield return new WaitForEndOfFrame();
-        TexHelper(null, normalList, null, partNum, "_BumpMap");
+        TexHelper(null, normalList, null, partNum, "_BumpMap", "_NORMALMAP");
     }
 
     IEnumerator SetMetallicBlank(int partNum)
     {
         yield return new WaitForEndOfFrame();
-        TexHelper(null, metallicList, null, partNum, "_MetallicGlossMap");
+        TexHelper(null, metallicList, null, partNum, "_MetallicGlossMap", "_METALLICGLOSSMAP");
     }
 
 }

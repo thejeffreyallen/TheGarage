@@ -11,8 +11,31 @@ using UnityEngine;
 /// </summary>
 class PartMaster : MonoBehaviour
 {
+
+    public struct TransformData
+    {
+        public Vector3 LocalPosition;
+        public Vector3 LocalEulerRotation;
+        public Vector3 LocalScale;
+
+        public TransformData(Transform transform)
+        {
+            LocalPosition = transform.localPosition;
+            LocalEulerRotation = transform.localEulerAngles;
+            LocalScale = transform.localScale;
+        }
+
+        public void ApplyTo(Transform transform)
+        {
+            transform.localPosition = LocalPosition;
+            transform.localEulerAngles = LocalEulerRotation;
+            transform.localScale = LocalScale;
+        }
+    }
+
     public static PartMaster instance;
     public Dictionary<int, GameObject> partList;
+    public Dictionary<int, TransformData> origTrans;
     public bool isDone = false;
 
     public int frame = 0;
@@ -59,6 +82,23 @@ class PartMaster : MonoBehaviour
     public int leftCrank = 41;
     public int rightCrank = 42;
     public int chain = 43;
+    public int barsJ = 44;
+    public int frameJ = 45;
+    public int frontWheelCol = 46;
+    public int rearWheelCol = 47;
+    public int frontAcc = 48;
+    public int rearAcc = 49;
+    public int barAcc = 50;
+    public int frameAcc = 51;
+    public int frontHubG = 52;
+    public int rearHubG = 53;
+
+    GameObject accFront;
+    GameObject accRear;
+    GameObject barAccessory;
+    GameObject frameAccesory;
+    GameObject frontHubGuard;
+    GameObject rearHubGuard;
 
     /// <summary>
     /// Need to find all bike parts and assign them to a public GameObject for other classes to use
@@ -67,6 +107,67 @@ class PartMaster : MonoBehaviour
     {
         instance = this;
         InitPartList();
+        origTrans = new Dictionary<int, TransformData>();
+    }
+
+    void Start()
+    {
+        accFront = new GameObject("FrontAccessory");
+        accFront.AddComponent<MeshFilter>();
+        accFront.GetComponent<MeshFilter>().mesh = CustomMeshManager.instance.accessoryMeshes[0];
+        accFront.AddComponent<MeshRenderer>();
+        accFront.GetComponent<MeshRenderer>().material = CustomMeshManager.instance.accMats[0];
+        accFront = Instantiate(accFront, PartMaster.instance.GetPart(PartMaster.instance.frontSpokes).transform);
+
+        accRear = new GameObject("RearAccessory");
+        accRear.AddComponent<MeshFilter>();
+        accRear.GetComponent<MeshFilter>().mesh = CustomMeshManager.instance.accessoryMeshes[0];
+        accRear.AddComponent<MeshRenderer>();
+        accRear.GetComponent<MeshRenderer>().material = CustomMeshManager.instance.accMats[0];
+        accRear = Instantiate(accRear, PartMaster.instance.GetPart(PartMaster.instance.rearSpokes).transform);
+
+        barAccessory = new GameObject("barAccessory");
+        barAccessory.AddComponent<MeshFilter>();
+        barAccessory.GetComponent<MeshFilter>().mesh = CustomMeshManager.instance.accessoryMeshes[0];
+        barAccessory.AddComponent<MeshRenderer>();
+        barAccessory.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
+        barAccessory = Instantiate(barAccessory, PartMaster.instance.GetPart(PartMaster.instance.bars).transform);
+
+        frameAccesory = new GameObject("frameAccesory");
+        frameAccesory.AddComponent<MeshFilter>();
+        frameAccesory.GetComponent<MeshFilter>().mesh = CustomMeshManager.instance.accessoryMeshes[0];
+        frameAccesory.AddComponent<MeshRenderer>();
+        frameAccesory.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
+        frameAccesory = Instantiate(frameAccesory, PartMaster.instance.GetPart(PartMaster.instance.frame).transform);
+
+        frontHubGuard = new GameObject("frontHubGuard");
+        frontHubGuard.AddComponent<MeshFilter>();
+        frontHubGuard.GetComponent<MeshFilter>().mesh = CustomMeshManager.instance.accessoryMeshes[0];
+        frontHubGuard.AddComponent<MeshRenderer>();
+        frontHubGuard.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
+        frontHubGuard = Instantiate(frontHubGuard, PartMaster.instance.GetPart(PartMaster.instance.frontPegs).transform);
+
+        rearHubGuard = new GameObject("rearHubGuard");
+        rearHubGuard.AddComponent<MeshFilter>();
+        rearHubGuard.GetComponent<MeshFilter>().mesh = CustomMeshManager.instance.accessoryMeshes[0];
+        rearHubGuard.AddComponent<MeshRenderer>();
+        rearHubGuard.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
+        rearHubGuard = Instantiate(rearHubGuard, PartMaster.instance.GetPart(PartMaster.instance.rearPegs).transform);
+
+        partList.Add(frontAcc, accFront);
+        partList.Add(rearAcc, accRear);
+        partList.Add(barAcc, barAccessory);
+        partList.Add(frameAcc, frameAccesory);
+        partList.Add(frontHubG, frontHubGuard);
+        partList.Add(rearHubG, rearHubGuard);
+
+        SetMaterial(forks, MaterialManager.instance.defaultMat);
+        SetMaterial(rightCrank, MaterialManager.instance.defaultMat);
+        SetMaterial(leftCrank, MaterialManager.instance.defaultMat);
+
+        foreach (KeyValuePair<int, GameObject> pair in partList) {
+            origTrans.Add(pair.Key, new TransformData(pair.Value.transform));
+        }
     }
 
     /// <summary>
@@ -248,6 +349,10 @@ class PartMaster : MonoBehaviour
                         break;
                 }
             }
+            partList.Add(barsJ, GameObject.Find("BMX:Bars_Joint"));
+            partList.Add(frameJ, GameObject.Find("BMX:Frame_Joint"));
+            partList.Add(frontWheelCol, GameObject.Find("FrontWheelCollider"));
+            partList.Add(rearWheelCol, GameObject.Find("BackWheelCollider"));
         }
         catch (Exception e)
         {
@@ -255,12 +360,6 @@ class PartMaster : MonoBehaviour
             Debug.Log("Error while initializing part list in PartMaster.cs. " + e.Message + e.StackTrace);
         }
         isDone = true;
-    }
-
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Q))
-            Debug.Log("Total number of parts found: " + partList.Count);
     }
 
     /// <summary>
@@ -306,6 +405,7 @@ class PartMaster : MonoBehaviour
             return;
         }
         partList[key].GetComponent<MeshFilter>().mesh = mesh;
+
     }
 
     /// <summary>
@@ -357,8 +457,7 @@ class PartMaster : MonoBehaviour
             Debug.Log("Key not found in part list at SetMaterial(index, key, mat) method");
             return;
         }
-        Material[] mats = partList[key].GetComponent<MeshRenderer>().materials;
-        mats[index] = mat;
+        partList[key].GetComponent<MeshRenderer>().materials[index] = mat;
     }
 
     /// <summary>
@@ -376,6 +475,15 @@ class PartMaster : MonoBehaviour
         return partList[key].GetComponent<MeshRenderer>().materials;
     }
 
+    public void SetMaterials(int key, Material[] mats) {
+        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
+        {
+            Debug.Log("Key not found in part list at SetMaterials() method");
+        }
+
+        partList[key].GetComponent<MeshRenderer>().materials = mats;
+    }
+
     /// <summary>
     /// Experimental method to add collision to a bike part
     /// </summary>
@@ -389,7 +497,106 @@ class PartMaster : MonoBehaviour
         }
         partList[key].AddComponent<MeshCollider>();
         partList[key].GetComponent<MeshCollider>().sharedMesh = GetMesh(key);
+        partList[key].layer = 0;
     }
 
+    public void MovePart(int key, string axis, float pos)
+    {
+        Transform part = GetPart(key).transform;
+        Debug.Log("Moving " + part.gameObject.name);
+        if (axis.Equals("x"))
+            part.localPosition = new Vector3(part.localPosition.x + pos, part.localPosition.y, part.localPosition.z);
+        if (axis.Equals("y"))
+            part.localPosition = new Vector3(part.localPosition.x, part.localPosition.y + pos, part.localPosition.z);
+        if (axis.Equals("z"))
+            part.localPosition = new Vector3(part.localPosition.x, part.localPosition.y, part.localPosition.z + pos);
+    }
+
+    public Vector3 GetPosition(int key)
+    {
+        return GetPart(key).transform.localPosition;
+    }
+
+    public void SetPosition(int key, Vector3 pos)
+    {
+        GetPart(key).transform.localPosition = pos;
+    }
+
+    public void SetPartsVisible()
+    {
+        foreach (int key in ColourSetter.instance.GetActivePartList())
+        {
+            GameObject obj = GetPart(key);
+            obj.SetActive(!obj.activeSelf);
+        }
+    }
+
+    public void SetPartVisible(int key, bool isVisible)
+    {
+        GameObject obj = GetPart(key);
+        obj.SetActive(isVisible);
+    }
+
+    public bool GetPartVisibe(int key)
+    {
+        GameObject obj = GetPart(key);
+        return obj.activeInHierarchy;
+    }
+
+    public void Scale(bool positive)
+    {
+        foreach (int key in ColourSetter.instance.GetActivePartList())
+        {
+            GameObject obj = GetPart(key);
+            if (positive)
+                obj.transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
+            else
+                obj.transform.localScale -= new Vector3(0.1f, 0.1f, 0.1f);
+        }
+    }
+
+    public Vector3 GetScale(int key)
+    {
+        return GetPart(key).transform.localScale;
+    }
+
+    public void SetScale(int key, Vector3 scale)
+    {
+        GameObject obj = GetPart(key);
+        obj.transform.localScale = scale;
+    }
+
+    public void DuplicatePart()
+    {
+        foreach (int key in ColourSetter.instance.GetActivePartList())
+        {
+            GameObject obj = GetPart(key);
+            obj = Instantiate(obj, obj.transform.parent);
+            //obj.transform.localPosition = new Vector3(0,0,0);
+        }
+    }
+
+    public void ResetTransforms()
+    {
+        foreach (int key in ColourSetter.instance.GetActivePartList())
+        {
+            if (!origTrans.ContainsKey(key))
+            {
+                Debug.Log("Original transform not found for part number " + key);
+                return;
+            }    
+            GameObject obj = GetPart(key);
+            TransformData td = origTrans[key];
+            td.ApplyTo(obj.transform);
+        }
+    }
+
+    public void AddCollision()
+    {
+        foreach (int key in ColourSetter.instance.GetActivePartList())
+        {
+            AddCollision(key);
+        }
+    }
 }
 

@@ -14,6 +14,7 @@ public class MenuManager : MonoBehaviour
     public GameObject partMenu;
     public GameObject saveMenu;
     public GameObject helpMenu;
+    public GameObject experimentalMenu;
 
     void Awake()
     {

@@ -21,9 +21,13 @@ public class GarageRoomLoader : MonoBehaviour
     Camera mainCam;
     Camera newCam;
 
+    Light[] lightsGo;
+
     Transform marker;
     Renderer[] markerRend;
     Renderer[] playerRends;
+    public Material skybox;
+    Material currentMapSky;
     private Vector3 bikePlacement;
 
     void Start()
@@ -36,7 +40,6 @@ public class GarageRoomLoader : MonoBehaviour
         try
         {
             mainCam = Camera.main;
-
             room = Instantiate(roomPrefab, new Vector3(10000, 10000, 10000), Quaternion.identity);
             bikePlacement = room.transform.position;
 
@@ -82,7 +85,18 @@ public class GarageRoomLoader : MonoBehaviour
 
 
            FindObjectOfType<DrivableVehicle>().vehiclePhysicsBody.GetComponent<Rigidbody>().isKinematic = true;
-           
+            lightsGo = FindObjectsOfType<Light>() as Light[];
+            foreach (Light thisLight in lightsGo)
+            {
+                if (!thisLight.gameObject.name.Equals("GarageLight")) {
+                    thisLight.gameObject.SetActive(false);
+                }
+            }
+            currentMapSky = RenderSettings.skybox;
+            RenderSettings.skybox = skybox;
+            RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Skybox;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+            DynamicGI.UpdateEnvironment();
         }
         catch(System.ArgumentOutOfRangeException e) {
             Debug.Log(e.Message +" : "+ e.StackTrace + " : " + e.TargetSite);
@@ -107,6 +121,15 @@ public class GarageRoomLoader : MonoBehaviour
             r.enabled = true;
         }
         FindObjectOfType<SessionMarker>().ResetPlayerAtMarker();
+        foreach (Light thisLight in lightsGo)
+        {
+            thisLight.gameObject.SetActive(true);
+        }
         Destroy(room);
+        RenderSettings.skybox = currentMapSky;
+        RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Skybox;
+        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+        DynamicGI.UpdateEnvironment();
+
     }
 }

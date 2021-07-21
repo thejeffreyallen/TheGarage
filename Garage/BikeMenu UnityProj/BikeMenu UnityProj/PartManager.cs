@@ -15,9 +15,15 @@ public class PartManager : MonoBehaviour
     private Transform chainMesh;
     private Transform sprocketMesh;
     private bool LHD = true;
+    public Material[] tireMats;
+    public Material[] tireWallMats;
+    public Material tireWallFix;
     public int seatCount = 1;
     public int gripsCount = 1;
-    public int tiresCount = 1;
+    public int frontTiresCount = 1;
+    public int frontTireWallCount = 1;
+    public int rearTiresCount = 1;
+    public int rearTireWallCount = 1;
 
     private bool flangesVisible = true;
 
@@ -46,13 +52,20 @@ public class PartManager : MonoBehaviour
         ogRearWheel = PartMaster.instance.GetPart(PartMaster.instance.rearHub).transform;
         chainMesh = PartMaster.instance.GetPart(PartMaster.instance.chain).transform;
         sprocketMesh = PartMaster.instance.GetPart(PartMaster.instance.sprocket).transform;
-        seatHeightSlider.value = PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition.y;
+        seatAngleSlider.value = FindObjectOfType<SeatApplyMod>().GetSeatAnglePerc();
         bmx = GameObject.Find("BMX").transform;
 
         leftHandTarget = PartMaster.instance.GetPart(PartMaster.instance.leftAnchor);
         rightHandTarget = PartMaster.instance.GetPart(PartMaster.instance.rightAnchor);
         leftHandTarget.transform.SetParent(PartMaster.instance.GetPart(PartMaster.instance.bars).transform);
         rightHandTarget.transform.SetParent(PartMaster.instance.GetPart(PartMaster.instance.bars).transform);
+        Material[] frontMats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
+        Material[] rearMats = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
+        frontMats[1] = tireWallFix;
+        rearMats[1] = tireWallFix;
+
+        PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, frontMats);
+        PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, rearMats);
 
     }
 
@@ -158,7 +171,7 @@ public class PartManager : MonoBehaviour
     public void ChangeSeat()
     {
         FindObjectOfType<SeatApplyMod>().SetSeatCoverID(seatCount % FindObjectOfType<SeatApplyMod>().seatCovers.Length);
-        seatCount++;
+        seatCount = (seatCount % FindObjectOfType<SeatApplyMod>().seatCovers.Length) + 1;
     }
 
     public void BarsAngle()
@@ -173,35 +186,66 @@ public class PartManager : MonoBehaviour
         barsAngleSlider.value = f;
     }
 
-    public void ChangeTireTread()
+    public void ChangeFrontTireTread()
     {
-        if (tiresCount < 3)
-        {
-            FindObjectOfType<BikeLoadOut>().SetFrontTireTextureID(tiresCount);
-            FindObjectOfType<BikeLoadOut>().SetBackTireTextureID(tiresCount);
-            tiresCount++;
-        }
-        else
-        {
-            BetterWheelsMod.instance.SetTireTread();
-            tiresCount = 0;
-        }
+        SetFrontTireTread(frontTiresCount);
     }
 
-    public void SetTireTread(int id)
+    public void ChangeRearTireTread()
     {
-        if (id < 3)
-        {
-            FindObjectOfType<BikeLoadOut>().SetFrontTireTextureID(id);
-            FindObjectOfType<BikeLoadOut>().SetBackTireTextureID(id);
-            tiresCount = id + 1;
-        }
-        else
-        {
-            BetterWheelsMod.instance.SetTireTread();
-            tiresCount = 0;
-        }
+        SetRearTireTread(rearTiresCount);
+    }
 
+    public void SetFrontTireTread(int id)
+    {
+        int index = (id % tireMats.Length);
+        Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
+        mats[0] = tireMats[index];
+        PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
+        TextureManager.instance.normalList[PartMaster.instance.frontTire] = "";
+        frontTiresCount = index + 1;
+    }
+
+    public void SetRearTireTread(int id)
+    {
+        int index = (id % tireMats.Length);
+        Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
+        mats[0] = tireMats[index];
+        PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, mats);
+        TextureManager.instance.normalList[PartMaster.instance.rearTire] = "";
+        rearTiresCount = index + 1;
+    }
+
+    public void ChangeFrontTireWall()
+    {
+        SetFrontTireWall(frontTireWallCount);
+    }
+
+    public void SetFrontTireWall(int id)
+    {
+        int index = (id % tireWallMats.Length);
+        Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
+        mats[1] = tireWallMats[index];
+        PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
+        TextureManager.instance.normalList[-1] = "";
+        TextureManager.instance.albedoList[-1] = "";
+        frontTireWallCount = index + 1;
+    }
+
+    public void ChangeRearTireWall()
+    {
+        SetRearTireWall(rearTireWallCount);
+    }
+
+    public void SetRearTireWall(int id)
+    {
+        int index = (id % tireWallMats.Length);
+        Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
+        mats[1] = tireWallMats[index];
+        PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, mats);
+        TextureManager.instance.normalList[-2] = "";
+        TextureManager.instance.albedoList[-2] = "";
+        rearTireWallCount = index + 1;
     }
 
     public void SetSeatID(int id)
@@ -347,6 +391,41 @@ public class PartManager : MonoBehaviour
     public void SetSeatMesh()
     {
         CustomMeshManager.instance.SetSeatMesh(CustomMeshManager.instance.selectedSeat++);
+    }
+
+    public void SetBarAcc()
+    {
+        CustomMeshManager.instance.SetBarAccMesh(CustomMeshManager.instance.selectedBarAccessory++);
+    }
+
+    public void SetFrameAcc()
+    {
+        CustomMeshManager.instance.SetFrameAccMesh(CustomMeshManager.instance.selectedFrameAccessory++);
+    }
+
+    public void SetFrontRimMesh()
+    {
+        CustomMeshManager.instance.SetFrontRimMesh(CustomMeshManager.instance.selectedFrontRim++);
+    }
+
+    public void SetRearRimMesh()
+    {
+        CustomMeshManager.instance.SetRearRimMesh(CustomMeshManager.instance.selectedRearRim++);
+    }
+
+    public void SetFrontHubGuardMesh()
+    {
+        CustomMeshManager.instance.SetFrontHubGuardMesh(CustomMeshManager.instance.selectedFrontHubGuard++);
+    }
+
+    public void SetRearHubGuardMesh()
+    {
+        CustomMeshManager.instance.SetRearHubGuardMesh(CustomMeshManager.instance.selectedRearHubGuard++);
+    }
+
+    public void SetSeatPostMesh()
+    {
+        CustomMeshManager.instance.SetSeatPostMesh(CustomMeshManager.instance.selectedSeatPost++);
     }
 }
 

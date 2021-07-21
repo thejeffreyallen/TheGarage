@@ -13,20 +13,8 @@ using UnityEngine;
 [XmlRoot("BikeSave")]
 [XmlInclude(typeof(PartColor))]
 public class SaveList
-{
-    //TODO
-    /*
-    public int frontHubGuards;
-    public int rearHubGuards;
-    
-    public int frontSpokeAccessories;
-    public int rearSpokeAccessories;
-    */
-
-    public bool hasFrontHubChanged;
-    public bool hasRearHubChanged;
+{ 
     public bool brakes;
-    public bool betterWheels;
     public bool flanges;
     public bool LHD;
 
@@ -39,7 +27,10 @@ public class SaveList
 
     public int seatID;
     public int gripsID;
-    public int treadID;
+    public int frontTreadID;
+    public int frontWallID;
+    public int rearTreadID;
+    public int rearWallID;
 
     public int seatPostMat;
     public int frontTireMat;
@@ -59,6 +50,7 @@ public class SaveList
     public List<PartColor> partColors;
     public List<PartMaterial> partMaterials;
     public List<PartTexture> partTextures;
+    public List<PartPosition> partPositions;
 
     public SaveList()
     {
@@ -66,6 +58,7 @@ public class SaveList
         partColors = new List<PartColor>();
         partMaterials = new List<PartMaterial>();
         partTextures = new List<PartTexture>();
+        partPositions = new List<PartPosition>();
     }
 
 }
@@ -162,6 +155,33 @@ public class PartMesh
     }
 
     public PartMesh()
+    {
+
+    }
+
+}
+
+[XmlType("PartPosition")]
+public class PartPosition
+{
+    public int partNum;
+    public float x, y, z;
+    public float scaleX, scaleY, scaleZ;
+    public bool isVisible;
+
+    public PartPosition(int key, Vector3 pos, Vector3 scale, bool visible)
+    {
+        partNum = key;
+        x = pos.x;
+        y = pos.y;
+        z = pos.z;
+        scaleX = scale.x;
+        scaleY = scale.y;
+        scaleZ = scale.z;
+        isVisible = visible;
+    }
+
+    public PartPosition()
     {
 
     }

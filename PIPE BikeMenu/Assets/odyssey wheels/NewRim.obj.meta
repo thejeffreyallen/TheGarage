@@ -1,17 +1,23 @@
 fileFormatVersion: 2
 guid: 0b9dd2b9da812f94582ececb87422b9f
 ModelImporter:
-  serializedVersion: 23
+  serializedVersion: 22
   fileIDToRecycleName:
     100000: default
     100002: //RootNode
+    100004: BetterWheels_Rim
     400000: default
     400002: //RootNode
+    400004: BetterWheels_Rim
     2100000: None.003
     2100002: defaultMat
+    2100004: None.007
     2300000: default
+    2300002: BetterWheels_Rim
     3300000: default
+    3300002: BetterWheels_Rim
     4300000: default
+    4300002: BetterWheels_Rim
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -63,8 +69,6 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

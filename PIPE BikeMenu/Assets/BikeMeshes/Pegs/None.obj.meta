@@ -7,10 +7,12 @@ ModelImporter:
     100002: //RootNode
     100004: default
     100006: None_instance_0.002_ID15.001
+    100008: Bolts
     400000: None
     400002: //RootNode
     400004: default
     400006: None_instance_0.002_ID15.001
+    400008: Bolts
     2100000: Color_006
     2100002: Color_004
     2100004: Color_007
@@ -19,12 +21,15 @@ ModelImporter:
     2300000: None
     2300002: default
     2300004: None_instance_0.002_ID15.001
+    2300006: Bolts
     3300000: None
     3300002: default
     3300004: None_instance_0.002_ID15.001
+    3300006: Bolts
     4300000: None
     4300002: default
     4300004: None_instance_0.002_ID15.001
+    4300006: Bolts
   externalObjects: {}
   materials:
     importMaterials: 1
