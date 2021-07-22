@@ -51,6 +51,7 @@ public class SaveList
     public List<PartMaterial> partMaterials;
     public List<PartTexture> partTextures;
     public List<PartPosition> partPositions;
+    public List<MatData> matData;
 
     public SaveList()
     {
@@ -59,6 +60,7 @@ public class SaveList
         partMaterials = new List<PartMaterial>();
         partTextures = new List<PartTexture>();
         partPositions = new List<PartPosition>();
+        matData = new List<MatData>();
     }
 
 }
@@ -132,6 +134,27 @@ public class PartMaterial
     }
 
     public PartMaterial()
+    {
+
+    }
+
+}
+
+[XmlType("MatData")]
+public class MatData
+{
+    public int key;
+    public float glossiness;
+    public float glossMapScale;
+
+    public MatData(int key, float glossiness, float glossMapScale)
+    {
+        this.key = key;
+        this.glossiness = glossiness;
+        this.glossMapScale = glossMapScale;
+    }
+
+    public MatData()
     {
 
     }

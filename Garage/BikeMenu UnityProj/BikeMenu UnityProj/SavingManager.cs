@@ -27,7 +27,7 @@ public class SavingManager : MonoBehaviour
     private ColourSetter cs;
     private PartManager partManager;
     private MaterialManager matManager;
-
+    private PartMaster partMaster;
     public GameObject overwriteWarning;
 
     private Material a_glossy;
@@ -42,7 +42,7 @@ public class SavingManager : MonoBehaviour
         cs = FindObjectOfType<ColourSetter>();
         partManager = FindObjectOfType<PartManager>();
         matManager = FindObjectOfType<MaterialManager>();
-        a_glossy = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
+        partMaster = FindObjectOfType<PartMaster>();
         instance = this;
         File.WriteAllText(errorPath, "");
         lastSelectedPreset = PlayerPrefs.GetString("lastPreset");
@@ -51,6 +51,7 @@ public class SavingManager : MonoBehaviour
         else
             CustomMeshManager.instance.SwitchDefaultParts();
         origInfotxt = infoBoxText.text;
+        a_glossy = partMaster.GetMaterial(partMaster.frame);
     }
 
     public IEnumerator SetDefault()
@@ -627,6 +628,14 @@ public class SavingManager : MonoBehaviour
             saveList.rearSpokesMat = GetMaterialHelper(PartMaster.instance.rearSpokes);
             saveList.frontNipplesMat = GetMaterialHelper(PartMaster.instance.frontNipples);
             saveList.rearNipplesMat = GetMaterialHelper(PartMaster.instance.rearNipples);
+
+            foreach (KeyValuePair<int, GameObject> pair in PartMaster.instance.partList)
+            {
+                Material material = PartMaster.instance.GetMaterial(pair.Key);
+                if (material == null)
+                    continue;
+                saveList.matData.Add(new MatData(pair.Key, material.GetFloat("_Glossiness"), material.GetFloat("_GlossMapScale")));
+            }
         }
         catch (Exception e)
         {
@@ -716,7 +725,10 @@ public class SavingManager : MonoBehaviour
             SetMaterialHelper(PartMaster.instance.rearSpokes, loadList.rearSpokesMat);
             SetMaterialHelper(PartMaster.instance.frontNipples, loadList.frontNipplesMat);
             SetMaterialHelper(PartMaster.instance.rearNipples, loadList.rearNipplesMat);
-
+            foreach (MatData matData in loadList.matData)
+            {
+                PartMaster.instance.SetMaterialData(matData.key, matData.glossiness, matData.glossMapScale);
+            }
         }
         catch (Exception e)
         {

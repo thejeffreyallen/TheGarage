@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 
 public class ColourSetter : MonoBehaviour
 {
+    
     public static ColourSetter instance;
 
     private List<int> activeParts; // for multi part editing
@@ -158,6 +159,7 @@ public class ColourSetter : MonoBehaviour
         return active;
     }
 
+    //TODO Add color options for bar/frame and wheel accessories
     void Update()
     {
         if (IsActive() && MenuManager.instance.colourMenu.activeInHierarchy)
@@ -237,7 +239,7 @@ public class ColourSetter : MonoBehaviour
                 }
                 return;
         }
-        if(key >= 0 && key < 44)
+        if(key >= 0 && key < 54)
             PartMaster.instance.GetMaterial(key).color = c;
     }
 

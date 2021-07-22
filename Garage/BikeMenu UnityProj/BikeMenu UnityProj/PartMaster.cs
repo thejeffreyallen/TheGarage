@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// A class that will handle the initial calls to Find() and serve as a central location for all the bike parts since Find() is a very expensive function call.
 /// </summary>
-class PartMaster : MonoBehaviour
+public class PartMaster : MonoBehaviour
 {
 
     public struct TransformData
@@ -30,6 +30,18 @@ class PartMaster : MonoBehaviour
             transform.localPosition = LocalPosition;
             transform.localEulerAngles = LocalEulerRotation;
             transform.localScale = LocalScale;
+        }
+    }
+
+    public struct MaterialData
+    {
+        public float glossiness;
+        public float glossMapScale;
+
+        public MaterialData(float glossiness, float glossMapScale)
+        {
+            this.glossiness = glossiness;
+            this.glossMapScale = glossMapScale;
         }
     }
 
@@ -168,6 +180,16 @@ class PartMaster : MonoBehaviour
         foreach (KeyValuePair<int, GameObject> pair in partList) {
             origTrans.Add(pair.Key, new TransformData(pair.Value.transform));
         }
+    }
+
+    public void SetMaterialData(int key, float glossiness, float glossMapScale)
+    {
+        Material material = GetMaterial(key);
+        if (material == null)
+            return;
+        material.SetFloat("_Glossiness", glossiness);
+        material.SetFloat("_GlossMapScale", glossMapScale);
+        SetMaterial(key, material);
     }
 
     /// <summary>
@@ -438,26 +460,11 @@ class PartMaster : MonoBehaviour
         Material[] mats = partList[key].GetComponent<MeshRenderer>().materials;
         if (mats.Length > 1)
         {
-            Debug.Log("More than one material");
             mats[0] = mat;
-        }
-        partList[key].GetComponent<Renderer>().material = mat;
-    }
-
-    /// <summary>
-    /// Change a specific material of a bike part that uses more than one material
-    /// </summary>
-    /// <param name="index"> index of the list of materials associated with the bike part</param>
-    /// <param name="key"> The part number associated with the bike part </param>
-    /// <param name="mat"> The material to change to </param>
-    public void SetMaterial(int index, int key, Material mat)
-    {
-        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
-        {
-            Debug.Log("Key not found in part list at SetMaterial(index, key, mat) method");
+            SetMaterials(key, mats);
             return;
         }
-        partList[key].GetComponent<MeshRenderer>().materials[index] = mat;
+        partList[key].GetComponent<Renderer>().material = mat;
     }
 
     /// <summary>
