@@ -38,3 +38,4 @@ G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Deb
 G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeWorkshopMenu.pdb
 G:\Unity Projects\TheGarage\PIPE BikeMenu\Assets\VS Project\BikeWorkshopMenu.dll.config
 G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csprojAssemblyReference.cache
+G:\Unity Projects\TheGarage\Garage\BikeMenu UnityProj\BikeMenu UnityProj\obj\Debug\BikeMenu UnityProj.csproj.App.config

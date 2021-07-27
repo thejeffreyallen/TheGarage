@@ -112,6 +112,8 @@ public class PartMaster : MonoBehaviour
     GameObject frontHubGuard;
     GameObject rearHubGuard;
 
+    public GameObject localBMX;
+
     /// <summary>
     /// Need to find all bike parts and assign them to a public GameObject for other classes to use
     /// </summary>
@@ -201,6 +203,7 @@ public class PartMaster : MonoBehaviour
         try
         {
             partList = new Dictionary<int, GameObject>();
+            localBMX = GameObject.Find("BMX");
             Transform[] barsJoint = GameObject.Find("BMX:Bars_Joint").GetComponentsInChildren<Transform>(true);
             Transform[] frameJoint = GameObject.Find("BMX:Frame_Joint").GetComponentsInChildren<Transform>(true);
 

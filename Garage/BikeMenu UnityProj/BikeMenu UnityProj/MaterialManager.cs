@@ -11,13 +11,9 @@ public class MaterialManager : MonoBehaviour
 {
     public static MaterialManager instance;
     public Material[] customMats;
-    private int matCount = 0;
     
     [HideInInspector]
     public Material defaultMat;
-    public Material OskersFrameMat;
-    public Material OskersForksMat;
-    public Material OskersBarsMat;
     private Material defaultSeatMat;
 
     public Material chainMatFix;
@@ -26,11 +22,12 @@ public class MaterialManager : MonoBehaviour
     {
         StartCoroutine(DestroyNormal());
         instance = this;
-        defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
+        
     }
 
     public void Start()
     {
+        defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
         defaultSeatMat = PartMaster.instance.GetMaterial(PartMaster.instance.seat);
         PartMaster.instance.SetMaterial(PartMaster.instance.chain, chainMatFix);
     }
@@ -126,12 +123,16 @@ public class MaterialManager : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
                 Material m = FindObjectOfType<BikeLoadOut>().GetPartMat(i);
-                if (m.name.ToLower().Contains("a_glossy"))
+                if (m.name.ToLower().Contains("a_glossy") || m.name.ToLower().Contains("fork"))
                 {
-                    FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, i, true);
+                FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, i, true);
                 }
                 
         }
+        // Quick fix for weird normal map issue on left crank arm
+        PartMaster.instance.GetPart(PartMaster.instance.leftCrank).GetComponent<MeshRenderer>().material = defaultMat;
+        PartMaster.instance.GetPart(PartMaster.instance.rightCrank).GetComponent<MeshRenderer>().material = defaultMat;
+        PartMaster.instance.GetPart(PartMaster.instance.forks).GetComponent<MeshRenderer>().material = defaultMat;
         yield break;
     }
 

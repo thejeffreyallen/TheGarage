@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class TextureManager : MonoBehaviour
 {
@@ -347,49 +349,65 @@ public class TextureManager : MonoBehaviour
         }
     }
 
-
     IEnumerator SetTextureEnum()
     {
-        WWW www = new WWW(urlInput.text);
-        while (!www.isDone)
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(urlInput.text))
         {
-            yield return new WaitForEndOfFrame();
+            yield return www.SendWebRequest();
+            if (www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                List<int> activeList = ColourSetter.instance.GetActivePartList();
+                foreach (int key in activeList)
+                {
+                    TexHelper(DownloadHandlerTexture.GetContent(www), albedoList, urlInput, key, "_MainTex");
+                }
+                urlInput.text = "";
+            }
         }
-        List<int> activeList = ColourSetter.instance.GetActivePartList();
-        foreach (int key in activeList)
-        {
-            TexHelper(www.texture, albedoList, urlInput, key, "_MainTex");
-        }
-        urlInput.text = "";
     }
 
     IEnumerator SetNormalEnum()
     {
-        WWW www = new WWW(urlNorm.text);
-        while (!www.isDone)
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(urlNorm.text))
         {
-            yield return new WaitForEndOfFrame();
+            yield return www.SendWebRequest();
+            if (www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                List<int> activeList = ColourSetter.instance.GetActivePartList();
+                foreach (int key in activeList)
+                {
+                    TexHelper(ConvertToNormalMap(DownloadHandlerTexture.GetContent(www)), normalList, urlNorm, key, "_BumpMap", "_NORMALMAP");
+                }
+                urlNorm.text = "";
+            }
         }
-        Texture2D normalTexture = ConvertToNormalMap(www.texture);
-
-        List<int> activeList = ColourSetter.instance.GetActivePartList();
-        foreach (int key in activeList)
-        {
-            TexHelper(normalTexture, normalList, urlNorm, key, "_BumpMap", "_NORMALMAP");
-        }
-        urlNorm.text = "";
     }
 
     IEnumerator SetNormalEnum(int partNum, string url)
     {
-        WWW www = new WWW(url);
-        while (!www.isDone)
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
         {
-            yield return new WaitForEndOfFrame();
+            yield return www.SendWebRequest();
+            if (www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                TexHelper(ConvertToNormalMap(DownloadHandlerTexture.GetContent(www)), normalList, null, partNum, "_BumpMap", "_NORMALMAP", url);
+            }
         }
-        Texture2D normalTexture = ConvertToNormalMap(www.texture);
+        
 
-        TexHelper(normalTexture, normalList, null, partNum, "_BumpMap", "_NORMALMAP", url);
+        
     }
 
     private Texture2D ConvertToNormalMap(Texture2D texture)
@@ -414,37 +432,58 @@ public class TextureManager : MonoBehaviour
 
     IEnumerator SetMetallicEnum()
     {
-        WWW www = new WWW(urlMet.text);
-        while (!www.isDone)
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(urlMet.text))
         {
-            yield return new WaitForEndOfFrame();
+            yield return www.SendWebRequest();
+            if (www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                List<int> activeList = ColourSetter.instance.GetActivePartList();
+                foreach (int key in activeList)
+                {
+                    TexHelper(DownloadHandlerTexture.GetContent(www), metallicList, urlMet, key, "_MetallicGlossMap", "_METALLICGLOSSMAP");
+                }
+                urlMet.text = "";
+            }
         }
-        List<int> activeList = ColourSetter.instance.GetActivePartList();
-        foreach (int key in activeList)
-        {
-            TexHelper(www.texture, metallicList, urlMet, key, "_MetallicGlossMap", "_METALLICGLOSSMAP");
-        }
-        urlMet.text = "";
     }
 
     IEnumerator SetMetallicEnum(int partNum, string url)
     {
-        WWW www = new WWW(url);
-        while (!www.isDone)
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
         {
-            yield return new WaitForEndOfFrame();
+            yield return www.SendWebRequest();
+            if (www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                TexHelper(DownloadHandlerTexture.GetContent(www), metallicList, null, partNum, "_MetallicGlossMap", "_METALLICGLOSSMAP", url);
+            }
         }
-        TexHelper(www.texture, metallicList, null, partNum, "_MetallicGlossMap", "_METALLICGLOSSMAP", url);
+        
     }
 
     IEnumerator SetTextureEnum(int partNum, string url)
     {
-        WWW www = new WWW(url);
-        while (!www.isDone)
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
         {
-            yield return new WaitForEndOfFrame();
+            yield return www.SendWebRequest();
+            if (www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                TexHelper(DownloadHandlerTexture.GetContent(www), albedoList, null, partNum, "_MainTex", "", url);
+                
+            }
         }
-        TexHelper(www.texture, albedoList, null, partNum, "_MainTex", "", url);
+        
     }
 
     IEnumerator SetTextureBlank(int partNum)

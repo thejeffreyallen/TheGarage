@@ -176,6 +176,8 @@ public class CustomMeshManager : MonoBehaviour
     public List<MeshObject> frameAccessories;
     public List<MeshObject> seatPosts;
 
+    public Dictionary<string, List<MeshObject>> meshLists = new Dictionary<string, List<MeshObject>>();
+
     private float nextActionTime = 0.0f;
     public float period = 0.1f;
 
@@ -290,6 +292,32 @@ public class CustomMeshManager : MonoBehaviour
                 frameAccessories.Add(new MeshObject(m, false, ""));
             foreach (Mesh m in seatPostMeshes)
                 seatPosts.Add(new MeshObject(m, false, ""));
+
+            meshLists.Add("frame", frames);
+            meshLists.Add("bars", bars);
+            meshLists.Add("sprocket", sprockets);
+            meshLists.Add("stem", stems);
+            meshLists.Add("cranks", cranks);
+            meshLists.Add("frontSpokes", spokes);
+            meshLists.Add("rearSpokes", spokes);
+            meshLists.Add("pedals", pedals);
+            meshLists.Add("forks", forks);
+            meshLists.Add("frontPegs", pegs);
+            meshLists.Add("rearPegs", pegs);
+            meshLists.Add("frontHub", hubs);
+            meshLists.Add("rearHub", hubs);
+            meshLists.Add("seat", seats);
+            meshLists.Add("frontRim", rims);
+            meshLists.Add("rearRim", rims);
+            meshLists.Add("frontSpokeAccessory", accessories);
+            meshLists.Add("rearSpokeAccessory", accessories);
+            meshLists.Add("barAccessory", barAccessories);
+            meshLists.Add("frameAccessory", frameAccessories);
+            meshLists.Add("frontHubGuard", frontHubGuards);
+            meshLists.Add("rearHubGuard", rearHubGuards);
+            meshLists.Add("seatPost", seatPosts);
+            meshLists.Add("stemBolts", boltsStem);
+            meshLists.Add("crankBolts", boltsCrank);
         }
         catch (Exception e)
         {
@@ -327,6 +355,26 @@ public class CustomMeshManager : MonoBehaviour
             Debug.Log("Error while loading meshes from file: " + e.Message + "\n" + e.StackTrace);
         }
         
+    }
+
+    public Mesh FindSpecific(string list, string fileName)
+    {
+        List<MeshObject> temp = meshLists[list];
+        Mesh mesh = null;
+        if (temp == null)
+        {
+            Debug.Log("Mesh not found in mesh lists");
+            return null;
+        }
+        foreach (MeshObject mo in temp)
+        {
+            if (mo.fileName.Equals(fileName))
+            {
+                mesh = mo.mesh;
+                break;
+            }
+        }
+        return mesh;
     }
 
     public void SetFrontSpokeAccMesh(int i)

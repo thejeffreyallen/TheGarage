@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
+[Serializable]
 /// <summary>
 /// Class to represent all data of a saved bike preset
 /// </summary>
@@ -65,6 +66,7 @@ public class SaveList
 
 }
 
+[Serializable]
 /// <summary>
 /// Class to represent part number and color associated with the bike part
 /// </summary>
@@ -92,6 +94,7 @@ public class PartColor
     }
 }
 
+[Serializable]
 /// <summary>
 /// Class to represent part number, texture url, and whether the texture is main, normal or metallic
 /// </summary>
@@ -118,6 +121,7 @@ public class PartTexture
 
 }
 
+[Serializable]
 /// <summary>
 /// Class to represent a part number and associated material
 /// </summary>
@@ -140,6 +144,7 @@ public class PartMaterial
 
 }
 
+[Serializable]
 [XmlType("MatData")]
 public class MatData
 {
@@ -161,17 +166,20 @@ public class MatData
 
 }
 
+[Serializable]
 [XmlType("PartMesh")]
 public class PartMesh
 {
-    public int partNum;
+    public int index;
+    public int key;
     public bool isCustom;
     public string fileName;
     public string partName;
 
-    public PartMesh(int partNum, bool isCustom, string fileName, string partName)
+    public PartMesh(int index, int key, bool isCustom, string fileName, string partName)
     {
-        this.partNum = partNum;
+        this.index = index;
+        this.key = key;
         this.isCustom = isCustom;
         this.fileName = fileName;
         this.partName = partName;
@@ -184,6 +192,7 @@ public class PartMesh
 
 }
 
+[Serializable]
 [XmlType("PartPosition")]
 public class PartPosition
 {
