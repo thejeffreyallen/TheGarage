@@ -301,7 +301,7 @@ public class SavingManager : MonoBehaviour
     /// </summary>
     private void SaveFrontTireWidth()
     {
-        saveList.frontTireWidth = FindObjectOfType<BikeLoadOut>().GetFrontTireFatness();
+        saveList.frontTireWidth = PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetFrontTireFatness();
     }
 
     /// <summary>
@@ -309,7 +309,7 @@ public class SavingManager : MonoBehaviour
     /// </summary>
     private void SaveRearTireWidth()
     {
-        saveList.rearTireWidth = FindObjectOfType<BikeLoadOut>().GetBackTireFatness();
+        saveList.rearTireWidth = PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetBackTireFatness();
     }
 
     /// <summary>
@@ -320,7 +320,7 @@ public class SavingManager : MonoBehaviour
         try
         {
             float width = loadList.frontTireWidth;
-            FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+            PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().SetFrontTireFatness(width);
         }
         catch (Exception e)
         {
@@ -336,7 +336,7 @@ public class SavingManager : MonoBehaviour
         try
         {
             float width = loadList.rearTireWidth;
-            FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
+            PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().SetBackTireFatness(width);
         }
         catch (Exception e)
         {
@@ -349,7 +349,7 @@ public class SavingManager : MonoBehaviour
     /// </summary>
     private void SaveSeatAngle()
     {
-        saveList.seatAngle = FindObjectOfType<SeatApplyMod>().GetSeatAnglePerc();
+        saveList.seatAngle = PartManager.instance.bmx.GetComponentInChildren<SeatApplyMod>().GetSeatAnglePerc();
     }
 
     /// <summary>
@@ -360,7 +360,7 @@ public class SavingManager : MonoBehaviour
         try
         {
             float angle = loadList.seatAngle;
-            FindObjectOfType<SeatApplyMod>().SetSeatAnglePerc(angle);
+            PartManager.instance.bmx.GetComponentInChildren<SeatApplyMod>().SetSeatAnglePerc(angle);
             partManager.seatAngleSlider.value = angle;
         }
         catch (Exception e)
@@ -374,7 +374,7 @@ public class SavingManager : MonoBehaviour
     /// </summary>
     private void SaveBarsAngle()
     {
-        saveList.barsAngle = FindObjectOfType<BarsApplyMod>().GetBarsAnglePerc();
+        saveList.barsAngle = PartManager.instance.bmx.GetComponentInChildren<BarsApplyMod>().GetBarsAnglePerc();
     }
 
     /// <summary>
@@ -385,7 +385,7 @@ public class SavingManager : MonoBehaviour
         try
         {
             float angle = loadList.barsAngle;
-            FindObjectOfType<BarsApplyMod>().SetBarsAnglePerc(angle);
+            PartManager.instance.bmx.GetComponentInChildren<BarsApplyMod>().SetBarsAnglePerc(angle);
             partManager.barsAngleSlider.value = angle;
         }
         catch (Exception e)
@@ -570,7 +570,7 @@ public class SavingManager : MonoBehaviour
         {
             for (int i = 0; i < 20; i++)
             {
-                Material mat = FindObjectOfType<BikeLoadOut>().GetPartMat(i);
+                Material mat = PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetPartMat(i);
                 debug += mat.name.ToLower() + "\n ";
                 switch (mat.name.ToLower())
                 {
@@ -629,6 +629,13 @@ public class SavingManager : MonoBehaviour
             saveList.rearSpokesMat = GetMaterialHelper(PartMaster.instance.rearSpokes);
             saveList.frontNipplesMat = GetMaterialHelper(PartMaster.instance.frontNipples);
             saveList.rearNipplesMat = GetMaterialHelper(PartMaster.instance.rearNipples);
+
+            saveList.leftGripMat = GetMaterialHelper(PartMaster.instance.leftGrip);
+            saveList.rightGripMat = GetMaterialHelper(PartMaster.instance.rightGrip);
+            saveList.leftCrankMat = GetMaterialHelper(PartMaster.instance.leftCrank);
+            saveList.rightCrankMat = GetMaterialHelper(PartMaster.instance.rightCrank);
+            saveList.leftPedalMat = GetMaterialHelper(PartMaster.instance.leftPedal);
+            saveList.rightPedalMat = GetMaterialHelper(PartMaster.instance.rightPedal);
 
             foreach (KeyValuePair<int, GameObject> pair in PartMaster.instance.partList)
             {
@@ -701,14 +708,14 @@ public class SavingManager : MonoBehaviour
                 switch (p.matID)
                 {
                     case 0:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(MaterialManager.instance.defaultMat, p.partNum, true);
+                        PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().SetPartMaterial(MaterialManager.instance.defaultMat, p.partNum, true);
                         break;
                     case 7:
                         break;
                     case 9:
                         break;
                     default:
-                        FindObjectOfType<BikeLoadOut>().SetPartMaterial(matManager.customMats[p.matID-1], p.partNum, true);
+                        PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().SetPartMaterial(matManager.customMats[p.matID-1], p.partNum, true);
                         break;
                 }
 
@@ -726,6 +733,14 @@ public class SavingManager : MonoBehaviour
             SetMaterialHelper(PartMaster.instance.rearSpokes, loadList.rearSpokesMat);
             SetMaterialHelper(PartMaster.instance.frontNipples, loadList.frontNipplesMat);
             SetMaterialHelper(PartMaster.instance.rearNipples, loadList.rearNipplesMat);
+
+            SetMaterialHelper(PartMaster.instance.leftGrip, loadList.leftGripMat);
+            SetMaterialHelper(PartMaster.instance.rightGrip, loadList.rightGripMat);
+            SetMaterialHelper(PartMaster.instance.leftCrank, loadList.leftCrankMat);
+            SetMaterialHelper(PartMaster.instance.rightCrank, loadList.rightCrankMat);
+            SetMaterialHelper(PartMaster.instance.leftPedal, loadList.leftPedalMat);
+            SetMaterialHelper(PartMaster.instance.rightPedal, loadList.rightPedalMat);
+
             foreach (MatData matData in loadList.matData)
             {
                 PartMaster.instance.SetMaterialData(matData.key, matData.glossiness, matData.glossMapScale);

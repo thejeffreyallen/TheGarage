@@ -41,10 +41,12 @@ public class PartManager : MonoBehaviour
 
     float maxSeatHeight = 1f;
 
-    Transform bmx;
+    public GameObject bmx;
+
     private void Awake()
     {
         instance = this;
+        bmx = GameObject.Find("BMX");
     }
 
     private void Start()
@@ -52,8 +54,8 @@ public class PartManager : MonoBehaviour
         ogRearWheel = PartMaster.instance.GetPart(PartMaster.instance.rearHub).transform;
         chainMesh = PartMaster.instance.GetPart(PartMaster.instance.chain).transform;
         sprocketMesh = PartMaster.instance.GetPart(PartMaster.instance.sprocket).transform;
-        seatAngleSlider.value = FindObjectOfType<SeatApplyMod>().GetSeatAnglePerc();
-        bmx = GameObject.Find("BMX").transform;
+        seatAngleSlider.value = bmx.GetComponentInChildren<SeatApplyMod>().GetSeatAnglePerc();
+
 
         leftHandTarget = PartMaster.instance.GetPart(PartMaster.instance.leftAnchor);
         rightHandTarget = PartMaster.instance.GetPart(PartMaster.instance.rightAnchor);
@@ -73,7 +75,7 @@ public class PartManager : MonoBehaviour
     {
         PartMaster.instance.GetPart(PartMaster.instance.seatPostAnchor).transform.localPosition = new Vector3(0f, Mathf.Lerp(0f, maxSeatHeight, f), 0f);
         seatHeightSlider.value = f;
-        
+
     }
 
     public void SeatUpDown()
@@ -83,30 +85,30 @@ public class PartManager : MonoBehaviour
 
     public void FrontTireWidth()
     {
-        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(frontTireWidth.value);
+        bmx.GetComponentInChildren<BikeLoadOut>().SetFrontTireFatness(frontTireWidth.value);
     }
 
     public void RearTireWidth()
     {
-        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(rearTireWidth.value);
+        bmx.GetComponentInChildren<BikeLoadOut>().SetBackTireFatness(rearTireWidth.value);
     }
 
 
     public void SetFrontTireWidth(float width)
     {
-        FindObjectOfType<BikeLoadOut>().SetFrontTireFatness(width);
+        bmx.GetComponentInChildren<BikeLoadOut>().SetFrontTireFatness(width);
         frontTireWidth.value = width;
     }
 
     public void SetRearTireWidth(float width)
     {
-        FindObjectOfType<BikeLoadOut>().SetBackTireFatness(width);
+        bmx.GetComponentInChildren<BikeLoadOut>().SetBackTireFatness(width);
         rearTireWidth.value = width;
     }
 
     public float GetTireWidth()
     {
-        return FindObjectOfType<BikeLoadOut>().GetBackTireFatness();
+        return bmx.GetComponentInChildren<BikeLoadOut>().GetBackTireFatness();
     }
 
     public void SwitchDriveSide()
@@ -159,30 +161,30 @@ public class PartManager : MonoBehaviour
 
     public void SeatAngle()
     {
-        FindObjectOfType<SeatApplyMod>().SetSeatAnglePerc(seatAngleSlider.value);
+        bmx.GetComponentInChildren<SeatApplyMod>().SetSeatAnglePerc(seatAngleSlider.value);
     }
 
     public void SetSeatAngle(float f)
     {
-        FindObjectOfType<SeatApplyMod>().SetSeatAnglePerc(f);
+        bmx.GetComponentInChildren<SeatApplyMod>().SetSeatAnglePerc(f);
         seatAngleSlider.value = f;
     }
 
     public void ChangeSeat()
     {
-        FindObjectOfType<SeatApplyMod>().SetSeatCoverID(seatCount % FindObjectOfType<SeatApplyMod>().seatCovers.Length);
-        seatCount = (seatCount % FindObjectOfType<SeatApplyMod>().seatCovers.Length) + 1;
+        bmx.GetComponentInChildren<SeatApplyMod>().SetSeatCoverID(seatCount % bmx.GetComponentInChildren<SeatApplyMod>().seatCovers.Length);
+        seatCount = (seatCount % bmx.GetComponentInChildren<SeatApplyMod>().seatCovers.Length) + 1;
     }
 
     public void BarsAngle()
     {
-        FindObjectOfType<BarsApplyMod>().SetBarsAnglePerc(barsAngleSlider.value);
-        
+        bmx.GetComponentInChildren<BarsApplyMod>().SetBarsAnglePerc(barsAngleSlider.value);
+
     }
 
     public void SetBarsAngle(float f)
     {
-        FindObjectOfType<BarsApplyMod>().SetBarsAnglePerc(f);
+        bmx.GetComponentInChildren<BarsApplyMod>().SetBarsAnglePerc(f);
         barsAngleSlider.value = f;
     }
 
@@ -250,42 +252,42 @@ public class PartManager : MonoBehaviour
 
     public void SetSeatID(int id)
     {
-        FindObjectOfType<SeatApplyMod>().SetSeatCoverID(id % FindObjectOfType<SeatApplyMod>().seatCovers.Length);
-        seatCount = (id % FindObjectOfType<SeatApplyMod>().seatCovers.Length) + 1;
+        bmx.GetComponentInChildren<SeatApplyMod>().SetSeatCoverID(id % bmx.GetComponentInChildren<SeatApplyMod>().seatCovers.Length);
+        seatCount = (id % bmx.GetComponentInChildren<SeatApplyMod>().seatCovers.Length) + 1;
     }
 
-    
+
 
     public void ChangeGrips()
     {
-        FindObjectOfType<BarsApplyMod>().SetGripsID(gripsCount % FindObjectOfType<BarsApplyMod>().gripMats.Length);
+        bmx.GetComponentInChildren<BarsApplyMod>().SetGripsID(gripsCount % bmx.GetComponentInChildren<BarsApplyMod>().gripMats.Length);
         gripsCount++;
-   
+
     }
 
     public void SetGripsId(int id)
     {
 
-        FindObjectOfType<BarsApplyMod>().SetGripsID(id % FindObjectOfType<BarsApplyMod>().gripMats.Length);
-        gripsCount = id % FindObjectOfType<BarsApplyMod>().gripMats.Length + 1;
+        bmx.GetComponentInChildren<BarsApplyMod>().SetGripsID(id % bmx.GetComponentInChildren<BarsApplyMod>().gripMats.Length);
+        gripsCount = id % bmx.GetComponentInChildren<BarsApplyMod>().gripMats.Length + 1;
 
     }
 
     public void ToggleFlanges()
     {
         flangesVisible = !flangesVisible;
-        FindObjectOfType<BarsApplyMod>().SetFlanges(flangesVisible);
+        bmx.GetComponentInChildren<BarsApplyMod>().SetFlanges(flangesVisible);
     }
 
     public void SetFlangesOff()
     {
-        FindObjectOfType<BarsApplyMod>().SetFlanges(false);
+        bmx.GetComponentInChildren<BarsApplyMod>().SetFlanges(false);
         flangesVisible = false;
     }
 
     public void SetFlangesOn()
     {
-        FindObjectOfType<BarsApplyMod>().SetFlanges(true);
+        bmx.GetComponentInChildren<BarsApplyMod>().SetFlanges(true);
         flangesVisible = true;
     }
 
@@ -304,12 +306,12 @@ public class PartManager : MonoBehaviour
     public void SetBikeScale()
     {
         float size = bikeScaleSlider.value;
-        bmx.localScale = new Vector3(size, size, size);
+        bmx.transform.localScale = new Vector3(size, size, size);
     }
 
     public void SetBikeScale(float scale)
     {
-        bmx.localScale = new Vector3(scale, scale, scale);
+        bmx.transform.localScale = new Vector3(scale, scale, scale);
         bikeScaleSlider.value = scale;
     }
 

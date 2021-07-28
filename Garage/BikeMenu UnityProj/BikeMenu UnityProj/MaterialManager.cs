@@ -27,7 +27,7 @@ public class MaterialManager : MonoBehaviour
 
     public void Start()
     {
-        defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
+        defaultMat = PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetPartMat(0);
         defaultSeatMat = PartMaster.instance.GetMaterial(PartMaster.instance.seat);
         PartMaster.instance.SetMaterial(PartMaster.instance.chain, chainMatFix);
     }
@@ -116,16 +116,16 @@ public class MaterialManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         if (defaultMat == null)
-            defaultMat = FindObjectOfType<BikeLoadOut>().GetPartMat(0);
+            defaultMat = PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetPartMat(0);
         defaultMat.SetFloat("_DetailNormalMapScale", 0f);
         defaultMat.color = Color.black;
         Debug.Log("Destroying detail normal maps ");
         for (int i = 0; i < 20; i++)
         {
-                Material m = FindObjectOfType<BikeLoadOut>().GetPartMat(i);
+                Material m = PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetPartMat(i);
                 if (m.name.ToLower().Contains("a_glossy") || m.name.ToLower().Contains("fork"))
                 {
-                FindObjectOfType<BikeLoadOut>().SetPartMaterial(defaultMat, i, true);
+                PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().SetPartMaterial(defaultMat, i, true);
                 }
                 
         }

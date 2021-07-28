@@ -46,6 +46,12 @@ public class SaveList
     public int rearSpokesMat;
     public int frontNipplesMat;
     public int rearNipplesMat;
+    public int leftGripMat;
+    public int rightGripMat;
+    public int leftCrankMat;
+    public int rightCrankMat;
+    public int leftPedalMat;
+    public int rightPedalMat;
 
     public List<PartMesh> partMeshes;
     public List<PartColor> partColors;
