@@ -52,6 +52,8 @@ public class SaveList
     public int rightCrankMat;
     public int leftPedalMat;
     public int rightPedalMat;
+    public int brakeMat;
+    public int brakeCableMat;
 
     public List<PartMesh> partMeshes;
     public List<PartColor> partColors;

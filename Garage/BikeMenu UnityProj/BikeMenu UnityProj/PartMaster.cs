@@ -399,6 +399,7 @@ public class PartMaster : MonoBehaviour
             Debug.Log("Key not found in part list at GetPart() method");
             return null;
         }
+
         return partList[key];
     }
 
@@ -409,9 +410,13 @@ public class PartMaster : MonoBehaviour
     /// <returns> The mesh at partList[key] </returns>
     public Mesh GetMesh(int key)
     {
-        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshFilter>() == null)
+        if (!partList.ContainsKey(key))
         {
             Debug.Log("Key not found in part list at GetMesh() method");
+            return null;
+        }
+        if (partList[key].GetComponent<MeshFilter>() == null)
+        {
             return null;
         }
         return partList[key].GetComponent<MeshFilter>().mesh;
@@ -424,9 +429,13 @@ public class PartMaster : MonoBehaviour
     /// <param name="mesh"> The new mesh to change to </param>
     public void SetMesh(int key, Mesh mesh)
     {
-        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshFilter>() == null)
+        if (!partList.ContainsKey(key))
         {
             Debug.Log("Key not found in part list at SetMesh() method");
+            return;
+        }
+        if (partList[key].GetComponent<MeshFilter>() == null)
+        {
             return;
         }
         partList[key].GetComponent<MeshFilter>().mesh = mesh;
@@ -440,9 +449,13 @@ public class PartMaster : MonoBehaviour
     /// <returns> The Material at partList[key]</returns>
     public Material GetMaterial(int key)
     {
-        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
+        if (!partList.ContainsKey(key))
         {
             Debug.Log("Key not found in part list at GetMaterial() method");
+            return null;
+        }
+        if (partList[key].GetComponent<MeshRenderer>() == null)
+        {
             return null;
         }
         return partList[key].GetComponent<MeshRenderer>().material;
@@ -455,9 +468,13 @@ public class PartMaster : MonoBehaviour
     /// <param name="mat"> The material to change to </param>
     public void SetMaterial(int key, Material mat)
     {
-        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
+        if (!partList.ContainsKey(key))
         {
             Debug.Log("Key not found in part list at SetMaterial() method");
+            return;
+        }
+        if (partList[key].GetComponent<MeshRenderer>() == null)
+        {
             return;
         }
         Material[] mats = partList[key].GetComponent<MeshRenderer>().materials;
@@ -477,37 +494,30 @@ public class PartMaster : MonoBehaviour
     /// <returns> The material array at partList[key] </returns>
     public Material[] GetMaterials(int key)
     {
-        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
+        if (!partList.ContainsKey(key))
         {
             Debug.Log("Key not found in part list at GetMaterials() method");
+            return null;
+        }
+        if (partList[key].GetComponent<MeshRenderer>() == null)
+        {
             return null;
         }
         return partList[key].GetComponent<MeshRenderer>().materials;
     }
 
     public void SetMaterials(int key, Material[] mats) {
-        if (!partList.ContainsKey(key) || partList[key].GetComponent<MeshRenderer>() == null)
+        if (!partList.ContainsKey(key))
         {
-            Debug.Log("Key not found in part list at SetMaterials() method");
+            Debug.Log("Key not found in part list at SetMaterial() method");
+            return;
+        }
+        if (partList[key].GetComponent<MeshRenderer>() == null)
+        {
+            return;
         }
 
         partList[key].GetComponent<MeshRenderer>().materials = mats;
-    }
-
-    /// <summary>
-    /// Experimental method to add collision to a bike part
-    /// </summary>
-    /// <param name="key"></param>
-    public void AddCollision(int key)
-    {
-        if (!partList.ContainsKey(key))
-        {
-            Debug.Log("Key not found in part list at AddCollision() method");
-            return;
-        }
-        partList[key].AddComponent<MeshCollider>();
-        partList[key].GetComponent<MeshCollider>().sharedMesh = GetMesh(key);
-        partList[key].layer = 0;
     }
 
     public void MovePart(int key, string axis, float pos)
@@ -598,14 +608,6 @@ public class PartMaster : MonoBehaviour
             GameObject obj = GetPart(key);
             TransformData td = origTrans[key];
             td.ApplyTo(obj.transform);
-        }
-    }
-
-    public void AddCollision()
-    {
-        foreach (int key in ColourSetter.instance.GetActivePartList())
-        {
-            AddCollision(key);
         }
     }
 }

@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Networking;
 
 public class TextureManager : MonoBehaviour
 {
@@ -87,7 +85,7 @@ public class TextureManager : MonoBehaviour
         metallicList.Add(-2, "");
     }
 
-    
+
     public void Update()
     {
         if (shinySlide.gameObject.transform.parent.gameObject.activeInHierarchy)
@@ -110,7 +108,7 @@ public class TextureManager : MonoBehaviour
                 {
                     if (metallicList.ContainsKey(selectedPart))
                     {
-                        if(String.IsNullOrEmpty(metallicList[selectedPart]))
+                        if (String.IsNullOrEmpty(metallicList[selectedPart]))
                             PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
                         else
                             PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
@@ -281,8 +279,8 @@ public class TextureManager : MonoBehaviour
             Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
             if (flag)
                 mats[1].EnableKeyword(enableKeyword);
-            if(flag2)
-                mats[1].DisableKeyword(enableKeyword);   
+            if (flag2)
+                mats[1].DisableKeyword(enableKeyword);
             mats[1].SetTexture(texType, tex);
             PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
         }
@@ -310,7 +308,7 @@ public class TextureManager : MonoBehaviour
                     BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].DisableKeyword(enableKeyword);
                     BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[1].DisableKeyword(enableKeyword);
                 }
-                    
+
                 BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].SetTexture(texType, tex);
                 BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].SetTexture(texType, tex);
             }
@@ -349,65 +347,40 @@ public class TextureManager : MonoBehaviour
         }
     }
 
+
     IEnumerator SetTextureEnum()
     {
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(urlInput.text))
+        WWW www = new WWW(urlInput.text);
+        yield return www;
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
         {
-            yield return www.SendWebRequest();
-            if (www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                List<int> activeList = ColourSetter.instance.GetActivePartList();
-                foreach (int key in activeList)
-                {
-                    TexHelper(DownloadHandlerTexture.GetContent(www), albedoList, urlInput, key, "_MainTex");
-                }
-                urlInput.text = "";
-            }
+            TexHelper(www.texture, albedoList, urlInput, key, "_MainTex");
         }
+        urlInput.text = "";
     }
 
     IEnumerator SetNormalEnum()
     {
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(urlNorm.text))
+        WWW www = new WWW(urlNorm.text);
+        yield return www;
+        Texture2D normalTexture = ConvertToNormalMap(www.texture);
+
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
         {
-            yield return www.SendWebRequest();
-            if (www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                List<int> activeList = ColourSetter.instance.GetActivePartList();
-                foreach (int key in activeList)
-                {
-                    TexHelper(ConvertToNormalMap(DownloadHandlerTexture.GetContent(www)), normalList, urlNorm, key, "_BumpMap", "_NORMALMAP");
-                }
-                urlNorm.text = "";
-            }
+            TexHelper(normalTexture, normalList, urlNorm, key, "_BumpMap", "_NORMALMAP");
         }
+        urlNorm.text = "";
     }
 
     IEnumerator SetNormalEnum(int partNum, string url)
     {
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
-        {
-            yield return www.SendWebRequest();
-            if (www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                TexHelper(ConvertToNormalMap(DownloadHandlerTexture.GetContent(www)), normalList, null, partNum, "_BumpMap", "_NORMALMAP", url);
-            }
-        }
-        
+        WWW www = new WWW(url);
+        yield return www;
+        Texture2D normalTexture = ConvertToNormalMap(www.texture);
 
-        
+        TexHelper(normalTexture, normalList, null, partNum, "_BumpMap", "_NORMALMAP", url);
     }
 
     private Texture2D ConvertToNormalMap(Texture2D texture)
@@ -432,58 +405,28 @@ public class TextureManager : MonoBehaviour
 
     IEnumerator SetMetallicEnum()
     {
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(urlMet.text))
+        WWW www = new WWW(urlMet.text);
+        yield return www;
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int key in activeList)
         {
-            yield return www.SendWebRequest();
-            if (www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                List<int> activeList = ColourSetter.instance.GetActivePartList();
-                foreach (int key in activeList)
-                {
-                    TexHelper(DownloadHandlerTexture.GetContent(www), metallicList, urlMet, key, "_MetallicGlossMap", "_METALLICGLOSSMAP");
-                }
-                urlMet.text = "";
-            }
+            TexHelper(www.texture, metallicList, urlMet, key, "_MetallicGlossMap", "_METALLICGLOSSMAP");
         }
+        urlMet.text = "";
     }
 
     IEnumerator SetMetallicEnum(int partNum, string url)
     {
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
-        {
-            yield return www.SendWebRequest();
-            if (www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                TexHelper(DownloadHandlerTexture.GetContent(www), metallicList, null, partNum, "_MetallicGlossMap", "_METALLICGLOSSMAP", url);
-            }
-        }
-        
+        WWW www = new WWW(url);
+        yield return www;
+        TexHelper(www.texture, metallicList, null, partNum, "_MetallicGlossMap", "_METALLICGLOSSMAP", url);
     }
 
     IEnumerator SetTextureEnum(int partNum, string url)
     {
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
-        {
-            yield return www.SendWebRequest();
-            if (www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                TexHelper(DownloadHandlerTexture.GetContent(www), albedoList, null, partNum, "_MainTex", "", url);
-                
-            }
-        }
-        
+        WWW www = new WWW(url);
+        yield return www;
+        TexHelper(www.texture, albedoList, null, partNum, "_MainTex", "", url);
     }
 
     IEnumerator SetTextureBlank(int partNum)
@@ -492,7 +435,7 @@ public class TextureManager : MonoBehaviour
         TexHelper(null, albedoList, null, partNum, "_MainTex");
     }
 
-    
+
 
     IEnumerator SetNormalBlank(int partNum)
     {

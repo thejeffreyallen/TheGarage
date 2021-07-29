@@ -51,7 +51,12 @@ public class SavingManager : MonoBehaviour
         else
             CustomMeshManager.instance.SwitchDefaultParts();
         origInfotxt = infoBoxText.text;
-        a_glossy = partMaster.GetMaterial(partMaster.frame);
+        
+    }
+
+    public void Start()
+    {
+        a_glossy = PartMaster.instance.partList == null ? PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetPartMat(0) : partMaster.GetMaterial(partMaster.frame);
     }
 
     public IEnumerator SetDefault()
@@ -740,6 +745,8 @@ public class SavingManager : MonoBehaviour
             SetMaterialHelper(PartMaster.instance.rightCrank, loadList.rightCrankMat);
             SetMaterialHelper(PartMaster.instance.leftPedal, loadList.leftPedalMat);
             SetMaterialHelper(PartMaster.instance.rightPedal, loadList.rightPedalMat);
+            //SetMaterialHelper(-3, loadList.brakeMat);
+            //SetMaterialHelper(-4, loadList.brakeCableMat);
 
             foreach (MatData matData in loadList.matData)
             {
@@ -760,6 +767,50 @@ public class SavingManager : MonoBehaviour
     /// <param name="index"> Optional parameter to set a specific material in a material array </param>
     public void SetMaterialHelper(int key, int mat, int index = 0)
     {
+        if (key == -3)
+        {
+            Material[] temp1 = BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials;
+            Material[] temp2 = BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials;
+            if (mat == 0)
+            {
+                temp1[2] = a_glossy;
+                temp2[1] = a_glossy;
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials = temp1;
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials = temp2;
+            }
+            else if (mat == 9)
+                return;
+            else
+            {
+                temp1[2] = matManager.customMats[mat - 1];
+                temp2[1] = matManager.customMats[mat - 1];
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials = temp1;
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials = temp2;
+            }
+            return;
+        }
+        if (key == -4)
+        {
+            Material[] temp1 = BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials;
+            Material[] temp2 = BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials;
+            if (mat == 0)
+            {
+                temp1[3] = a_glossy;
+                temp2[2] = a_glossy;
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials = temp1;
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials = temp2;
+            }
+            else if (mat == 9)
+                return;
+            else
+            {
+                temp1[3] = matManager.customMats[mat - 1];
+                temp2[2] = matManager.customMats[mat - 1];
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials = temp1;
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials = temp2;
+            }
+            return;
+        }
         if (mat == 0)
             PartMaster.instance.GetPart(key).GetComponent<MeshRenderer>().materials[index] = a_glossy;
         else if (mat == 9)
@@ -805,14 +856,15 @@ public class SavingManager : MonoBehaviour
         {
             foreach (PartTexture p in loadList.partTextures)
             {
-                if (p.url.Equals(""))
-                    continue;
-                if (!p.metallic && !p.normal)
-                    TextureManager.instance.SetTexture(p.partNum, p.url);
-                else if (p.normal)
-                    TextureManager.instance.SetNormal(p.partNum, p.url);
-                else
-                    TextureManager.instance.SetMetallic(p.partNum, p.url);
+                if (!p.url.Equals("") || !p.url.Equals(" "))
+                {
+                    if (!p.metallic && !p.normal)
+                        TextureManager.instance.SetTexture(p.partNum, p.url);
+                    else if (p.normal)
+                        TextureManager.instance.SetNormal(p.partNum, p.url);
+                    else
+                        TextureManager.instance.SetMetallic(p.partNum, p.url);
+                }
             }
         } catch (Exception e)
         {
