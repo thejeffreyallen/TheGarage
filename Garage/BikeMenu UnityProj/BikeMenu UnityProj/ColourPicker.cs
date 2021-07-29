@@ -67,7 +67,6 @@ public class ColourPicker : MonoBehaviour
     public void ResetTumb()
     {
         thumb.GetComponent<RectTransform>().localPosition = Vector3.zero;
-
     }
 
     // called by event on object
@@ -87,6 +86,7 @@ public class ColourPicker : MonoBehaviour
     public void ReturnToCenter()
     {
         thumb.GetComponent<RectTransform>().localPosition = Vector3.zero;
+        value = GetColor();
     }
 
 

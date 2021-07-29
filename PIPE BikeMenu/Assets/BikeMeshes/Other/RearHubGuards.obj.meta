@@ -5,12 +5,23 @@ ModelImporter:
   fileIDToRecycleName:
     100000: default
     100002: //RootNode
+    100004: Both
+    100006: BothLHD
     400000: default
     400002: //RootNode
+    400004: Both
+    400006: BothLHD
     2100000: None.004
+    2100002: None.000
     2300000: default
+    2300002: Both
+    2300004: BothLHD
     3300000: default
+    3300002: Both
+    3300004: BothLHD
     4300000: default
+    4300002: Both
+    4300004: BothLHD
     9500000: //RootNode
   externalObjects: {}
   materials:

@@ -1,14 +1,12 @@
-# Blender MTL File: 'Welded frame.blend'
+# Blender MTL File: 'None'
 # Material Count: 1
 
-newmtl frame
+newmtl Default
 Ns 589.165272
 Ka 0.813636 0.813636 0.813636
 Kd 0.800000 0.800000 0.800000
-Ks 0.050000 0.050000 0.050000
-Ke 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 3
-map_Bump C:\\Users\\osker\\OneDrive\\Desktop\\My Bike Stuff\\New frame\\Subrosa\\Red\\Red_Frame_DefaultMaterial_Normal.png
-map_Kd C:\\Users\\osker\\OneDrive\\Desktop\\My Bike Stuff\\New frame\\Subrosa\\Red\\Red_Frame_DefaultMaterial_AlbedoTransparency.png

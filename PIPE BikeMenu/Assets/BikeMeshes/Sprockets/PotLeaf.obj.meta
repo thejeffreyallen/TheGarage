@@ -6,17 +6,23 @@ ModelImporter:
     100000: //RootNode
     100002: default_0
     100004: PotLeaf
+    100006: Devil's_Lettuce
     400000: //RootNode
     400002: default_0
     400004: PotLeaf
+    400006: Devil's_Lettuce
     2100000: default_0Mat
     2100002: None
+    2100004: Devil's_Lettuce
     2300000: default_0
     2300002: PotLeaf
+    2300004: Devil's_Lettuce
     3300000: default_0
     3300002: PotLeaf
+    3300004: Devil's_Lettuce
     4300000: default_0
     4300002: PotLeaf
+    4300004: Devil's_Lettuce
   externalObjects: {}
   materials:
     importMaterials: 1

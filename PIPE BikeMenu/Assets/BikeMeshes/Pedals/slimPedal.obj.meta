@@ -5,12 +5,23 @@ ModelImporter:
   fileIDToRecycleName:
     100000: slim
     100002: //RootNode
+    100004: default
+    100006: Slim
     400000: slim
     400002: //RootNode
+    400004: default
+    400006: Slim
     2100000: slim
+    2100002: Default_OBJ
     2300000: slim
+    2300002: default
+    2300004: Slim
     3300000: slim
+    3300002: default
+    3300004: Slim
     4300000: slim
+    4300002: default
+    4300004: Slim
   externalObjects: {}
   materials:
     importMaterials: 1

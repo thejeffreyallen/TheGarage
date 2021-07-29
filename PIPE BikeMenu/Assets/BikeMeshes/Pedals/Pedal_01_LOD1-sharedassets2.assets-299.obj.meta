@@ -5,12 +5,18 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: Pedal_01_LOD1_0
+    100004: Default
     400000: //RootNode
     400002: Pedal_01_LOD1_0
+    400004: Default
     2100000: Pedal_01_LOD1_0Mat
+    2100002: Default.004
     2300000: Pedal_01_LOD1_0
+    2300002: Default
     3300000: Pedal_01_LOD1_0
+    3300002: Default
     4300000: Pedal_01_LOD1_0
+    4300002: Default
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

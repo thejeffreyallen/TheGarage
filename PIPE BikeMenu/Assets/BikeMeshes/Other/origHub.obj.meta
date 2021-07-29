@@ -5,12 +5,18 @@ ModelImporter:
   fileIDToRecycleName:
     100000: Hub_0
     100002: //RootNode
+    100004: Default
     400000: Hub_0
     400002: //RootNode
+    400004: Default
     2100000: Hub_0Mat
+    2100002: Default_OBJ
     2300000: Hub_0
+    2300002: Default
     3300000: Hub_0
+    3300002: Default
     4300000: Hub_0
+    4300002: Default
   externalObjects: {}
   materials:
     importMaterials: 1
