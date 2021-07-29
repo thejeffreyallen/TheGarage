@@ -200,6 +200,7 @@ public class CustomMeshManager : MonoBehaviour
         GameObject SeatClampBolt = PartMaster.instance.GetPart(PartMaster.instance.seatClampBolt);
         SeatClampBolt.SetActive(false);
         PartMaster.instance.SetMesh(PartMaster.instance.seatClamp, seatPostClamp);
+        SwitchDefaultParts();
         //PartMaster.instance.SetMesh(PartMaster.instance.seatPost, longSeatPost);
         LoadFiles(); // Load meshes from file
         isDoneLoading = true;
@@ -210,6 +211,7 @@ public class CustomMeshManager : MonoBehaviour
         SetFrameMesh(0);
         SetForksMesh(0);
         SetBarsMesh(0);
+        SetPedalsMesh(0);
         SetFrontRimMesh(0);
         SetRearRimMesh(0);
     }
