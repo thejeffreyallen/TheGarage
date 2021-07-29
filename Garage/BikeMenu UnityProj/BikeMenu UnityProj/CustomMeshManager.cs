@@ -218,7 +218,7 @@ public class CustomMeshManager : MonoBehaviour
 
     void Update()
     {
-        if (Time.time > nextActionTime)
+        if (Time.time > nextActionTime && ((selectedFrontAccessory == 0 || selectedRearAccessory == 0) || (selectedFrontAccessory == 4 || selectedRearAccessory == 4)))
         {
             nextActionTime += period;
             float f = 10f;
@@ -381,20 +381,28 @@ public class CustomMeshManager : MonoBehaviour
 
     public void SetFrontSpokeAccMesh(int i)
     {
+        int index = i % accessories.Count;
         GameObject partObject = PartMaster.instance.GetPart(PartMaster.instance.frontAcc);
-        partObject.GetComponent<MeshFilter>().mesh = accessories[i % accessories.Count].mesh;
-        partObject.GetComponent<MeshRenderer>().material = accMats[i % accessories.Count];
-        selectedFrontAccessoryText.text = accessories[i % accessories.Count].mesh.name;
-        selectedFrontAccessory = (i % accessories.Count) + 1;
+        partObject.GetComponent<MeshFilter>().mesh = accessories[index].mesh;
+        if (index >= 0 && index < 4)
+            partObject.GetComponent<MeshRenderer>().material = accMats[index];
+        else
+            partObject.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
+        selectedFrontAccessoryText.text = accessories[index].mesh.name;
+        selectedFrontAccessory = (index) + 1;
     }
 
     public void SetRearSpokeAccMesh(int i)
     {
+        int index = i % accessories.Count;
         GameObject partObject = PartMaster.instance.GetPart(PartMaster.instance.rearAcc);
-        partObject.GetComponent<MeshFilter>().mesh = accessories[i % accessories.Count].mesh;
-        partObject.GetComponent<MeshRenderer>().material = accMats[i % accessories.Count];
-        selectedRearAccessoryText.text = accessories[i % accessories.Count].mesh.name;
-        selectedRearAccessory = (i % accessories.Count) + 1;
+        partObject.GetComponent<MeshFilter>().mesh = accessories[index].mesh;
+        if (index >= 0 && index < 4)
+            partObject.GetComponent<MeshRenderer>().material = accMats[index];
+        else
+            partObject.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
+        selectedRearAccessoryText.text = accessories[index].mesh.name;
+        selectedRearAccessory = (index) + 1;
     }
 
     public void SetBarAccMesh(int i)
