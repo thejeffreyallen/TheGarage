@@ -140,6 +140,8 @@ public class CustomMeshManager : MonoBehaviour
     private GameObject leftCrankBolts;
     private GameObject stemBolts;
     private String basePath;
+    private bool frontLightsOn = false;
+    private bool rearLightsOn = false;
 
     private ObjImporter objImporter;
 
@@ -179,7 +181,7 @@ public class CustomMeshManager : MonoBehaviour
     public Dictionary<string, List<MeshObject>> meshLists = new Dictionary<string, List<MeshObject>>();
 
     private float nextActionTime = 0.0f;
-    public float period = 0.1f;
+    public float period = 0.2f;
 
     void Awake()
     {
@@ -218,13 +220,21 @@ public class CustomMeshManager : MonoBehaviour
 
     void Update()
     {
-        if (Time.time > nextActionTime && ((selectedFrontAccessory == 0 || selectedRearAccessory == 0) || (selectedFrontAccessory == 4 || selectedRearAccessory == 4)))
+        if (Time.time > nextActionTime && (frontLightsOn || rearLightsOn))
         {
             nextActionTime += period;
             float f = 10f;
             Color color = new Color(UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), 1f) * f;
-            accMats[3].color = color/f;
-            accMats[3].SetColor("_EmissionColor", color);
+            if (frontLightsOn)
+            {
+                PartMaster.instance.GetMaterial(PartMaster.instance.frontAcc).color = color / f;
+                PartMaster.instance.GetMaterial(PartMaster.instance.frontAcc).SetColor("_EmissionColor", color);
+            }
+            if (rearLightsOn)
+            {
+                PartMaster.instance.GetMaterial(PartMaster.instance.rearAcc).color = color / f;
+                PartMaster.instance.GetMaterial(PartMaster.instance.rearAcc).SetColor("_EmissionColor", color);
+            }
         }
         
     }
@@ -389,6 +399,7 @@ public class CustomMeshManager : MonoBehaviour
         else
             partObject.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
         selectedFrontAccessoryText.text = accessories[index].mesh.name;
+        frontLightsOn = index == 3 ? true : false;
         selectedFrontAccessory = (index) + 1;
     }
 
@@ -402,6 +413,7 @@ public class CustomMeshManager : MonoBehaviour
         else
             partObject.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
         selectedRearAccessoryText.text = accessories[index].mesh.name;
+        rearLightsOn = index == 3 ? true : false;
         selectedRearAccessory = (index) + 1;
     }
 
