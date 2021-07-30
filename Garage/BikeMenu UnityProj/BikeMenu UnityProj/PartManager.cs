@@ -174,6 +174,7 @@ public class PartManager : MonoBehaviour
     {
         bmx.GetComponentInChildren<SeatApplyMod>().SetSeatCoverID(seatCount % bmx.GetComponentInChildren<SeatApplyMod>().seatCovers.Length);
         seatCount = (seatCount % bmx.GetComponentInChildren<SeatApplyMod>().seatCovers.Length) + 1;
+        TextureManager.instance.ClearTextures(PartMaster.instance.seat);
     }
 
     public void BarsAngle()
@@ -204,7 +205,7 @@ public class PartManager : MonoBehaviour
         Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
         mats[0] = tireMats[index];
         PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
-        TextureManager.instance.normalList[PartMaster.instance.frontTire] = "";
+        TextureManager.instance.ClearTextures(PartMaster.instance.frontTire);
         frontTiresCount = index + 1;
     }
 
@@ -214,7 +215,7 @@ public class PartManager : MonoBehaviour
         Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
         mats[0] = tireMats[index];
         PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, mats);
-        TextureManager.instance.normalList[PartMaster.instance.rearTire] = "";
+        TextureManager.instance.ClearTextures(PartMaster.instance.rearTire);
         rearTiresCount = index + 1;
     }
 
@@ -229,8 +230,7 @@ public class PartManager : MonoBehaviour
         Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.frontTire);
         mats[1] = tireWallMats[index];
         PartMaster.instance.SetMaterials(PartMaster.instance.frontTire, mats);
-        TextureManager.instance.normalList[-1] = "";
-        TextureManager.instance.albedoList[-1] = "";
+        TextureManager.instance.ClearTextures(-1);
         frontTireWallCount = index + 1;
     }
 
@@ -245,8 +245,7 @@ public class PartManager : MonoBehaviour
         Material[] mats = PartMaster.instance.GetMaterials(PartMaster.instance.rearTire);
         mats[1] = tireWallMats[index];
         PartMaster.instance.SetMaterials(PartMaster.instance.rearTire, mats);
-        TextureManager.instance.normalList[-2] = "";
-        TextureManager.instance.albedoList[-2] = "";
+        TextureManager.instance.ClearTextures(-2);
         rearTireWallCount = index + 1;
     }
 
@@ -270,6 +269,8 @@ public class PartManager : MonoBehaviour
 
         bmx.GetComponentInChildren<BarsApplyMod>().SetGripsID(id % bmx.GetComponentInChildren<BarsApplyMod>().gripMats.Length);
         gripsCount = id % bmx.GetComponentInChildren<BarsApplyMod>().gripMats.Length + 1;
+        TextureManager.instance.ClearTextures(16);
+        TextureManager.instance.ClearTextures(17);
 
     }
 

@@ -975,8 +975,16 @@ public class SavingManager : MonoBehaviour
                     }
                     else
                     {
-                        PartMaster.instance.SetMesh(pm.key, CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName));
-                        continue;
+                        if (pm.partName.Equals("cranks"))
+                        {
+                            PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName));
+                            PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName));
+                        }
+                        else
+                        {
+                            PartMaster.instance.SetMesh(pm.key, CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName)); //Add case for cranks to be custom
+                            continue;
+                        }
                     }
                 }
                 switch (pm.partName)

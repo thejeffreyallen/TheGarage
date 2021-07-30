@@ -57,6 +57,7 @@ public class TextureManager : MonoBehaviour
         albedoList.Add(9, "");
         albedoList.Add(-1, "");
         albedoList.Add(-2, "");
+        albedoList.Add(16, "");
 
         normalList.Add(0, "");
         normalList.Add(1, "");
@@ -70,6 +71,7 @@ public class TextureManager : MonoBehaviour
         normalList.Add(9, "");
         normalList.Add(-1, "");
         normalList.Add(-2, "");
+        normalList.Add(16, "");
 
         metallicList.Add(0, "");
         metallicList.Add(1, "");
@@ -83,6 +85,7 @@ public class TextureManager : MonoBehaviour
         metallicList.Add(9, "");
         metallicList.Add(-1, "");
         metallicList.Add(-2, "");
+        metallicList.Add(16, "");
     }
 
 
@@ -134,6 +137,15 @@ public class TextureManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void ClearTextures(int key)
+    {
+        if (!albedoList.ContainsKey(key))
+            return;
+        albedoList[key] = "";
+        normalList[key] = "";
+        metallicList[key] = "";
     }
 
     public void SetTexture()

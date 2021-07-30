@@ -225,6 +225,7 @@ public class CustomMeshManager : MonoBehaviour
             nextActionTime += period;
             float f = 10f;
             Color color = new Color(UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), 1f) * f;
+            Color color2 = new Color(UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f), 1f) * f;
             if (frontLightsOn)
             {
                 PartMaster.instance.GetMaterial(PartMaster.instance.frontAcc).color = color / f;
@@ -232,8 +233,8 @@ public class CustomMeshManager : MonoBehaviour
             }
             if (rearLightsOn)
             {
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearAcc).color = color / f;
-                PartMaster.instance.GetMaterial(PartMaster.instance.rearAcc).SetColor("_EmissionColor", color);
+                PartMaster.instance.GetMaterial(PartMaster.instance.rearAcc).color = color2 / f;
+                PartMaster.instance.GetMaterial(PartMaster.instance.rearAcc).SetColor("_EmissionColor", color2);
             }
         }
         
@@ -571,12 +572,16 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetCranksMesh(int i)
     {
-        PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, cranks[i % cranks.Count].mesh);
-        PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, cranks[i % cranks.Count].mesh);
-        PartMaster.instance.SetMesh(PartMaster.instance.rightCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
-        PartMaster.instance.SetMesh(PartMaster.instance.leftCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
-        selectedCranksText.text = cranks[i % cranks.Count].mesh.name;
-        selectedCranks = (i % cranks.Count) +1;
+        int index = i % cranks.Count;
+        PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, cranks[index].mesh);
+        PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, cranks[index].mesh);
+        if (index >= 0 && index < 3)
+        {
+            PartMaster.instance.SetMesh(PartMaster.instance.rightCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
+            PartMaster.instance.SetMesh(PartMaster.instance.leftCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
+        }
+        selectedCranksText.text = cranks[index].mesh.name;
+        selectedCranks = (index) +1;
     }
 
     /// <summary>
