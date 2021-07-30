@@ -13,7 +13,7 @@ public class CamController : MonoBehaviour
 
     void OnEnable()
     {
-        bike = GameObject.Find("BMX").transform;
+        bike = PartManager.instance.bmx.transform;
     }
 
     void Update()
@@ -51,8 +51,11 @@ public class CamController : MonoBehaviour
         }
         else
         {
-            transform.position = camPositions[0];
-            camPositions.RemoveAt(0);
+            if (camPositions.Count > 0)
+            {
+                transform.position = camPositions[0];
+                camPositions.RemoveAt(0);
+            }
         }
     }
 
@@ -63,4 +66,5 @@ public class CamController : MonoBehaviour
         if (camPositions.Count >= 100)
             camPositions.RemoveAt(camPositions.Count-1);
     }
+
 }

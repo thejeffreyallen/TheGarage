@@ -19,7 +19,8 @@ public class GarageRoomLoader : MonoBehaviour
     Quaternion previousMarkerRot;
 
     Camera mainCam;
-    Camera newCam;
+    Camera dummyCam = new Camera();
+    GameObject camScripts;
 
     Light[] lightsGo;
 
@@ -71,20 +72,15 @@ public class GarageRoomLoader : MonoBehaviour
             if (CustomMeshManager.instance.selectedForks == 0)
                 CustomMeshManager.instance.SetForksMesh(0);
 
+            camScripts = GameObject.Find("BMX Camera");
 
+            mainCam.gameObject.AddComponent<CamController>();
+            camScripts.GetComponent<camFollow>().CenterCam();
+            camScripts.GetComponent<camFollow>().StopAllCoroutines();
 
-            mainCam.enabled = false;
+            
 
-            if (newCam == null)
-            {
-                newCam = FindObjectOfType<Camera>();
-            }
-            else {
-                newCam.gameObject.SetActive(true);
-            }
-
-
-           FindObjectOfType<DrivableVehicle>().vehiclePhysicsBody.GetComponent<Rigidbody>().isKinematic = true;
+            FindObjectOfType<DrivableVehicle>().vehiclePhysicsBody.GetComponent<Rigidbody>().isKinematic = true;
             lightsGo = FindObjectsOfType<Light>() as Light[];
             foreach (Light thisLight in lightsGo)
             {
@@ -112,9 +108,6 @@ public class GarageRoomLoader : MonoBehaviour
         {
             r.enabled = true;
         }
-
-        mainCam.enabled = true;
-        newCam.gameObject.SetActive(false);
         FindObjectOfType<SessionMarker>().SetMarker(previousMarkerPos, previousMarkerRot);
         foreach (Renderer r in playerRends)
         {
@@ -125,6 +118,9 @@ public class GarageRoomLoader : MonoBehaviour
         {
             thisLight.gameObject.SetActive(true);
         }
+        Destroy(mainCam.GetComponent<CamController>());
+        //camScripts.GetComponent<CamMaster>().cam = mainCam;
+        //camScripts.GetComponent<camFollow>().cam = mainCam;
         Destroy(room);
         RenderSettings.skybox = currentMapSky;
         RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Skybox;
