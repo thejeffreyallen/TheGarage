@@ -318,117 +318,117 @@ public class PartManager : MonoBehaviour
 
     public void SetFrameMesh()
     {
-        CustomMeshManager.instance.SetFrameMesh(CustomMeshManager.instance.selectedFrame++);
+        CustomMeshManager.instance.SetFrameMesh(++CustomMeshManager.instance.selectedFrame);
     }
 
     public void SetForksMesh()
     {
-        CustomMeshManager.instance.SetForksMesh(CustomMeshManager.instance.selectedForks++);
+        CustomMeshManager.instance.SetForksMesh(++CustomMeshManager.instance.selectedForks);
     }
 
     public void SetBarsMesh()
     {
-        CustomMeshManager.instance.SetBarsMesh(CustomMeshManager.instance.selectedBars++);
+        CustomMeshManager.instance.SetBarsMesh(++CustomMeshManager.instance.selectedBars);
     }
 
     public void SetFrontPegsMesh()
     {
-        CustomMeshManager.instance.SetFrontPegsMesh(CustomMeshManager.instance.selectedFrontPegs++);
+        CustomMeshManager.instance.SetFrontPegsMesh(++CustomMeshManager.instance.selectedFrontPegs);
     }
 
     public void SetRearPegsMesh()
     {
-        CustomMeshManager.instance.SetRearPegsMesh(CustomMeshManager.instance.selectedRearPegs++);
+        CustomMeshManager.instance.SetRearPegsMesh(++CustomMeshManager.instance.selectedRearPegs);
     }
 
     public void SetFrontSpokesMesh()
     {
-        CustomMeshManager.instance.SetFrontSpokesMesh(CustomMeshManager.instance.selectedFrontSpokes++);
+        CustomMeshManager.instance.SetFrontSpokesMesh(++CustomMeshManager.instance.selectedFrontSpokes);
     }
 
     public void SetRearSpokesMesh()
     {
-        CustomMeshManager.instance.SetRearSpokesMesh(CustomMeshManager.instance.selectedRearSpokes++);
+        CustomMeshManager.instance.SetRearSpokesMesh(++CustomMeshManager.instance.selectedRearSpokes);
     }
 
     public void SetFrontHubMesh()
     {
-        CustomMeshManager.instance.SetFrontHubMesh(CustomMeshManager.instance.selectedFrontHub++);
+        CustomMeshManager.instance.SetFrontHubMesh(++CustomMeshManager.instance.selectedFrontHub);
     }
 
     public void SetRearHubMesh()
     {
-        CustomMeshManager.instance.SetRearHubMesh(CustomMeshManager.instance.selectedRearHub++);
+        CustomMeshManager.instance.SetRearHubMesh(++CustomMeshManager.instance.selectedRearHub);
     }
 
     public void SetPedalsMesh()
     {
-        CustomMeshManager.instance.SetPedalsMesh(CustomMeshManager.instance.selectedPedals++);
+        CustomMeshManager.instance.SetPedalsMesh(++CustomMeshManager.instance.selectedPedals);
     }
 
     public void SetSprocketMesh()
     {
-        CustomMeshManager.instance.SetSprocketMesh(CustomMeshManager.instance.selectedSprocket++);
+        CustomMeshManager.instance.SetSprocketMesh(++CustomMeshManager.instance.selectedSprocket);
     }
 
     public void SetStemMesh()
     {
-        CustomMeshManager.instance.SetStemMesh(CustomMeshManager.instance.selectedStem++);
+        CustomMeshManager.instance.SetStemMesh(++CustomMeshManager.instance.selectedStem);
     }
 
     public void SetFrontSpokeAcc()
     {
-        CustomMeshManager.instance.SetFrontSpokeAccMesh(CustomMeshManager.instance.selectedFrontAccessory++);
+        CustomMeshManager.instance.SetFrontSpokeAccMesh(++CustomMeshManager.instance.selectedFrontAccessory);
     }
 
     public void SetRearSpokeAcc()
     {
-        CustomMeshManager.instance.SetRearSpokeAccMesh(CustomMeshManager.instance.selectedRearAccessory++);
+        CustomMeshManager.instance.SetRearSpokeAccMesh(++CustomMeshManager.instance.selectedRearAccessory);
     }
 
     public void SetCranksMesh()
     {
-        CustomMeshManager.instance.SetCranksMesh(CustomMeshManager.instance.selectedCranks++);
+        CustomMeshManager.instance.SetCranksMesh(++CustomMeshManager.instance.selectedCranks);
     }
 
     public void SetSeatMesh()
     {
-        CustomMeshManager.instance.SetSeatMesh(CustomMeshManager.instance.selectedSeat++);
+        CustomMeshManager.instance.SetSeatMesh(++CustomMeshManager.instance.selectedSeat);
     }
 
     public void SetBarAcc()
     {
-        CustomMeshManager.instance.SetBarAccMesh(CustomMeshManager.instance.selectedBarAccessory++);
+        CustomMeshManager.instance.SetBarAccMesh(++CustomMeshManager.instance.selectedBarAccessory);
     }
 
     public void SetFrameAcc()
     {
-        CustomMeshManager.instance.SetFrameAccMesh(CustomMeshManager.instance.selectedFrameAccessory++);
+        CustomMeshManager.instance.SetFrameAccMesh(++CustomMeshManager.instance.selectedFrameAccessory);
     }
 
     public void SetFrontRimMesh()
     {
-        CustomMeshManager.instance.SetFrontRimMesh(CustomMeshManager.instance.selectedFrontRim++);
+        CustomMeshManager.instance.SetFrontRimMesh(++CustomMeshManager.instance.selectedFrontRim);
     }
 
     public void SetRearRimMesh()
     {
-        CustomMeshManager.instance.SetRearRimMesh(CustomMeshManager.instance.selectedRearRim++);
+        CustomMeshManager.instance.SetRearRimMesh(++CustomMeshManager.instance.selectedRearRim);
     }
 
     public void SetFrontHubGuardMesh()
     {
-        CustomMeshManager.instance.SetFrontHubGuardMesh(CustomMeshManager.instance.selectedFrontHubGuard++);
+        CustomMeshManager.instance.SetFrontHubGuardMesh(++CustomMeshManager.instance.selectedFrontHubGuard);
     }
 
     public void SetRearHubGuardMesh()
     {
-        CustomMeshManager.instance.SetRearHubGuardMesh(CustomMeshManager.instance.selectedRearHubGuard++);
+        CustomMeshManager.instance.SetRearHubGuardMesh(++CustomMeshManager.instance.selectedRearHubGuard);
     }
 
     public void SetSeatPostMesh()
     {
-        CustomMeshManager.instance.SetSeatPostMesh(CustomMeshManager.instance.selectedSeatPost++);
+        CustomMeshManager.instance.SetSeatPostMesh(++CustomMeshManager.instance.selectedSeatPost);
     }
 }
 

@@ -877,73 +877,73 @@ public class SavingManager : MonoBehaviour
     /// </summary>
     private void SaveMeshes()
     {
-        int index = (CustomMeshManager.instance.selectedFrame - 1) % CustomMeshManager.instance.frames.Count;
+        int index = CustomMeshManager.instance.selectedFrame;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frame, CustomMeshManager.instance.frames[index].isCustom, CustomMeshManager.instance.frames[index].fileName, "frame"));
 
-        index = (CustomMeshManager.instance.selectedBars - 1) % CustomMeshManager.instance.bars.Count;
+        index = CustomMeshManager.instance.selectedBars;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.bars, CustomMeshManager.instance.bars[index].isCustom, CustomMeshManager.instance.bars[index].fileName, "bars"));
 
-        index = (CustomMeshManager.instance.selectedSprocket - 1) % CustomMeshManager.instance.sprockets.Count;
+        index = CustomMeshManager.instance.selectedSprocket;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.sprocket, CustomMeshManager.instance.sprockets[index].isCustom, CustomMeshManager.instance.sprockets[index].fileName, "sprocket"));
 
-        index = (CustomMeshManager.instance.selectedStem - 1) % CustomMeshManager.instance.stems.Count;
+        index = CustomMeshManager.instance.selectedStem;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.stem, CustomMeshManager.instance.stems[index].isCustom, CustomMeshManager.instance.stems[index].fileName, "stem"));
 
-        index = (CustomMeshManager.instance.selectedCranks - 1) % CustomMeshManager.instance.cranks.Count;
+        index = CustomMeshManager.instance.selectedCranks;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.leftCrank, CustomMeshManager.instance.cranks[index].isCustom, CustomMeshManager.instance.cranks[index].fileName, "cranks"));
 
-        index = (CustomMeshManager.instance.selectedFrontSpokes - 1) % CustomMeshManager.instance.spokes.Count;
+        index = CustomMeshManager.instance.selectedFrontSpokes;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frontSpokes, CustomMeshManager.instance.spokes[index].isCustom, CustomMeshManager.instance.spokes[index].fileName, "frontSpokes"));
 
-        index = (CustomMeshManager.instance.selectedRearSpokes - 1) % CustomMeshManager.instance.spokes.Count;
+        index = CustomMeshManager.instance.selectedRearSpokes;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.rearSpokes, CustomMeshManager.instance.spokes[index].isCustom, CustomMeshManager.instance.spokes[index].fileName, "rearSpokes"));
 
-        index = (CustomMeshManager.instance.selectedForks - 1) % CustomMeshManager.instance.forks.Count;
+        index = CustomMeshManager.instance.selectedForks;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.forks, CustomMeshManager.instance.forks[index].isCustom, CustomMeshManager.instance.forks[index].fileName, "forks"));
 
-        index = (CustomMeshManager.instance.selectedFrontPegs - 1) % CustomMeshManager.instance.pegs.Count;
+        index = CustomMeshManager.instance.selectedFrontPegs;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frontPegs, CustomMeshManager.instance.pegs[index].isCustom, CustomMeshManager.instance.pegs[index].fileName, "frontPegs"));
 
-        index = (CustomMeshManager.instance.selectedRearPegs - 1) % CustomMeshManager.instance.pegs.Count;
+        index = CustomMeshManager.instance.selectedRearPegs;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.rearPegs, CustomMeshManager.instance.pegs[index].isCustom, CustomMeshManager.instance.pegs[index].fileName, "rearPegs"));
 
-        index = (CustomMeshManager.instance.selectedFrontHub - 1) % CustomMeshManager.instance.hubs.Count;
+        index = CustomMeshManager.instance.selectedFrontHub;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frontHub, CustomMeshManager.instance.hubs[index].isCustom, CustomMeshManager.instance.hubs[index].fileName, "frontHub"));
 
-        index = (CustomMeshManager.instance.selectedRearHub - 1) % CustomMeshManager.instance.hubs.Count;
+        index = CustomMeshManager.instance.selectedRearHub;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.rearHub, CustomMeshManager.instance.hubs[index].isCustom, CustomMeshManager.instance.hubs[index].fileName, "rearHub"));
 
-        index = (CustomMeshManager.instance.selectedSeat - 1) % CustomMeshManager.instance.seats.Count;
+        index = CustomMeshManager.instance.selectedSeat;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.seat, CustomMeshManager.instance.seats[index].isCustom, CustomMeshManager.instance.seats[index].fileName, "seat"));
 
-        index = (CustomMeshManager.instance.selectedPedals - 1) % CustomMeshManager.instance.pedals.Count;
+        index = CustomMeshManager.instance.selectedPedals;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.leftPedal, CustomMeshManager.instance.pedals[index].isCustom, CustomMeshManager.instance.pedals[index].fileName, "pedals"));
 
-        index = (CustomMeshManager.instance.selectedFrontAccessory - 1) % CustomMeshManager.instance.accessories.Count;
+        index = CustomMeshManager.instance.selectedFrontAccessory;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frontAcc, CustomMeshManager.instance.accessories[index].isCustom, CustomMeshManager.instance.accessories[index].fileName, "frontSpokeAccessory"));
 
-        index = (CustomMeshManager.instance.selectedRearAccessory - 1) % CustomMeshManager.instance.accessories.Count;
+        index = CustomMeshManager.instance.selectedRearAccessory;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.rearAcc, CustomMeshManager.instance.accessories[index].isCustom, CustomMeshManager.instance.accessories[index].fileName, "rearSpokeAccessory"));
 
-        index = (CustomMeshManager.instance.selectedFrontRim - 1) % CustomMeshManager.instance.rims.Count;
+        index = CustomMeshManager.instance.selectedFrontRim;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frontRim, CustomMeshManager.instance.rims[index].isCustom, CustomMeshManager.instance.rims[index].fileName, "frontRim"));
 
-        index = (CustomMeshManager.instance.selectedRearRim - 1) % CustomMeshManager.instance.rims.Count;
+        index = CustomMeshManager.instance.selectedRearRim;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.rearRim, CustomMeshManager.instance.rims[index].isCustom, CustomMeshManager.instance.rims[index].fileName, "rearRim"));
 
-        index = (CustomMeshManager.instance.selectedBarAccessory - 1) % CustomMeshManager.instance.barAccessories.Count;
+        index = CustomMeshManager.instance.selectedBarAccessory;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.barAcc, CustomMeshManager.instance.barAccessories[index].isCustom, CustomMeshManager.instance.barAccessories[index].fileName, "barAccessory"));
 
-        index = (CustomMeshManager.instance.selectedFrameAccessory - 1) % CustomMeshManager.instance.frameAccessories.Count;
+        index = CustomMeshManager.instance.selectedFrameAccessory;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frameAcc, CustomMeshManager.instance.frameAccessories[index].isCustom, CustomMeshManager.instance.frameAccessories[index].fileName, "frameAccessory"));
 
-        index = (CustomMeshManager.instance.selectedFrontHubGuard - 1) % CustomMeshManager.instance.frontHubGuards.Count;
+        index = CustomMeshManager.instance.selectedFrontHubGuard;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.frontHubG, CustomMeshManager.instance.frontHubGuards[index].isCustom, CustomMeshManager.instance.frontHubGuards[index].fileName, "frontHubGuard"));
 
-        index = (CustomMeshManager.instance.selectedRearHubGuard - 1) % CustomMeshManager.instance.rearHubGuards.Count;
+        index = CustomMeshManager.instance.selectedRearHubGuard;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.rearHubG, CustomMeshManager.instance.rearHubGuards[index].isCustom, CustomMeshManager.instance.rearHubGuards[index].fileName, "rearHubGuard"));
 
-        index = (CustomMeshManager.instance.selectedSeatPost - 1) % CustomMeshManager.instance.seatPosts.Count;
+        index = CustomMeshManager.instance.selectedSeatPost;
         saveList.partMeshes.Add(new PartMesh(index, PartMaster.instance.seatPost, CustomMeshManager.instance.seatPosts[index].isCustom, CustomMeshManager.instance.seatPosts[index].fileName, "seatPost"));
 
     }
@@ -977,12 +977,16 @@ public class SavingManager : MonoBehaviour
                     {
                         if (pm.partName.Equals("cranks"))
                         {
-                            PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName));
-                            PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName));
+                            Mesh temp = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
+                            PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, temp);
+                            PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, temp);
+                            CustomMeshManager.instance.SetPartText(pm.partName, temp.name);
                         }
                         else
                         {
-                            PartMaster.instance.SetMesh(pm.key, CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName)); //Add case for cranks to be custom
+                            Mesh temp = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
+                            PartMaster.instance.SetMesh(pm.key, temp);
+                            CustomMeshManager.instance.SetPartText(pm.partName, temp.name);
                             continue;
                         }
                     }

@@ -267,6 +267,19 @@ public class TextureManager : MonoBehaviour
 
         PartMaster.instance.GetMaterial(PartMaster.instance.frontHub).SetTexture("_MainTexture", OriginalHubTex);
         PartMaster.instance.GetMaterial(PartMaster.instance.rearHub).SetTexture("_MainTexture", OriginalHubTex);
+        ClearTextures(0);
+        ClearTextures(1);
+        ClearTextures(36);
+        ClearTextures(2);
+        ClearTextures(10);
+        ClearTextures(11);
+        ClearTextures(6);
+        ClearTextures(7);
+        ClearTextures(8);
+        ClearTextures(9);
+        ClearTextures(-1);
+        ClearTextures(-2);
+        ClearTextures(16);
 
         Resources.UnloadUnusedAssets();
     }

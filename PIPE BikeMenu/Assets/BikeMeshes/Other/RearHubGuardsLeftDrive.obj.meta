@@ -6,17 +6,23 @@ ModelImporter:
     100000: LeftDriveSide
     100002: //RootNode
     100004: LHDriveSide
+    100006: BothLHD
     400000: LeftDriveSide
     400002: //RootNode
     400004: LHDriveSide
+    400006: BothLHD
     2100000: None.004
     2100002: None.001
+    2100004: None.000
     2300000: LeftDriveSide
     2300002: LHDriveSide
+    2300004: BothLHD
     3300000: LeftDriveSide
     3300002: LHDriveSide
+    3300004: BothLHD
     4300000: LeftDriveSide
     4300002: LHDriveSide
+    4300004: BothLHD
   externalObjects: {}
   materials:
     importMaterials: 1

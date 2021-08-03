@@ -31,9 +31,23 @@ public class GarageRoomLoader : MonoBehaviour
     Material currentMapSky;
     private Vector3 bikePlacement;
 
+
     void Start()
     {
         instance = this;
+
+        if(CustomMeshManager.instance.selectedFrame == 0)
+            CustomMeshManager.instance.SetFrameMesh(0);
+        if (CustomMeshManager.instance.selectedForks == 0)
+            CustomMeshManager.instance.SetForksMesh(0);
+        if (CustomMeshManager.instance.selectedBars == 0)
+            CustomMeshManager.instance.SetBarsMesh(0);
+        if (CustomMeshManager.instance.selectedPedals == 0)
+            CustomMeshManager.instance.SetPedalsMesh(0);
+        if (CustomMeshManager.instance.selectedFrontRim == 0)
+            CustomMeshManager.instance.SetFrontRimMesh(0);
+        if (CustomMeshManager.instance.selectedRearRim == 0)
+            CustomMeshManager.instance.SetRearRimMesh(0);
     }
 
     public void LoadRoom()
@@ -65,12 +79,7 @@ public class GarageRoomLoader : MonoBehaviour
             FindObjectOfType<SessionMarker>().SetMarker(bikePlacement, Quaternion.identity);
             FindObjectOfType<SessionMarker>().ResetPlayerAtMarker();
 
-            if (CustomMeshManager.instance.selectedFrame == 0)
-                CustomMeshManager.instance.SetFrameMesh(0);
-            if (CustomMeshManager.instance.selectedBars == 0)
-                CustomMeshManager.instance.SetBarsMesh(0);
-            if (CustomMeshManager.instance.selectedForks == 0)
-                CustomMeshManager.instance.SetForksMesh(0);
+            
 
             camScripts = GameObject.Find("BMX Camera");
 

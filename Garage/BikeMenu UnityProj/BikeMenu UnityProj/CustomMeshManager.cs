@@ -27,36 +27,36 @@ public class CustomMeshManager : MonoBehaviour
     public static CustomMeshManager instance;
 
     [Header("Frame")]
-    public int selectedFrame = 1;
+    public int selectedFrame = 0;
     public Mesh[] frameMeshes;
     public Text selectedFrameText;
 
     [Header("Bars")]
-    public int selectedBars = 1;
+    public int selectedBars = 0;
     public Mesh[] barMeshes;
     public Text selectedBarsText;
 
     [Header("SeatPosts")]
-    public int selectedSeatPost = 1;
+    public int selectedSeatPost = 0;
     public Mesh[] seatPostMeshes;
     public Text selectedSeatPostText;
 
     [Header("Pegs")]
-    public int selectedFrontPegs = 1;
-    public int selectedRearPegs = 1;
+    public int selectedFrontPegs = 0;
+    public int selectedRearPegs = 0;
     public Mesh[] pegMeshes;
     public Text selectedFrontPegsText;
     public Text selectedRearPegsText;
 
     [Header("Spokes")]
-    public int selectedFrontSpokes = 1;
-    public int selectedRearSpokes = 1;
+    public int selectedFrontSpokes = 0;
+    public int selectedRearSpokes = 0;
     public Mesh[] spokesMeshes;
     public Text selectedFrontSpokesText;
     public Text selectedRearSpokesText;
 
     [Header("Sprocket")]
-    public int selectedSprocket = 1;
+    public int selectedSprocket = 0;
     public Mesh[] sprocketMeshes;
     public Text selectedSprocketText;
 
@@ -66,34 +66,34 @@ public class CustomMeshManager : MonoBehaviour
     public Text selectedStemText;
 
     [Header("Rims")]
-    public int selectedFrontRim = 1;
-    public int selectedRearRim = 1;
+    public int selectedFrontRim = 0;
+    public int selectedRearRim = 0;
     public Mesh[] rimMeshes;
     public Text selectedFrontRimText;
     public Text selectedRearRimText;
 
     [Header("Cranks")]
-    public int selectedCranks = 1;
+    public int selectedCranks = 0;
     public Mesh[] cranksMeshes;
     public Text selectedCranksText;
 
     [Header("Forks")]
-    public int selectedForks = 1;
+    public int selectedForks = 0;
     public Mesh[] forksMeshes;
     public Text selectedForksText;
 
     [Header("Pedals")]
-    public int selectedPedals = 1;
+    public int selectedPedals = 0;
     public Mesh[] pedalMeshes;
     public Text selectedPedalsText;
 
     [Header("FrontHubGuards")]
-    public int selectedFrontHubGuard = 1;
+    public int selectedFrontHubGuard = 0;
     public Mesh[] frontHubGuardMeshes;
     public Text selectedFrontHubGuardText;
 
     [Header("RearHubGuards")]
-    public int selectedRearHubGuard = 1;
+    public int selectedRearHubGuard = 0;
     public Mesh[] rearHubGuardMeshes;
     public Text selectedRearHubGuardText;
 
@@ -104,15 +104,15 @@ public class CustomMeshManager : MonoBehaviour
     public Mesh[] crankBoltMeshes;
 
     [Header("Hubs")]
-    public int selectedFrontHub = 1;
-    public int selectedRearHub = 1;
+    public int selectedFrontHub = 0;
+    public int selectedRearHub = 0;
     public Mesh[] hubMeshes;
     public Text selectedFrontHubText;
     public Text selectedRearHubText;
 
     [Header("Spoke Accessories")]
-    public int selectedFrontAccessory = 1;
-    public int selectedRearAccessory = 1;
+    public int selectedFrontAccessory = 0;
+    public int selectedRearAccessory = 0;
     public Mesh[] accessoryMeshes;
     public Text selectedFrontAccessoryText;
     public Text selectedRearAccessoryText;
@@ -120,19 +120,19 @@ public class CustomMeshManager : MonoBehaviour
     public Material[] accMats;
 
     [Header("Bar Accessories")]
-    public int selectedBarAccessory = 1;
+    public int selectedBarAccessory = 0;
     public Mesh[] barAccMeshes;
     public Text selectedBarAccessoryText;
 
     [Header("Frame Accessories")]
-    public int selectedFrameAccessory = 1;
+    public int selectedFrameAccessory = 0;
     public Mesh[] frameAccMeshes;
     public Text selectedFrameAccessoryText;
 
     
 
     [Header("Seat")]
-    public int selectedSeat = 1;
+    public int selectedSeat = 0;
     public Mesh[] seatMeshes;
     public Text selectedSeatText;
 
@@ -205,6 +205,8 @@ public class CustomMeshManager : MonoBehaviour
         SwitchDefaultParts();
         //PartMaster.instance.SetMesh(PartMaster.instance.seatPost, longSeatPost);
         LoadFiles(); // Load meshes from file
+        PartMaster.instance.SetMesh(PartMaster.instance.rightCrankBolt, boltsCrank[1].mesh);
+        PartMaster.instance.SetMesh(PartMaster.instance.leftCrankBolt, boltsCrank[1].mesh);
         isDoneLoading = true;
     }
 
@@ -370,6 +372,164 @@ public class CustomMeshManager : MonoBehaviour
         
     }
 
+    public void SetPartText(string part, string text)
+    {
+        switch (part)
+        {
+            case "frame":
+                selectedFrameText.text = text;
+                break;
+            case "bars":
+                selectedBarsText.text = text;
+                break;
+            case "sprocket":
+                selectedSprocketText.text = text;
+                break;
+            case "stem":
+                selectedStemText.text = text;
+                break;
+            case "cranks":
+                selectedCranksText.text = text;
+                break;
+            case "frontSpokes":
+                selectedFrontSpokesText.text = text;
+                break;
+            case "rearSpokes":
+                selectedRearSpokesText.text = text;
+                break;
+            case "pedals":
+                selectedPedalsText.text = text;
+                break;
+            case "forks":
+                selectedForksText.text = text;
+                break;
+            case "frontPegs":
+                selectedFrontPegsText.text = text;
+                break;
+            case "rearPegs":
+                selectedRearPegsText.text = text;
+                break;
+            case "frontHub":
+                selectedFrontHubText.text = text;
+                break;
+            case "rearHub":
+                selectedRearHubText.text = text;
+                break;
+            case "seat":
+                selectedSeatText.text = text;
+                break;
+            case "frontRim":
+                selectedFrontRimText.text = text;
+                break;
+            case "rearRim":
+                selectedRearRimText.text = text;
+                break;
+            case "frontSpokeAccessory":
+                selectedFrontAccessoryText.text = text;
+                break;
+            case "rearSpokeAccessory":
+                selectedRearAccessoryText.text = text;
+                break;
+            case "barAccessory":
+                selectedBarAccessoryText.text = text;
+                break;
+            case "frameAccessory":
+                selectedFrameAccessoryText.text = text;
+                break;
+            case "frontHubGuard":
+                selectedFrontHubGuardText.text = text;
+                break;
+            case "rearHubGuard":
+                selectedRearHubGuardText.text = text;
+                break;
+            case "seatPost":
+                selectedSeatPostText.text = text;
+                break;
+            default:
+                Debug.Log("Could not find part " + part + " to set part text.");
+                break;
+        }
+    }
+
+    public void SetPartNum(string part, int partNum)
+    {
+        switch (part)
+        {
+            case "frame":
+                selectedFrame = partNum;
+                break;
+            case "bars":
+                selectedBars = partNum;
+                break;
+            case "sprocket":
+                selectedSprocket = partNum;
+                break;
+            case "stem":
+                selectedStem = partNum;
+                break;
+            case "cranks":
+                selectedCranks = partNum;
+                break;
+            case "frontSpokes":
+                selectedFrontSpokes = partNum;
+                break;
+            case "rearSpokes":
+                selectedRearSpokes = partNum;
+                break;
+            case "pedals":
+                selectedPedals = partNum;
+                break;
+            case "forks":
+                selectedForks = partNum;
+                break;
+            case "frontPegs":
+                selectedFrontPegs = partNum;
+                break;
+            case "rearPegs":
+                selectedRearPegs = partNum;
+                break;
+            case "frontHub":
+                selectedFrontHub = partNum;
+                break;
+            case "rearHub":
+                selectedRearHub = partNum;
+                break;
+            case "seat":
+                selectedSeat = partNum;
+                break;
+            case "frontRim":
+                selectedFrontRim = partNum;
+                break;
+            case "rearRim":
+                selectedRearRim = partNum;
+                break;
+            case "frontSpokeAccessory":
+                selectedFrontAccessory = partNum;
+                break;
+            case "rearSpokeAccessory":
+                selectedRearAccessory = partNum;
+                break;
+            case "barAccessory":
+                selectedBarAccessory = partNum;
+                break;
+            case "frameAccessory":
+                selectedFrameAccessory = partNum;
+                break;
+            case "frontHubGuard":
+                selectedFrontHubGuard = partNum;
+                break;
+            case "rearHubGuard":
+                selectedRearHubGuard = partNum;
+                break;
+            case "seatPost":
+                selectedSeatPost = partNum;
+                break;
+            default:
+                Debug.Log("Could not find part " + part + " to set part text.");
+                break;
+        }
+    }
+
     public Mesh FindSpecific(string list, string fileName)
     {
         List<MeshObject> temp = meshLists[list];
@@ -379,13 +539,16 @@ public class CustomMeshManager : MonoBehaviour
             Debug.Log("Mesh not found in mesh lists");
             return null;
         }
+        int i = 0;
         foreach (MeshObject mo in temp)
         {
             if (mo.fileName.Equals(fileName))
             {
                 mesh = mo.mesh;
+                SetPartNum(list, i);
                 break;
             }
+            i++;
         }
         return mesh;
     }
@@ -401,7 +564,7 @@ public class CustomMeshManager : MonoBehaviour
             partObject.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
         selectedFrontAccessoryText.text = accessories[index].mesh.name;
         frontLightsOn = index == 3 ? true : false;
-        selectedFrontAccessory = (index) + 1;
+        selectedFrontAccessory = (index);
     }
 
     public void SetRearSpokeAccMesh(int i)
@@ -415,7 +578,7 @@ public class CustomMeshManager : MonoBehaviour
             partObject.GetComponent<MeshRenderer>().material = MaterialManager.instance.defaultMat;
         selectedRearAccessoryText.text = accessories[index].mesh.name;
         rearLightsOn = index == 3 ? true : false;
-        selectedRearAccessory = (index) + 1;
+        selectedRearAccessory = (index);
     }
 
     public void SetBarAccMesh(int i)
@@ -423,7 +586,7 @@ public class CustomMeshManager : MonoBehaviour
         GameObject partObject = PartMaster.instance.GetPart(PartMaster.instance.barAcc);
         partObject.GetComponent<MeshFilter>().mesh = barAccessories[i % barAccessories.Count].mesh;
         selectedBarAccessoryText.text = barAccessories[i % barAccessories.Count].mesh.name;
-        selectedBarAccessory = (i % barAccessories.Count) + 1;
+        selectedBarAccessory = (i % barAccessories.Count);
     }
 
     public void SetFrameAccMesh(int i)
@@ -431,7 +594,7 @@ public class CustomMeshManager : MonoBehaviour
         GameObject partObject = PartMaster.instance.GetPart(PartMaster.instance.frameAcc);
         partObject.GetComponent<MeshFilter>().mesh = frameAccessories[i % frameAccessories.Count].mesh;
         selectedFrameAccessoryText.text = frameAccessories[i % frameAccessories.Count].mesh.name;
-        selectedFrameAccessory = (i % frameAccessories.Count) + 1;
+        selectedFrameAccessory = (i % frameAccessories.Count);
     }
 
     /// <summary>
@@ -476,7 +639,7 @@ public class CustomMeshManager : MonoBehaviour
         GameObject partObject = PartMaster.instance.GetPart(PartMaster.instance.frame);
         partObject.GetComponent<MeshFilter>().mesh = frames[i % frames.Count].mesh;
         selectedFrameText.text = frames[i % frames.Count].mesh.name;
-        selectedFrame = (i % frames.Count) + 1;
+        selectedFrame = (i % frames.Count);
     }
 
     /// <summary>
@@ -487,7 +650,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.forks, forks[i % forks.Count].mesh);
         selectedForksText.text = forks[i % forks.Count].mesh.name;
-        selectedForks = (i % forks.Count) + 1;
+        selectedForks = (i % forks.Count);
     }
 
     /// <summary>
@@ -498,14 +661,14 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.bars, bars[i % bars.Count].mesh);
         selectedBarsText.text = bars[i % bars.Count].mesh.name;
-        selectedBars = (i % bars.Count) + 1;
+        selectedBars = (i % bars.Count);
     }
 
     public void SetSeatPostMesh(int i)
     {
         PartMaster.instance.SetMesh(PartMaster.instance.seatPost, seatPosts[i % seatPosts.Count].mesh);
         selectedSeatPostText.text = seatPosts[i % seatPosts.Count].mesh.name;
-        selectedSeatPost = (i % seatPosts.Count) + 1;
+        selectedSeatPost = (i % seatPosts.Count);
     }
 
     /// <summary>
@@ -517,7 +680,7 @@ public class CustomMeshManager : MonoBehaviour
         PartMaster.instance.SetMesh(PartMaster.instance.leftPedal, pedals[i % pedals.Count].mesh);
         PartMaster.instance.SetMesh(PartMaster.instance.rightPedal, pedals[i % pedals.Count].mesh);
         selectedPedalsText.text = pedals[i % pedals.Count].mesh.name;
-        selectedPedals = (i % pedals.Count) + 1;
+        selectedPedals = (i % pedals.Count);
     }
 
     /// <summary>
@@ -529,7 +692,7 @@ public class CustomMeshManager : MonoBehaviour
 
         PartMaster.instance.SetMesh(PartMaster.instance.sprocket, sprockets[i % sprockets.Count].mesh);
         selectedSprocketText.text = sprockets[i % sprockets.Count].mesh.name;
-        selectedSprocket = (i % sprockets.Count) + 1;
+        selectedSprocket = (i % sprockets.Count);
     }
 
     /// <summary>
@@ -541,7 +704,7 @@ public class CustomMeshManager : MonoBehaviour
         PartMaster.instance.SetMesh(PartMaster.instance.stem, stems[i % stems.Count].mesh);
         PartMaster.instance.SetMesh(PartMaster.instance.stemBolts, boltsStem[i % boltsStem.Count].mesh);
         selectedStemText.text = stems[i % stems.Count].mesh.name;
-        selectedStem = (i % stems.Count) +1;
+        selectedStem = (i % stems.Count);
     }
 
     /// <summary>
@@ -552,7 +715,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.frontRim, rims[i % rims.Count].mesh);
         selectedFrontRimText.text = rims[i % rims.Count].mesh.name;
-        selectedFrontRim = (i % rims.Count) + 1;
+        selectedFrontRim = (i % rims.Count);
     }
 
     /// <summary>
@@ -563,7 +726,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.rearRim, rims[i % rims.Count].mesh);
         selectedRearRimText.text = rims[i % rims.Count].mesh.name;
-        selectedRearRim = (i % rims.Count) + 1;
+        selectedRearRim = (i % rims.Count);
     }
 
     /// <summary>
@@ -575,13 +738,8 @@ public class CustomMeshManager : MonoBehaviour
         int index = i % cranks.Count;
         PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, cranks[index].mesh);
         PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, cranks[index].mesh);
-        if (index >= 0 && index < 3)
-        {
-            PartMaster.instance.SetMesh(PartMaster.instance.rightCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
-            PartMaster.instance.SetMesh(PartMaster.instance.leftCrankBolt, boltsCrank[i % boltsCrank.Count].mesh);
-        }
         selectedCranksText.text = cranks[index].mesh.name;
-        selectedCranks = (index) +1;
+        selectedCranks = (index);
     }
 
     /// <summary>
@@ -594,7 +752,7 @@ public class CustomMeshManager : MonoBehaviour
         //frontPegcollider.GetComponent<CapsuleCollider>().height = 0.25f;
         PartMaster.instance.SetMesh(PartMaster.instance.frontPegs, pegs[j % pegs.Count].mesh);
         selectedFrontPegsText.text = pegs[j % pegs.Count].mesh.name;
-        selectedFrontPegs = (j % pegs.Count) +1;
+        selectedFrontPegs = (j % pegs.Count);
 
     }
 
@@ -609,7 +767,7 @@ public class CustomMeshManager : MonoBehaviour
         //backPegcollider.GetComponent<CapsuleCollider>().height = 0.25f;
         PartMaster.instance.SetMesh(PartMaster.instance.rearPegs, pegs[j % pegs.Count].mesh);
         selectedRearPegsText.text = pegs[j % pegs.Count].mesh.name;
-        selectedRearPegs = (j % pegs.Count) + 1;
+        selectedRearPegs = (j % pegs.Count);
     }
 
     /// <summary>
@@ -620,7 +778,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.frontSpokes, spokes[j % spokes.Count].mesh);
         selectedFrontSpokesText.text = spokes[j % spokes.Count].mesh.name;
-        selectedFrontSpokes = (j % spokes.Count) +1;
+        selectedFrontSpokes = (j % spokes.Count);
     }
 
     /// <summary>
@@ -631,7 +789,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.rearSpokes, spokes[j % spokes.Count].mesh);
         selectedRearSpokesText.text = spokes[j % spokes.Count].mesh.name;
-        selectedRearSpokes = (j % spokes.Count) + 1;
+        selectedRearSpokes = (j % spokes.Count);
     }
 
     /// <summary>
@@ -642,7 +800,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.frontHub, hubs[j % hubs.Count].mesh);
         selectedFrontHubText.text = hubs[j % hubs.Count].mesh.name;
-        selectedFrontHub = (j % hubs.Count) + 1;
+        selectedFrontHub = (j % hubs.Count);
     }
 
     /// <summary>
@@ -653,14 +811,14 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.rearHub, hubs[j % hubs.Count].mesh);
         selectedRearHubText.text = hubs[j % hubs.Count].mesh.name;
-        selectedRearHub = (j % hubs.Count) + 1;
+        selectedRearHub = (j % hubs.Count);
     }
 
     public void SetSeatMesh(int i)
     {
         PartMaster.instance.SetMesh(PartMaster.instance.seat, seats[i % seats.Count].mesh);
         selectedSeatText.text = seats[i % seats.Count].mesh.name;
-        selectedSeat = (i % seats.Count) + 1;
+        selectedSeat = (i % seats.Count);
     }
 
     /// <summary>
@@ -671,7 +829,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.frontHubG, frontHubGuards[j % frontHubGuards.Count].mesh);
         selectedFrontHubGuardText.text = frontHubGuards[j % frontHubGuards.Count].mesh.name;
-        selectedFrontHubGuard = (j % frontHubGuards.Count) + 1;
+        selectedFrontHubGuard = (j % frontHubGuards.Count);
     }
 
     /// <summary>
@@ -682,7 +840,7 @@ public class CustomMeshManager : MonoBehaviour
     {
         PartMaster.instance.SetMesh(PartMaster.instance.rearHubG, rearHubGuards[j % rearHubGuards.Count].mesh);
         selectedRearHubGuardText.text = rearHubGuards[j % rearHubGuards.Count].mesh.name;
-        selectedRearHubGuard = (j % rearHubGuards.Count) + 1;
+        selectedRearHubGuard = (j % rearHubGuards.Count);
     }
 
 }
