@@ -233,7 +233,7 @@ public class SavingManager : MonoBehaviour
             Debug.Log("Saving Tire Tread...");
             SaveTireTread();
             Debug.Log("Saving Main Bike Colors...");
-            for (int i = 0; i < 54; i++)
+            for (int i = 0; i < PartMaster.instance.partList.Count; i++)
             {
                 Material m = PartMaster.instance.GetMaterial(i);
                 if (m != null)

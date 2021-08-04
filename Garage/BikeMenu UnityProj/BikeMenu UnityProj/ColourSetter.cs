@@ -239,7 +239,7 @@ public class ColourSetter : MonoBehaviour
                 }
                 return;
         }
-        if(key >= 0 && key < 54)
+        if(key >= 0 && key < PartMaster.instance.partList.Count)
             PartMaster.instance.GetMaterial(key).color = c;
     }
 

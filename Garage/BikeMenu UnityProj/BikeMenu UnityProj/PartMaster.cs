@@ -104,6 +104,15 @@ public class PartMaster : MonoBehaviour
     public int frameAcc = 51;
     public int frontHubG = 52;
     public int rearHubG = 53;
+    public int rightGripFlange = 54;
+    public int leftGripFlange = 55;
+    public int leftPedalTarget = 56;
+    public int rightPedalTarget = 57;
+    public int leftPedalJoint = 58;
+    public int rightPedalJoint = 59;
+    public int driveTrain = 60;
+
+    
 
     GameObject accFront;
     GameObject accRear;
@@ -250,16 +259,30 @@ public class PartMaster : MonoBehaviour
                     case "Left Grip":
                         Transform[] tran1 = t.gameObject.GetComponentsInChildren<Transform>();
                         if (tran1[0].gameObject.name == "Left Grip Mesh")
+                        {
                             partList.Add(leftGrip, tran1[0].gameObject);
+                        }
                         else
+                        {
                             partList.Add(leftGrip, tran1[1].gameObject);
+                        }
                         break;
                     case "Right Grip":
                         Transform[] tran2 = t.gameObject.GetComponentsInChildren<Transform>();
                         if (tran2[0].gameObject.name == "Left Grip Mesh")
+                        {
                             partList.Add(rightGrip, tran2[0].gameObject);
+                        }
                         else
+                        {
                             partList.Add(rightGrip, tran2[1].gameObject);
+                        }
+                        break;
+                    case "Left Grip Mesh 01":
+                        partList.Add(leftGripFlange, t.gameObject);
+                        break;
+                    case "Right Grip Mesh 01":
+                        partList.Add(rightGripFlange, t.gameObject);
                         break;
                     case "Forks Mesh":
                         partList.Add(forks, t.gameObject);
@@ -345,6 +368,7 @@ public class PartMaster : MonoBehaviour
                         partList.Add(leftCrankBolt, t.gameObject);
                         break;
                     case "BMX:LeftPedal_Joint":
+                        partList.Add(leftPedalJoint, t.gameObject);
                         Transform[] tran1 = t.gameObject.GetComponentsInChildren<Transform>();
                         foreach (Transform tr in tran1)
                         {
@@ -354,10 +378,13 @@ public class PartMaster : MonoBehaviour
                                 partList.Add(leftPedalAxle, tr.gameObject);
                             if (tr.gameObject.name.Equals("Pedal Cap Mesh"))
                                 partList.Add(leftPedalCap, tr.gameObject);
+                            if (tr.gameObject.name.Equals("leftPedalTarget"))
+                                partList.Add(leftPedalTarget, tr.gameObject);
 
                         }
                         break;
                     case "BMX:RightPedal_Joint":
+                        partList.Add(rightPedalJoint, t.gameObject);
                         Transform[] tran2 = t.gameObject.GetComponentsInChildren<Transform>();
                         foreach (Transform tr in tran2)
                         {
@@ -367,8 +394,13 @@ public class PartMaster : MonoBehaviour
                                 partList.Add(rightPedalAxle, tr.gameObject);
                             if (tr.gameObject.name.Equals("Pedal Cap Mesh"))
                                 partList.Add(rightPedalCap, tr.gameObject);
+                            if (tr.gameObject.name.Equals("leftPedalTarget"))
+                                partList.Add(rightPedalTarget, tr.gameObject);
 
                         }
+                        break;
+                    case "BMX:DriveTrain_Joint":
+                        partList.Add(driveTrain, t.gameObject);
                         break;
                     default:
                         break;
