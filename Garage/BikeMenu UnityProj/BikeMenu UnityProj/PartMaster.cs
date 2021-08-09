@@ -600,10 +600,34 @@ public class PartMaster : MonoBehaviour
         foreach (int key in ColourSetter.instance.GetActivePartList())
         {
             GameObject obj = GetPart(key);
-            if (positive)
-                obj.transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
+            /*
+            if (key == 46 || key == 47)
+            {
+                WheelCollider wc = obj.GetComponent<WheelCollider>();
+                wc.suspensionDistance = 0.08f;
+                wc.forceAppPointDistance = 0.0f;
+                JointSpring js = wc.suspensionSpring;
+                js.spring = 90000f;
+                js.damper = 9000f;
+                js.targetPosition = 1;
+                if (positive)
+                {
+                    wc.radius += 0.1f;
+                }
+                else
+                {
+                    wc.radius -= 0.1f;
+                }
+                continue;
+            }
             else
-                obj.transform.localScale -= new Vector3(0.1f, 0.1f, 0.1f);
+            */
+            {
+                if (positive)
+                    obj.transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
+                else
+                    obj.transform.localScale -= new Vector3(0.1f, 0.1f, 0.1f);
+            }
         }
     }
 

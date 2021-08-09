@@ -967,7 +967,7 @@ public class SavingManager : MonoBehaviour
             foreach (PartMesh pm in loadList.partMeshes)
             {
                 if (pm.isCustom) {
-                    if (!File.Exists(pm.fileName))
+                    if (!File.Exists(Application.dataPath +"/GarageContent/"+ pm.fileName))
                     {
                         ChangeAlertText("Error loading mesh: " + pm.fileName + " is a dependancy of this save file and could not be found. The save will continue to load, but it will load the default mesh in place of the missing custom mesh.");
                         if (!infoBox.activeSelf)
@@ -981,6 +981,17 @@ public class SavingManager : MonoBehaviour
                             PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, temp);
                             PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, temp);
                             CustomMeshManager.instance.SetPartText(pm.partName, temp.name);
+                            continue;
+                        }
+                        else if (pm.partName.Equals("stem"))
+                        {
+                            string path = "StemBolts/" + Path.GetFileName(pm.fileName);
+                            Mesh stem = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
+                            Mesh bolts = CustomMeshManager.instance.FindSpecific("stemBolts", path);
+                            PartMaster.instance.SetMesh(PartMaster.instance.stem, stem);
+                            PartMaster.instance.SetMesh(PartMaster.instance.stemBolts, bolts);
+                            CustomMeshManager.instance.SetPartText(pm.partName, stem.name);
+                            continue;
                         }
                         else
                         {

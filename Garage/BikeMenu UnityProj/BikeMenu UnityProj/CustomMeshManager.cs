@@ -332,7 +332,6 @@ public class CustomMeshManager : MonoBehaviour
             meshLists.Add("rearHubGuard", rearHubGuards);
             meshLists.Add("seatPost", seatPosts);
             meshLists.Add("stemBolts", boltsStem);
-            meshLists.Add("crankBolts", boltsCrank);
         }
         catch (Exception e)
         {
@@ -536,7 +535,7 @@ public class CustomMeshManager : MonoBehaviour
         Mesh mesh = null;
         if (temp == null)
         {
-            Debug.Log("Mesh not found in mesh lists");
+            Debug.Log("Mesh list not found: List = "+list +" fileName = " + fileName);
             return null;
         }
         int i = 0;
@@ -546,7 +545,7 @@ public class CustomMeshManager : MonoBehaviour
             {
                 mesh = mo.mesh;
                 SetPartNum(list, i);
-                break;
+                return mesh;
             }
             i++;
         }
@@ -617,7 +616,7 @@ public class CustomMeshManager : MonoBehaviour
                 customMeshList.Add(fileNameArray[i], 0);
                 Mesh temp = objImporter.ImportFile(fileNameArray[i]); // Import each file name as a mesh
                 temp.name = Path.GetFileName(fileNameArray[i]).Replace(".obj", ""); // Remove the .obj extension for cleaner look when updating the button text
-                meshObjectList.Add(new MeshObject(temp, true, fileNameArray[i]));
+                meshObjectList.Add(new MeshObject(temp, true, folder + Path.GetFileName(fileNameArray[i])));
             }
             catch (Exception e)
             {
@@ -701,8 +700,23 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="i"> the index of the mesh to change to </param>
     public void SetStemMesh(int i)
     {
-        PartMaster.instance.SetMesh(PartMaster.instance.stem, stems[i % stems.Count].mesh);
-        PartMaster.instance.SetMesh(PartMaster.instance.stemBolts, boltsStem[i % boltsStem.Count].mesh);
+        MeshObject mo = stems[i % stems.Count];
+        if (mo.isCustom)
+        {
+            string path = "StemBolts/" + Path.GetFileName(mo.fileName);
+            Mesh bolts = FindSpecific("stemBolts", path);
+            if (bolts == null)
+            {
+                Debug.Log("The mesh: " + path  + " could not be loaded");
+            }
+            PartMaster.instance.SetMesh(PartMaster.instance.stem, mo.mesh);
+            PartMaster.instance.SetMesh(PartMaster.instance.stemBolts, bolts);
+        }
+        else
+        {
+            PartMaster.instance.SetMesh(PartMaster.instance.stem, stems[i % stems.Count].mesh);
+            PartMaster.instance.SetMesh(PartMaster.instance.stemBolts, boltsStem[i % boltsStem.Count].mesh);
+        }
         selectedStemText.text = stems[i % stems.Count].mesh.name;
         selectedStem = (i % stems.Count);
     }

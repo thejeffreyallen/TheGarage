@@ -52,6 +52,7 @@
     <Compile Include="GarageRoomLoader.cs" />
     <Compile Include="SaveList.cs" />
     <Compile Include="SavingManager.cs" />
+    <Compile Include="StickerManager.cs" />
     <Compile Include="TextureManager.cs" />
     <Compile Include="VehicleDriver.cs" />
     <Compile Include="VehicleSpawner.cs" />
