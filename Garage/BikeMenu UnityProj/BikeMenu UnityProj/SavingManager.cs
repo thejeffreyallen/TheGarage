@@ -647,7 +647,8 @@ public class SavingManager : MonoBehaviour
                 Material material = PartMaster.instance.GetMaterial(pair.Key);
                 if (material == null)
                     continue;
-                saveList.matData.Add(new MatData(pair.Key, material.GetFloat("_Glossiness"), material.GetFloat("_GlossMapScale")));
+                saveList.matData.Add(new MatData(pair.Key, material.GetFloat("_Glossiness"), material.GetFloat("_GlossMapScale"), material.GetTextureScale("_MainTex").x, material.GetTextureScale("_MainTex").y, material.GetTextureScale("_BumpMap").x, material.GetTextureScale("_BumpMap").y, material.GetTextureScale("_MetallicGlossMap").x, material.GetTextureScale("_MetallicGlossMap").y, material.GetFloat("_Metallic")));
+
             }
         }
         catch (Exception e)
@@ -750,7 +751,8 @@ public class SavingManager : MonoBehaviour
 
             foreach (MatData matData in loadList.matData)
             {
-                PartMaster.instance.SetMaterialData(matData.key, matData.glossiness, matData.glossMapScale);
+
+                PartMaster.instance.SetMaterialData(matData.key, matData.glossiness, matData.glossMapScale, matData.metallic, matData.texTileX, matData.texTileY, matData.normTileX, matData.normTileY, matData.metTileX, matData.metTileY);
             }
         }
         catch (Exception e)

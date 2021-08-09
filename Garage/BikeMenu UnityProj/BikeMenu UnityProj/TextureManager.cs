@@ -15,7 +15,14 @@ public class TextureManager : MonoBehaviour
     public InputField urlNorm;
     public InputField urlMet;
     public Slider shinySlide;
-    public Text selectedPartText;
+    public Slider metalSlide;
+
+    public InputField texTileX;
+    public InputField texTileY;
+    public InputField normTileX;
+    public InputField normTileY;
+    public InputField metTileX;
+    public InputField metTileY;
 
     public Dictionary<int, string> albedoList = new Dictionary<int, string>();
     public Dictionary<int, string> normalList = new Dictionary<int, string>();
@@ -88,52 +95,138 @@ public class TextureManager : MonoBehaviour
         metallicList.Add(16, "");
     }
 
-
-    public void Update()
+    public void SetTextureTilingX()
     {
-        if (shinySlide.gameObject.transform.parent.gameObject.activeInHierarchy)
+        int val;
+        bool success = Int32.TryParse(texTileX.text, out val);
+        if (success)
+            TexTilingHelper("_MainTex", true, val);
+    }
+
+    public void SetTextureTilingY()
+    {
+        int val;
+        bool success = Int32.TryParse(texTileX.text, out val);
+        if (success)
+            TexTilingHelper("_MainTex", false, val);
+    }
+
+    public void SetNormalTilingX()
+    {
+        int val;
+        bool success = Int32.TryParse(texTileX.text, out val);
+        if (success)
+            TexTilingHelper("_BumpMap", true, val);
+    }
+
+    public void SetNormalTilingY()
+    {
+        int val;
+        bool success = Int32.TryParse(texTileX.text, out val);
+        if (success)
+            TexTilingHelper("_BumpMap", false, val);
+    }
+
+    public void SetMetalTilingX()
+    {
+        int val;
+        bool success = Int32.TryParse(texTileX.text, out val);
+        if (success)
+            TexTilingHelper("_MetallicGlossMap", true, val);
+    }
+
+    public void SetMetalTilingY()
+    {
+        int val;
+        bool success = Int32.TryParse(texTileX.text, out val);
+        if (success)
+            TexTilingHelper("_MetallicGlossMap", false, val);
+    }
+
+    public void ResetTileInputs()
+    {
+        texTileX.text = "";
+        texTileY.text = "";
+        normTileX.text = "";
+        normTileY.text = "";
+        metTileX.text = "";
+        metTileY.text = "";
+    }
+
+    public void TexTilingHelper(string propName, bool isX, int val)
+    {
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int selectedPart in activeList)
         {
-            List<int> activeList = ColourSetter.instance.GetActivePartList();
-            foreach (int selectedPart in activeList)
+            Material[] mats;
+            mats = PartMaster.instance.GetMaterials(selectedPart);
+            foreach (Material m in mats)
             {
-                //Debug.Log("Setting glossiness for part number: " + selectedPart);
-                if (selectedPart == -1)
-                {
-                    if (metallicList.ContainsKey(selectedPart))
-                    {
-                        if (String.IsNullOrEmpty(metallicList[selectedPart]))
-                            PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
-                        else
-                            PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
-                    }
-                }
-                else if (selectedPart == -2)
-                {
-                    if (metallicList.ContainsKey(selectedPart))
-                    {
-                        if (String.IsNullOrEmpty(metallicList[selectedPart]))
-                            PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
-                        else
-                            PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
-                    }
-                }
-                else if (selectedPart == -3)
-                {
-                    Debug.Log("Do nothing yet for part number " + selectedPart);
-                }
-                else if (selectedPart == -4)
-                {
-                    Debug.Log("Do nothing yet for part number " + selectedPart);
-                }
+                if(isX)
+                    m.SetTextureScale(propName, new Vector2(val, m.GetTextureScale(propName).y));
                 else
+                    m.SetTextureScale(propName, new Vector2(m.GetTextureScale(propName).x, val));
+            }
+        }
+    }
+
+    public void SetMetallicness()
+    {
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int selectedPart in activeList)
+        {
+            Material[] mats;
+            mats = PartMaster.instance.GetMaterials(selectedPart);
+            foreach (Material m in mats)
+            {
+                PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Metallic", metalSlide.value);
+            }
+
+        }
+    }
+
+    public void SetShininess()
+    {
+        List<int> activeList = ColourSetter.instance.GetActivePartList();
+        foreach (int selectedPart in activeList)
+        {
+            //Debug.Log("Setting glossiness for part number: " + selectedPart);
+            if (selectedPart == -1)
+            {
+                if (metallicList.ContainsKey(selectedPart))
                 {
-                    if (metallicList.ContainsKey(selectedPart))
-                    {
-                        if (String.IsNullOrEmpty(metallicList[selectedPart]))
-                            PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Glossiness", shinySlide.value);
-                        else
-                            PartMaster.instance.GetMaterial(selectedPart).SetFloat("_GlossMapScale", shinySlide.value);
-                    }
+                    if (String.IsNullOrEmpty(metallicList[selectedPart]))
+                        PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
+                    else
+                        PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
+                }
+            }
+            else if (selectedPart == -2)
+            {
+                if (metallicList.ContainsKey(selectedPart))
+                {
+                    if (String.IsNullOrEmpty(metallicList[selectedPart]))
+                        PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
+                    else
+                        PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
+                }
+            }
+            else if (selectedPart == -3)
+            {
+                Debug.Log("Do nothing yet for part number " + selectedPart);
+            }
+            else if (selectedPart == -4)
+            {
+                Debug.Log("Do nothing yet for part number " + selectedPart);
+            }
+            else
+            {
+                if (metallicList.ContainsKey(selectedPart))
+                {
+                    if (String.IsNullOrEmpty(metallicList[selectedPart]))
+                        PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Glossiness", shinySlide.value);
+                    else
+                        PartMaster.instance.GetMaterial(selectedPart).SetFloat("_GlossMapScale", shinySlide.value);
                 }
             }
         }

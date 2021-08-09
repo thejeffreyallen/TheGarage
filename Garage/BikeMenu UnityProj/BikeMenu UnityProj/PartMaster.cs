@@ -37,11 +37,22 @@ public class PartMaster : MonoBehaviour
     {
         public float glossiness;
         public float glossMapScale;
+        public float texTileX, texTileY;
+        public float normTileX, normTileY;
+        public float metTileX, metTileY;
+        public float metallic;
 
-        public MaterialData(float glossiness, float glossMapScale)
+        public MaterialData(float glossiness, float glossMapScale, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY, float metallic)
         {
             this.glossiness = glossiness;
             this.glossMapScale = glossMapScale;
+            this.texTileX = texTileX;
+            this.texTileY = texTileY;
+            this.normTileX = normTileX;
+            this.normTileY = normTileY;
+            this.metTileX = metTileX;
+            this.metTileY = metTileY;
+            this.metallic = metallic;
         }
     }
 
@@ -193,14 +204,25 @@ public class PartMaster : MonoBehaviour
         }
     }
 
-    public void SetMaterialData(int key, float glossiness, float glossMapScale)
+    public void SetMaterialData(int key, float glossiness, float glossMapScale, float metallic, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY)
     {
-        Material material = GetMaterial(key);
-        if (material == null)
-            return;
-        material.SetFloat("_Glossiness", glossiness);
-        material.SetFloat("_GlossMapScale", glossMapScale);
-        SetMaterial(key, material);
+        try
+        {
+            Material[] material = GetMaterials(key);
+            if (material == null)
+                return;
+            material[0].SetFloat("_Glossiness", glossiness);
+            material[0].SetFloat("_GlossMapScale", glossMapScale);
+            material[0].SetFloat("_Metallic", metallic);
+            material[0].SetTextureScale("_MainTex", new Vector2(texTileX, texTileY));
+            material[0].SetTextureScale("_BumpMap", new Vector2(normTileX, normTileY));
+            material[0].SetTextureScale("_MetallicGlossMap", new Vector2(metTileX, metTileY));
+            SetMaterials(key, material);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error in SetMaterialData(). " + e.Message + "\n" + e.StackTrace);
+        }
     }
 
     /// <summary>

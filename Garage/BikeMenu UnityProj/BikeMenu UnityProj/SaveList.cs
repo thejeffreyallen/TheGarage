@@ -159,12 +159,23 @@ public class MatData
     public int key;
     public float glossiness;
     public float glossMapScale;
+    public float texTileX, texTileY;
+    public float normTileX, normTileY;
+    public float metTileX, metTileY;
+    public float metallic;
 
-    public MatData(int key, float glossiness, float glossMapScale)
+    public MatData(int key, float glossiness, float glossMapScale, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY, float metallic)
     {
         this.key = key;
         this.glossiness = glossiness;
         this.glossMapScale = glossMapScale;
+        this.texTileX = texTileX;
+        this.texTileY = texTileY;
+        this.normTileX = normTileX;
+        this.normTileY = normTileY;
+        this.metTileX = metTileX;
+        this.metTileY = metTileY;
+        this.metallic = metallic;
     }
 
     public MatData()

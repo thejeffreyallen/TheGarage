@@ -39,6 +39,7 @@ class StickerManager : MonoBehaviour
 
     void Update()
     {
+        /*
         if (Input.GetKey(KeyCode.S) && !partList.ContainsKey(0))
         {
             SetStickerDecal(0);
@@ -48,6 +49,7 @@ class StickerManager : MonoBehaviour
             Destroy(partList[0]);
             partList.Remove(0);
         }
+        */
     }
 
 }
