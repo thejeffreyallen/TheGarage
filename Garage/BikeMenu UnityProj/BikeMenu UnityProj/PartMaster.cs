@@ -653,6 +653,11 @@ public class PartMaster : MonoBehaviour
         }
     }
 
+    public bool HasRenderer(int key)
+    {
+        return GetMaterial(key) == null;
+    }
+
     public Vector3 GetScale(int key)
     {
         return GetPart(key).transform.localScale;

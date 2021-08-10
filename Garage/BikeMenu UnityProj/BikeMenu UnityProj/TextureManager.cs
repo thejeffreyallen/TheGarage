@@ -52,47 +52,23 @@ public class TextureManager : MonoBehaviour
 
     void InitDictionaries()
     {
-        albedoList.Add(0, "");
-        albedoList.Add(1, "");
-        albedoList.Add(36, "");
-        albedoList.Add(2, "");
-        albedoList.Add(10, "");
-        albedoList.Add(11, "");
-        albedoList.Add(6, "");
-        albedoList.Add(7, "");
-        albedoList.Add(8, "");
-        albedoList.Add(9, "");
+
         albedoList.Add(-1, "");
         albedoList.Add(-2, "");
-        albedoList.Add(16, "");
-
-        normalList.Add(0, "");
-        normalList.Add(1, "");
-        normalList.Add(36, "");
-        normalList.Add(2, "");
-        normalList.Add(10, "");
-        normalList.Add(11, "");
-        normalList.Add(6, "");
-        normalList.Add(7, "");
-        normalList.Add(8, "");
-        normalList.Add(9, "");
         normalList.Add(-1, "");
         normalList.Add(-2, "");
-        normalList.Add(16, "");
-
-        metallicList.Add(0, "");
-        metallicList.Add(1, "");
-        metallicList.Add(36, "");
-        metallicList.Add(2, "");
-        metallicList.Add(10, "");
-        metallicList.Add(11, "");
-        metallicList.Add(6, "");
-        metallicList.Add(7, "");
-        metallicList.Add(8, "");
-        metallicList.Add(9, "");
         metallicList.Add(-1, "");
         metallicList.Add(-2, "");
-        metallicList.Add(16, "");
+
+        foreach (KeyValuePair<int, GameObject> pair in PartMaster.instance.partList)
+        {
+            if (PartMaster.instance.HasRenderer(pair.Key))
+            {
+                albedoList.Add(pair.Key, "");
+                normalList.Add(pair.Key, "");
+                metallicList.Add(pair.Key, "");
+            }
+        }
     }
 
     public void SetTextureTilingX()

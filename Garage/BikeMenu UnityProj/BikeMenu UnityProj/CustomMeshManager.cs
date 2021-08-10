@@ -313,6 +313,7 @@ public class CustomMeshManager : MonoBehaviour
             meshLists.Add("sprocket", sprockets);
             meshLists.Add("stem", stems);
             meshLists.Add("cranks", cranks);
+            meshLists.Add("crankBolts", boltsCrank);
             meshLists.Add("frontSpokes", spokes);
             meshLists.Add("rearSpokes", spokes);
             meshLists.Add("pedals", pedals);
@@ -352,7 +353,6 @@ public class CustomMeshManager : MonoBehaviour
             cranks = LoadFromFile("Cranks/", cranks);
             forks = LoadFromFile("Forks/", forks);
             boltsStem = LoadFromFile("StemBolts/", boltsStem);
-            boltsCrank = LoadFromFile("CrankBolts/", boltsCrank);
             hubs = LoadFromFile("Hubs/", hubs);
             seats = LoadFromFile("Seats/", seats);
             pedals = LoadFromFile("Pedals/", pedals);
@@ -604,29 +604,46 @@ public class CustomMeshManager : MonoBehaviour
     /// <param name="origMeshArray"> The original mesh array to merge into </param>
     public List<MeshObject> LoadFromFile(String folder, List<MeshObject> meshObjectList)
     {
-        
-            String[] fileNameArray = Directory.GetFiles(basePath + folder); // Get the file names
-            for (int i = 0; i < fileNameArray.Length; i++)
+        String[] fileNameArray = Directory.GetFiles(basePath + folder); // Get the file names
+        List<MeshObject> list = ClearCustomMeshes(meshObjectList);
+        for (int i = 0; i < fileNameArray.Length; i++)
+        {
+            if (!fileNameArray[i].Contains(".obj"))
             {
-                if (customMeshList.ContainsKey(fileNameArray[i]) || !fileNameArray[i].Contains(".obj")) {
-                    continue;
-                }
+                continue;
+            }
+            if (customMeshList.ContainsKey(fileNameArray[i]))
+                customMeshList.Remove(fileNameArray[i]);
             try
             {
                 customMeshList.Add(fileNameArray[i], 0);
                 Mesh temp = objImporter.ImportFile(fileNameArray[i]); // Import each file name as a mesh
                 temp.name = Path.GetFileName(fileNameArray[i]).Replace(".obj", ""); // Remove the .obj extension for cleaner look when updating the button text
-                meshObjectList.Add(new MeshObject(temp, true, folder + Path.GetFileName(fileNameArray[i])));
+                list.Add(new MeshObject(temp, true, folder + Path.GetFileName(fileNameArray[i])));
             }
             catch (Exception e)
             {
-                Debug.Log("Error in loading " + fileNameArray[i] +": " + e.Message + e.StackTrace);
+                Debug.Log("Error in loading " + fileNameArray[i] + ": " + e.Message + e.StackTrace);
                 continue;
             }
-        }
-        
-        return meshObjectList;
+        } 
+        return list;
+    }
 
+    public List<MeshObject> ClearCustomMeshes(List<MeshObject> meshObjectList)
+    {
+        Debug.Log("meshList.Count = "+meshObjectList.Count);
+        for (int i = 0; i < meshObjectList.Count; i++)
+        {
+            if (meshObjectList[i].isCustom)
+            {
+                Debug.Log("Removing "+meshObjectList[i].fileName + " from the list: " + meshObjectList);
+                meshObjectList.Remove(meshObjectList[i]);
+                i--;
+            }
+        }
+        Debug.Log("meshList.Count = " + meshObjectList.Count);
+        return meshObjectList;
     }
 
     /// <summary>
