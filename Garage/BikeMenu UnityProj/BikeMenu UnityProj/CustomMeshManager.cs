@@ -632,17 +632,14 @@ public class CustomMeshManager : MonoBehaviour
 
     public List<MeshObject> ClearCustomMeshes(List<MeshObject> meshObjectList)
     {
-        Debug.Log("meshList.Count = "+meshObjectList.Count);
         for (int i = 0; i < meshObjectList.Count; i++)
         {
             if (meshObjectList[i].isCustom)
             {
-                Debug.Log("Removing "+meshObjectList[i].fileName + " from the list: " + meshObjectList);
                 meshObjectList.Remove(meshObjectList[i]);
                 i--;
             }
         }
-        Debug.Log("meshList.Count = " + meshObjectList.Count);
         return meshObjectList;
     }
 
