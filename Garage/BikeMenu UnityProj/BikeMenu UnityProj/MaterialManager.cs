@@ -29,6 +29,11 @@ public class MaterialManager : MonoBehaviour
     {
         defaultMat = PartManager.instance.bmx.GetComponentInChildren<BikeLoadOut>().GetPartMat(0);
         defaultSeatMat = PartMaster.instance.GetMaterial(PartMaster.instance.seat);
+        FixChain();
+    }
+
+    public void FixChain()
+    {
         PartMaster.instance.SetMaterial(PartMaster.instance.chain, chainMatFix);
     }
 
