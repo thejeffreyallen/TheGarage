@@ -151,13 +151,33 @@ public class TextureManager : MonoBehaviour
         List<int> activeList = ColourSetter.instance.GetActivePartList();
         foreach (int selectedPart in activeList)
         {
-            Material[] mats;
-            mats = PartMaster.instance.GetMaterials(selectedPart);
-            foreach (Material m in mats)
+            if (selectedPart == -1)
             {
-                PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Metallic", metalSlide.value);
+                PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Metallic", metalSlide.value);
             }
-
+            else if (selectedPart == -2)
+            {
+                PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Metallic", metalSlide.value);
+            }
+            else if (selectedPart == -3)
+            {
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].SetFloat("_Metallic", metalSlide.value);
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].SetFloat("_Metallic", metalSlide.value);
+            }
+            else if (selectedPart == -4)
+            {
+                BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].SetFloat("_Metallic", metalSlide.value);
+                BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].SetFloat("_Metallic", metalSlide.value);
+            }
+            else
+            {
+                Material[] mats;
+                mats = PartMaster.instance.GetMaterials(selectedPart);
+                foreach (Material m in mats)
+                {
+                    PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Metallic", metalSlide.value);
+                }
+            }
         }
     }
 
@@ -166,45 +186,57 @@ public class TextureManager : MonoBehaviour
         List<int> activeList = ColourSetter.instance.GetActivePartList();
         foreach (int selectedPart in activeList)
         {
-            //Debug.Log("Setting glossiness for part number: " + selectedPart);
+
             if (selectedPart == -1)
             {
-                if (metallicList.ContainsKey(selectedPart))
-                {
-                    if (String.IsNullOrEmpty(metallicList[selectedPart]))
-                        PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
-                    else
-                        PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
-                }
+
+                if (PartMaster.instance.GetMaterial(selectedPart).GetTexture("_MetallicGlossMap") == null)
+                    PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_Glossiness", shinySlide.value);
+                else
+                    PartMaster.instance.GetMaterials(PartMaster.instance.frontTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
+
             }
             else if (selectedPart == -2)
             {
-                if (metallicList.ContainsKey(selectedPart))
-                {
-                    if (String.IsNullOrEmpty(metallicList[selectedPart]))
-                        PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
-                    else
-                        PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
-                }
+                if (PartMaster.instance.GetMaterial(selectedPart).GetTexture("_MetallicGlossMap") == null)
+                    PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_Glossiness", shinySlide.value);
+                else
+                    PartMaster.instance.GetMaterials(PartMaster.instance.rearTire)[1].SetFloat("_GlossMapScale", shinySlide.value);
             }
             else if (selectedPart == -3)
             {
-                Debug.Log("Do nothing yet for part number " + selectedPart);
+                if (BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].GetTexture("_MetallicGlossMap") == null)
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].SetFloat("_Glossiness", shinySlide.value);
+                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].SetFloat("_Glossiness", shinySlide.value);
+                }
+                else
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[2].SetFloat("_GlossMapScale", shinySlide.value);
+                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[1].SetFloat("_GlossMapScale", shinySlide.value);
+                }
             }
             else if (selectedPart == -4)
             {
-                Debug.Log("Do nothing yet for part number " + selectedPart);
+                if (BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].GetTexture("_MetallicGlossMap") == null)
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].SetFloat("_Glossiness", shinySlide.value);
+                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].SetFloat("_Glossiness", shinySlide.value);
+                }
+                else
+                {
+                    BrakesManager.instance.GetFrameBrakes().GetComponent<Renderer>().materials[3].SetFloat("_GlossMapScale", shinySlide.value);
+                    BrakesManager.instance.GetBarBrakes().GetComponent<Renderer>().materials[2].SetFloat("_GlossMapScale", shinySlide.value);
+                }
             }
             else
             {
-                if (metallicList.ContainsKey(selectedPart))
-                {
-                    if (String.IsNullOrEmpty(metallicList[selectedPart]))
-                        PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Glossiness", shinySlide.value);
-                    else
-                        PartMaster.instance.GetMaterial(selectedPart).SetFloat("_GlossMapScale", shinySlide.value);
-                }
+                if (PartMaster.instance.GetMaterial(selectedPart).GetTexture("_MetallicGlossMap") == null)
+                    PartMaster.instance.GetMaterial(selectedPart).SetFloat("_Glossiness", shinySlide.value);
+                else
+                    PartMaster.instance.GetMaterial(selectedPart).SetFloat("_GlossMapScale", shinySlide.value);
             }
+
         }
     }
 
