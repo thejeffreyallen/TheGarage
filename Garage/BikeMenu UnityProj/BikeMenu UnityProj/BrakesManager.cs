@@ -56,6 +56,10 @@ public class BrakesManager : MonoBehaviour
         frameBrakes = Instantiate(framebrakePrefab, frame.transform.position, frame.transform.rotation);
         frameBrakes.transform.parent = frame;
         brakesEnabled = true;
+        PartMaster.instance.partList.Add(-3, barBrakes);
+        PartMaster.instance.partList.Add(-4, frameBrakes);
+        PartMaster.instance.origTrans.Add(-3, new PartMaster.TransformData(barBrakes.transform));
+        PartMaster.instance.origTrans.Add(-4, new PartMaster.TransformData(frameBrakes.transform));
     }
 
     void DisableBrakes()
@@ -69,6 +73,10 @@ public class BrakesManager : MonoBehaviour
         Destroy(TempParent.gameObject);
         Debug.Log("Brake prefabs destroyed");
         brakesEnabled = false;
+        PartMaster.instance.partList.Remove(-3);
+        PartMaster.instance.partList.Remove(-4);
+        PartMaster.instance.origTrans.Remove(-3);
+        PartMaster.instance.origTrans.Remove(-4);
     }
 
     public GameObject GetBarBrakes()

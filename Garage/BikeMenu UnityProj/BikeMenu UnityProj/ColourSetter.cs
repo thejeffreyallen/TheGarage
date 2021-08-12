@@ -199,6 +199,11 @@ public class ColourSetter : MonoBehaviour
                     PartMaster.instance.MovePart(key, "z", -0.001f);
 
                 GameObject obj = PartMaster.instance.GetPart(key);
+                if (obj == null)
+                {
+                    Debug.Log("Could not find part number " + key + " at ColourSetter.Update()");
+                    return;
+                }
                 if (Input.GetKey(KeyCode.KeypadPlus))
                     obj.transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
                 if(Input.GetKey(KeyCode.KeypadMinus)) 

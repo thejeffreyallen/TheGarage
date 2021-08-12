@@ -432,6 +432,7 @@ public class PartMaster : MonoBehaviour
             partList.Add(frameJ, GameObject.Find("BMX:Frame_Joint"));
             partList.Add(frontWheelCol, GameObject.Find("FrontWheelCollider"));
             partList.Add(rearWheelCol, GameObject.Find("BackWheelCollider"));
+            
         }
         catch (Exception e)
         {
@@ -576,6 +577,11 @@ public class PartMaster : MonoBehaviour
 
     public void MovePart(int key, string axis, float pos)
     {
+        if (GetPart(key) == null)
+        {
+            Debug.Log("Could not find part number " + key);
+            return;
+        }
         Transform part = GetPart(key).transform;
         Debug.Log("Moving " + part.gameObject.name);
         if (axis.Equals("x"))
