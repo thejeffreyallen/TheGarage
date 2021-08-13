@@ -355,7 +355,7 @@ public class PartMaster : MonoBehaviour
                         break;
                     case "Seat Post Anchor":
                         //Fix the seatpost angle
-                        t.eulerAngles = new Vector3(t.eulerAngles.x+0.274f, 0f, 0f);
+                        t.localEulerAngles = new Vector3(t.localEulerAngles.x+0.274f, 0f, 0f);
                         partList.Add(seatPostAnchor, t.gameObject);
                         break;
                     case "Seat Mesh":
