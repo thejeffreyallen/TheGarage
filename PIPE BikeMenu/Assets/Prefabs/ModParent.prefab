@@ -10516,7 +10516,7 @@ MonoBehaviour:
   m_Script: {fileID: -2017301097, guid: cbb9394973babba47833ad93bed52fd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomPrefab: {fileID: 1085928886282514, guid: cbcd0f28fc75547458b71b85db8fd608, type: 2}
+  roomPrefab: {fileID: 1163264168566964, guid: cbcd0f28fc75547458b71b85db8fd608, type: 2}
   skybox: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114023546151185702
 MonoBehaviour:

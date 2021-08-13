@@ -1,27 +1,16 @@
 fileFormatVersion: 2
-guid: 2bbdaa4e393bce74b985e46105d9f26b
+guid: 84bfa2703d682f544930f850296589d7
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: Frame_LOD1_0_0
-    100004: default
-    100006: Default
-    400000: //RootNode
-    400002: Frame_LOD1_0_0
-    400004: default
-    400006: Default
-    2100000: Frame_LOD1_0_0Mat
-    2100002: None
-    2300000: Frame_LOD1_0_0
-    2300002: default
-    2300004: Default
-    3300000: Frame_LOD1_0_0
-    3300002: default
-    3300004: Default
-    4300000: Frame_LOD1_0_0
-    4300002: default
-    4300004: Default
+    100000: default
+    100002: //RootNode
+    400000: default
+    400002: //RootNode
+    2100000: defaultMat
+    2300000: default
+    3300000: default
+    4300000: default
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

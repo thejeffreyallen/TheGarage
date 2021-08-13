@@ -55,7 +55,8 @@ public class GarageRoomLoader : MonoBehaviour
         try
         {
             mainCam = Camera.main;
-            room = Instantiate(roomPrefab, new Vector3(UnityEngine.Random.Range(10000, 20000), UnityEngine.Random.Range(10000, 20000), UnityEngine.Random.Range(10000, 20000)), Quaternion.identity);
+            room = Instantiate(roomPrefab, new Vector3(UnityEngine.Random.Range(-1000, 1000), UnityEngine.Random.Range(-500, -1000), UnityEngine.Random.Range(-1000, 1000)), Quaternion.identity);
+            
             bikePlacement = room.transform.position;
 
             player = GameObject.Find("Daryien").transform.parent.gameObject;

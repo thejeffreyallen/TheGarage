@@ -210,10 +210,12 @@ public class ColourSetter : MonoBehaviour
                     obj.transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
             }
         }
+        /*
         if (Input.GetKeyDown(KeyCode.Delete))
         {
             PlayerPrefs.DeleteKey("ShowAgain");
         }
+        */
     }
 
     public void SetColor(int key, Color c)
