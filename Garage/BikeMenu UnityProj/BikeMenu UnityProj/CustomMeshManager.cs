@@ -7,6 +7,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Security.Cryptography;
 
 public class MeshObject
 {
@@ -179,6 +180,8 @@ public class CustomMeshManager : MonoBehaviour
     public List<MeshObject> seatPosts;
 
     public Dictionary<string, List<MeshObject>> meshLists = new Dictionary<string, List<MeshObject>>();
+
+    public Dictionary<string, byte[]> hashes = new Dictionary<string, byte[]>();
 
     private float nextActionTime = 0.0f;
     public float period = 0.2f;
@@ -605,21 +608,33 @@ public class CustomMeshManager : MonoBehaviour
     public List<MeshObject> LoadFromFile(String folder, List<MeshObject> meshObjectList)
     {
         String[] fileNameArray = Directory.GetFiles(basePath + folder); // Get the file names
-        List<MeshObject> list = ClearCustomMeshes(meshObjectList);
+        //List<MeshObject> list = ClearCustomMeshes(meshObjectList);
         for (int i = 0; i < fileNameArray.Length; i++)
         {
             if (!fileNameArray[i].Contains(".obj"))
             {
                 continue;
             }
-            if (customMeshList.ContainsKey(fileNameArray[i]))
-                customMeshList.Remove(fileNameArray[i]);
             try
             {
+                byte[] hash = GetFileHash(fileNameArray[i]);
+                if (hashes.ContainsKey(fileNameArray[i]))
+                {
+                    if (HashEqual(hashes[fileNameArray[i]], hash))
+                    {
+                        continue;
+                    }
+                    Debug.Log("The file " + fileNameArray[i] + " has been modified, reloading...");
+                    hashes.Remove(fileNameArray[i]);
+                    RemoveIfExistsMesh(folder + Path.GetFileName(fileNameArray[i]), meshObjectList);
+                }
+                if (customMeshList.ContainsKey(fileNameArray[i]))
+                    customMeshList.Remove(fileNameArray[i]);
                 customMeshList.Add(fileNameArray[i], 0);
+                hashes.Add(fileNameArray[i], hash);
                 Mesh temp = objImporter.ImportFile(fileNameArray[i]); // Import each file name as a mesh
-                temp.name = Path.GetFileName(fileNameArray[i]).Replace(".obj", ""); // Remove the .obj extension for cleaner look when updating the button text
-                list.Add(new MeshObject(temp, true, folder + Path.GetFileName(fileNameArray[i])));
+                temp.name = Path.GetFileName(fileNameArray[i]).Replace(".obj", ""); // Remove the .obj extension for cleaner look when updating the button text 
+                meshObjectList.Add(new MeshObject(temp, true, folder + Path.GetFileName(fileNameArray[i])));
             }
             catch (Exception e)
             {
@@ -627,7 +642,38 @@ public class CustomMeshManager : MonoBehaviour
                 continue;
             }
         } 
-        return list;
+        return meshObjectList;
+    }
+
+    private void RemoveIfExistsMesh(String name, List<MeshObject> meshObjectList)
+    {
+        for (int i = 0; i < meshObjectList.Count; i++)
+        {
+            if (meshObjectList[i].fileName.Equals(name))
+            {
+                meshObjectList.Remove(meshObjectList[i]);
+                return;
+            }
+        }
+    }
+
+    private byte[] GetFileHash(string fileName)
+    {
+        HashAlgorithm sha1 = HashAlgorithm.Create();
+        using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            return sha1.ComputeHash(stream);
+    }
+
+    private bool HashEqual(byte[] a, byte[] b)
+    {
+        if (a.Length != b.Length)
+            return false;
+        for (int i = 0; i < a.Length; i++)
+        {
+            if (a[i] != b[i])
+                return false;
+        }
+        return true;
     }
 
     public List<MeshObject> ClearCustomMeshes(List<MeshObject> meshObjectList)
