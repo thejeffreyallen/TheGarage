@@ -187,6 +187,34 @@ public class SavingManager : MonoBehaviour
                 // Quick fix for weird normal map issue on left crank arm
                 Material m = PartMaster.instance.GetMaterial(PartMaster.instance.rightCrank);
                 PartMaster.instance.GetPart(PartMaster.instance.leftCrank).GetComponent<MeshRenderer>().material = m;
+
+
+                if (PartMaster.instance.GetPart(PartMaster.instance.rightPedal).transform.localEulerAngles.y < 180.0f)
+                {
+                    PartMaster.instance.GetPart(PartMaster.instance.rightPedal).transform.localEulerAngles += new Vector3(0, 180f, 0);
+                }
+
+                
+                Collider[] colliders1 = PartMaster.instance.GetPart(PartMaster.instance.frontWheelMeshCol).GetComponent<ColliderSet>().colliders;
+                Collider[] colliders2 = PartMaster.instance.GetPart(PartMaster.instance.rearWheelMeshCol).GetComponent<ColliderSet>().colliders;
+                colliders1[0].GetComponent<WheelCollider>().mass = 200;
+                colliders2[0].GetComponent<WheelCollider>().mass = 200;
+                WheelFrictionCurve side = new WheelFrictionCurve();
+                side.extremumSlip = 0.25f;
+                side.extremumValue = 1f;
+                side.asymptoteSlip = 0.5f;
+                side.asymptoteValue = 0.75f;
+                side.stiffness = 1.5f;
+                colliders1[0].GetComponent<WheelCollider>().sidewaysFriction = side;
+                colliders2[0].GetComponent<WheelCollider>().sidewaysFriction = side;
+
+                //colliders1[0].transform.localPosition = new Vector3(0, -0.11f, 0.4197685f);
+                //colliders1[1].GetComponent<WheelCollider>().center = new Vector3(0, 0, 0);
+                //colliders1[1].GetComponent<WheelCollider>().forceAppPointDistance = 0f;
+                //colliders2[0].transform.localPosition = new Vector3(0, -0.097f, -0.438f);
+                //colliders2[1].GetComponent<WheelCollider>().center = new Vector3(0, 0, 0);
+                //colliders2[1].GetComponent<WheelCollider>().forceAppPointDistance = 0f;
+
                 Resources.UnloadUnusedAssets();
             }
             catch (Exception e)
@@ -281,7 +309,7 @@ public class SavingManager : MonoBehaviour
     {
         foreach (KeyValuePair<int, GameObject> pair in PartMaster.instance.partList)
         {
-            saveList.partPositions.Add(new PartPosition(pair.Key, PartMaster.instance.GetPosition(pair.Key), PartMaster.instance.GetScale(pair.Key), PartMaster.instance.GetPartVisibe(pair.Key)));
+            saveList.partPositions.Add(new PartPosition(pair.Key, PartMaster.instance.GetPosition(pair.Key), PartMaster.instance.GetScale(pair.Key), PartMaster.instance.GetRotation(pair.Key), PartMaster.instance.GetPartVisibe(pair.Key)));
         }
     }
 
@@ -297,6 +325,7 @@ public class SavingManager : MonoBehaviour
         {
             PartMaster.instance.SetPosition(partPos.partNum, new Vector3(partPos.x, partPos.y, partPos.z));
             PartMaster.instance.SetScale(partPos.partNum, new Vector3(partPos.scaleX, partPos.scaleY, partPos.scaleZ));
+            PartMaster.instance.SetRotation(partPos.partNum, new Vector3(partPos.rotX, partPos.rotY, partPos.rotZ));
             PartMaster.instance.SetPartVisible(partPos.partNum, partPos.isVisible);
         }
     }
@@ -969,7 +998,7 @@ public class SavingManager : MonoBehaviour
             foreach (PartMesh pm in loadList.partMeshes)
             {
                 if (pm.isCustom) {
-                    if (!File.Exists(Application.dataPath +"/GarageContent/"+ pm.fileName))
+                    if (!File.Exists(Application.dataPath + "/GarageContent/" + pm.fileName))
                     {
                         ChangeAlertText("Error loading mesh: " + pm.fileName + " is a dependancy of this save file and could not be found. The save will continue to load, but it will load the default mesh in place of the missing custom mesh.");
                         if (!infoBox.activeSelf)
@@ -979,13 +1008,21 @@ public class SavingManager : MonoBehaviour
                     {
                         if (pm.partName.Equals("cranks"))
                         {
-                            Mesh temp = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
-                            PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, temp);
-                            PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, temp);
-                            CustomMeshManager.instance.SetPartText(pm.partName, temp.name);
+                            Mesh crank = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
+                            PartMaster.instance.SetMesh(PartMaster.instance.leftCrank, crank);
+                            PartMaster.instance.SetMesh(PartMaster.instance.rightCrank, crank);
+                            CustomMeshManager.instance.SetPartText(pm.partName, crank.name);
                             continue;
                         }
-                        else if (pm.partName.Equals("stem"))
+                        if (pm.partName.Equals("pedals"))
+                        {
+                            Mesh pedal = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
+                            PartMaster.instance.SetMesh(PartMaster.instance.leftPedal, pedal);
+                            PartMaster.instance.SetMesh(PartMaster.instance.rightPedal, pedal);
+                            CustomMeshManager.instance.SetPartText(pm.partName, pedal.name);
+                            continue;
+                        }
+                        if (pm.partName.Equals("stem"))
                         {
                             string path = "StemBolts/" + Path.GetFileName(pm.fileName);
                             Mesh stem = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
@@ -995,13 +1032,10 @@ public class SavingManager : MonoBehaviour
                             CustomMeshManager.instance.SetPartText(pm.partName, stem.name);
                             continue;
                         }
-                        else
-                        {
-                            Mesh temp = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
-                            PartMaster.instance.SetMesh(pm.key, temp);
-                            CustomMeshManager.instance.SetPartText(pm.partName, temp.name);
-                            continue;
-                        }
+                        Mesh temp = CustomMeshManager.instance.FindSpecific(pm.partName, pm.fileName);
+                        PartMaster.instance.SetMesh(pm.key, temp);
+                        CustomMeshManager.instance.SetPartText(pm.partName, temp.name);
+                        continue;
                     }
                 }
                 switch (pm.partName)

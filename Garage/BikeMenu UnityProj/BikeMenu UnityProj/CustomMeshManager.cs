@@ -547,7 +547,8 @@ public class CustomMeshManager : MonoBehaviour
             if (mo.fileName.Equals(fileName))
             {
                 mesh = mo.mesh;
-                SetPartNum(list, i);
+                if (!fileName.Contains("StemBolts"))
+                    SetPartNum(list, i);
                 return mesh;
             }
             i++;
@@ -622,12 +623,14 @@ public class CustomMeshManager : MonoBehaviour
                 {
                     if (HashEqual(hashes[fileNameArray[i]], hash))
                     {
+                        Debug.Log("The file " + fileNameArray[i] + " already exists, skipping...");
                         continue;
                     }
                     Debug.Log("The file " + fileNameArray[i] + " has been modified, reloading...");
                     hashes.Remove(fileNameArray[i]);
                     RemoveIfExistsMesh(folder + Path.GetFileName(fileNameArray[i]), meshObjectList);
                 }
+                Debug.Log("New File " + fileNameArray[i] + " has been found, loading...");
                 if (customMeshList.ContainsKey(fileNameArray[i]))
                     customMeshList.Remove(fileNameArray[i]);
                 customMeshList.Add(fileNameArray[i], 0);

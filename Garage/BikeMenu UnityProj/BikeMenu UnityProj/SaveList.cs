@@ -218,14 +218,18 @@ public class PartPosition
     public int partNum;
     public float x, y, z;
     public float scaleX, scaleY, scaleZ;
+    public float rotX, rotY, rotZ;
     public bool isVisible;
 
-    public PartPosition(int key, Vector3 pos, Vector3 scale, bool visible)
+    public PartPosition(int key, Vector3 pos, Vector3 scale, Vector3 rot, bool visible)
     {
         partNum = key;
         x = pos.x;
         y = pos.y;
         z = pos.z;
+        rotX = rot.x;
+        rotY = rot.y;
+        rotZ = rot.z;
         scaleX = scale.x;
         scaleY = scale.y;
         scaleZ = scale.z;

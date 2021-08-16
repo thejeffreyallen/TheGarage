@@ -24,7 +24,10 @@ public class ColourSetter : MonoBehaviour
     Color col;
     Color brakeColor = Color.black;
     Color cableColor = Color.black;
+    public bool rotationOn = false;
+    public GameObject rotationIndicator;
     private bool active = false;
+    //Dictionary<int, Stack<Vector3>> history = new Dictionary<int, Stack<Vector3>>();
 
     void Awake()
     {
@@ -159,6 +162,12 @@ public class ColourSetter : MonoBehaviour
         return active;
     }
 
+    public void ToggleRotation()
+    {
+        rotationIndicator.SetActive(!rotationIndicator.activeInHierarchy);
+        rotationOn = !rotationOn;
+    }
+
     //TODO Add color options for bar/frame and wheel accessories
     void Update()
     {
@@ -183,31 +192,58 @@ public class ColourSetter : MonoBehaviour
         }
         if (MenuManager.instance.experimentalMenu.activeInHierarchy)
         {
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+                ToggleRotation();
             foreach (int key in activeParts)
             {
+                
                 if (Input.GetKey(KeyCode.Keypad8))
-                    PartMaster.instance.MovePart(key, "y", 0.001f);
-                if (Input.GetKey(KeyCode.Keypad2))
-                    PartMaster.instance.MovePart(key, "y", -0.001f);
-                if (Input.GetKey(KeyCode.Keypad4))
-                    PartMaster.instance.MovePart(key, "x", 0.001f);
-                if (Input.GetKey(KeyCode.Keypad6))
-                    PartMaster.instance.MovePart(key, "x", -0.001f);
-                if (Input.GetKey(KeyCode.Keypad7))
-                    PartMaster.instance.MovePart(key, "z", 0.001f);
-                if (Input.GetKey(KeyCode.Keypad9))
-                    PartMaster.instance.MovePart(key, "z", -0.001f);
-
-                GameObject obj = PartMaster.instance.GetPart(key);
-                if (obj == null)
                 {
-                    Debug.Log("Could not find part number " + key + " at ColourSetter.Update()");
-                    return;
+                    if(rotationOn)
+                        PartMaster.instance.RotatePart(key, "y", 0.1f);
+                    else
+                        PartMaster.instance.MovePart(key, "y", 0.001f);
                 }
+                if (Input.GetKey(KeyCode.Keypad2))
+                {
+                    if (rotationOn)
+                        PartMaster.instance.RotatePart(key, "y", -0.1f);
+                    else
+                        PartMaster.instance.MovePart(key, "y", -0.001f);
+                }
+                if (Input.GetKey(KeyCode.Keypad4))
+                {
+                    if (rotationOn)
+                        PartMaster.instance.RotatePart(key, "x", 0.1f);
+                    else
+                        PartMaster.instance.MovePart(key, "z", 0.001f);
+                }
+                if (Input.GetKey(KeyCode.Keypad6))
+                {
+                    if (rotationOn)
+                        PartMaster.instance.RotatePart(key, "x", -0.1f);
+                    else
+                        PartMaster.instance.MovePart(key, "z", -0.001f);
+                }
+                if (Input.GetKey(KeyCode.Keypad7))
+                {
+                    if (rotationOn)
+                        PartMaster.instance.RotatePart(key, "z", 0.1f);
+                    else
+                        PartMaster.instance.MovePart(key, "x", 0.001f);
+                }
+                if (Input.GetKey(KeyCode.Keypad9))
+                {
+                    if (rotationOn)
+                        PartMaster.instance.RotatePart(key, "z", -0.1f);
+                    else
+                        PartMaster.instance.MovePart(key, "x", -0.001f);
+                }
+
                 if (Input.GetKey(KeyCode.KeypadPlus))
-                    obj.transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
-                if(Input.GetKey(KeyCode.KeypadMinus)) 
-                    obj.transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
+                    PartMaster.instance.Scale(key, true, 0.001f);
+                if(Input.GetKey(KeyCode.KeypadMinus))
+                    PartMaster.instance.Scale(key, false, 0.001f);
             }
         }
         /*

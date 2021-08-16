@@ -107,8 +107,8 @@ public class PartMaster : MonoBehaviour
     public int chain = 43;
     public int barsJ = 44;
     public int frameJ = 45;
-    public int frontWheelCol = 46;
-    public int rearWheelCol = 47;
+    public int frontWheelMeshCol = 46;
+    public int rearWheelMeshCol = 47;
     public int frontAcc = 48;
     public int rearAcc = 49;
     public int barAcc = 50;
@@ -123,7 +123,7 @@ public class PartMaster : MonoBehaviour
     public int rightPedalJoint = 59;
     public int driveTrain = 60;
 
-    
+
 
     GameObject accFront;
     GameObject accRear;
@@ -198,6 +198,8 @@ public class PartMaster : MonoBehaviour
         SetMaterial(forks, MaterialManager.instance.defaultMat);
         SetMaterial(rightCrank, MaterialManager.instance.defaultMat);
         SetMaterial(leftCrank, MaterialManager.instance.defaultMat);
+
+        
 
         foreach (KeyValuePair<int, GameObject> pair in partList) {
             origTrans.Add(pair.Key, new TransformData(pair.Value.transform));
@@ -355,7 +357,7 @@ public class PartMaster : MonoBehaviour
                         break;
                     case "Seat Post Anchor":
                         //Fix the seatpost angle
-                        t.localEulerAngles = new Vector3(t.localEulerAngles.x+0.274f, 0f, 0f);
+                        t.localEulerAngles = new Vector3(t.localEulerAngles.x + 0.274f, 0f, 0f);
                         partList.Add(seatPostAnchor, t.gameObject);
                         break;
                     case "Seat Mesh":
@@ -412,7 +414,7 @@ public class PartMaster : MonoBehaviour
                         Transform[] tran2 = t.gameObject.GetComponentsInChildren<Transform>();
                         foreach (Transform tr in tran2)
                         {
-                            if(tr.gameObject.name.Equals("Pedal Mesh"))
+                            if (tr.gameObject.name.Equals("Pedal Mesh"))
                                 partList.Add(rightPedal, tr.gameObject);
                             if (tr.gameObject.name.Equals("Pedal_01_axis"))
                                 partList.Add(rightPedalAxle, tr.gameObject);
@@ -432,9 +434,15 @@ public class PartMaster : MonoBehaviour
             }
             partList.Add(barsJ, GameObject.Find("BMX:Bars_Joint"));
             partList.Add(frameJ, GameObject.Find("BMX:Frame_Joint"));
-            partList.Add(frontWheelCol, GameObject.Find("FrontWheelCollider"));
-            partList.Add(rearWheelCol, GameObject.Find("BackWheelCollider"));
+
             
+            partList.Add(frontWheelMeshCol, GameObject.Find("FrontWheelMeshCollider"));
+            partList.Add(rearWheelMeshCol, GameObject.Find("BackWheelMeshCollider"));
+
+            
+
+            //partList.Add(frontWheelMeshCol, GameObject.Find("FrontWheelMeshCollider"));
+            //partList.Add(rearWheelMeshCol, GameObject.Find("BackWheelMeshCollider"));
         }
         catch (Exception e)
         {
@@ -594,6 +602,23 @@ public class PartMaster : MonoBehaviour
             part.localPosition = new Vector3(part.localPosition.x, part.localPosition.y, part.localPosition.z + pos);
     }
 
+    public void RotatePart(int key, string axis, float rot)
+    {
+        if (GetPart(key) == null)
+        {
+            Debug.Log("Could not find part number " + key);
+            return;
+        }
+        Transform part = GetPart(key).transform;
+        Debug.Log("Rotating " + part.gameObject.name);
+        if (axis.Equals("x"))
+            part.localEulerAngles = new Vector3(part.localEulerAngles.x + rot, part.localEulerAngles.y, part.localEulerAngles.z);
+        if (axis.Equals("y"))
+            part.localEulerAngles = new Vector3(part.localEulerAngles.x, part.localEulerAngles.y + rot, part.localEulerAngles.z);
+        if (axis.Equals("z"))
+            part.localEulerAngles = new Vector3(part.localEulerAngles.x, part.localEulerAngles.y, part.localEulerAngles.z + rot);
+    }
+
     public Vector3 GetPosition(int key)
     {
         return GetPart(key).transform.localPosition;
@@ -602,6 +627,16 @@ public class PartMaster : MonoBehaviour
     public void SetPosition(int key, Vector3 pos)
     {
         GetPart(key).transform.localPosition = pos;
+    }
+
+    public Vector3 GetRotation(int key)
+    {
+        return GetPart(key).transform.localEulerAngles;
+    }
+
+    public void SetRotation(int key, Vector3 rot)
+    {
+        GetPart(key).transform.localEulerAngles = rot;
     }
 
     public void SetPartsVisible()
@@ -625,40 +660,43 @@ public class PartMaster : MonoBehaviour
         return obj.activeInHierarchy;
     }
 
-    public void Scale(bool positive)
+    public void Scale(int key, bool positive, float factor)
     {
-        foreach (int key in ColourSetter.instance.GetActivePartList())
+        GameObject obj = GetPart(key);
+        /*
+        if (key == frontWheel || key == rearWheel)
         {
-            GameObject obj = GetPart(key);
-            /*
-            if (key == 46 || key == 47)
+            try
             {
-                WheelCollider wc = obj.GetComponent<WheelCollider>();
-                wc.suspensionDistance = 0.08f;
-                wc.forceAppPointDistance = 0.0f;
-                JointSpring js = wc.suspensionSpring;
-                js.spring = 90000f;
-                js.damper = 9000f;
-                js.targetPosition = 1;
-                if (positive)
-                {
-                    wc.radius += 0.1f;
-                }
-                else
-                {
-                    wc.radius -= 0.1f;
-                }
-                continue;
+                Debug.Log("Setting scale for wheel collider ");
+                Collider[] colliders = obj.GetComponent<ColliderSet>().colliders;
+                colliders[0].transform.localScale = positive ? colliders[0].transform.localScale + new Vector3(0, factor, factor) : colliders[0].transform.localScale - new Vector3(0, factor, factor);
+                colliders[0].gameObject.SetActive(false);
+                AddRenderer(colliders[0].gameObject, colliders[0].GetComponent<MeshCollider>().sharedMesh, MaterialManager.instance.defaultMat);
+                colliders[1].GetComponent<WheelCollider>().radius = positive ? colliders[1].GetComponent<WheelCollider>().radius + factor : colliders[1].GetComponent<WheelCollider>().radius - factor;
+                obj.transform.localScale = positive ? obj.transform.localScale + new Vector3(0, factor, factor) : obj.transform.localScale - new Vector3(0, factor, factor);
             }
-            else
-            */
+            catch (Exception e)
             {
-                if (positive)
-                    obj.transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
-                else
-                    obj.transform.localScale -= new Vector3(0.1f, 0.1f, 0.1f);
+                Debug.Log("Error in setting scale for wheel. Part num " + key + " in PartMaster.Scale(). " + e.Message + e.StackTrace);
             }
         }
+        else
+        */
+        {
+            obj.transform.localScale = positive ? obj.transform.localScale + new Vector3(factor, factor, factor) : obj.transform.localScale - new Vector3(factor, factor, factor);
+        }
+
+    }
+
+    public void AddRenderer(GameObject g, Mesh mesh, Material mat)
+    {
+        if (g.GetComponent<MeshRenderer>() != null)
+            return;
+        g.AddComponent<MeshRenderer>();
+        g.AddComponent<MeshFilter>();
+        g.GetComponent<MeshFilter>().mesh = mesh;
+        g.GetComponent<MeshRenderer>().material = mat;
     }
 
     public bool HasRenderer(int key)
