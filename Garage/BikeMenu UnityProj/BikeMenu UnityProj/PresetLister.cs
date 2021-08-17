@@ -15,6 +15,7 @@ public class PresetLister : MonoBehaviour
 
     public GameObject buttonPrefab;
     public Transform buttonParent;
+    public RectTransform rt;
 
     void OnEnable()
     {
@@ -34,19 +35,20 @@ public class PresetLister : MonoBehaviour
                 Destroy(buttonParent.GetChild(i).gameObject);
             }
         }
-
+        //rt.sizeDelta = new Vector2(rt.sizeDelta.x, 50 * presets.Length);
         //Create buttons
         for (int i = 0; i < presets.Length; i++)
         {
             if (presets[i].Contains(".preset"))
             {
                 GameObject button = Instantiate(buttonPrefab, buttonParent);
-                button.transform.position = new Vector2(buttonParent.position.x, buttonParent.position.y + (350 - (50 * i)));
+               // button.transform.position = new Vector2(buttonParent.position.x, buttonParent.position.y + (580 - (50 * i)));
 
                 string fileName = Path.GetFileName(presets[i]).Replace(".preset", "");
                 button.transform.GetChild(0).GetComponent<Text>().text = fileName;
                 button.GetComponent<Button>().onClick.AddListener(delegate { SavingManager.instance.Load(fileName); });
             }
         }
+        
     }
 }

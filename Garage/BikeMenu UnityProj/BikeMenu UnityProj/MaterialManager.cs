@@ -117,6 +117,36 @@ public class MaterialManager : MonoBehaviour
         }
     }
 
+    public void SetMaterialToFade()
+    {
+        foreach (int key in ColourSetter.instance.GetActivePartList())
+        {
+            Material mat = PartMaster.instance.GetMaterial(key);
+            if (mat == null)
+                return;
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.DisableKeyword("_ALPHATEST_ON");
+            mat.EnableKeyword("_ALPHABLEND_ON");
+            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            mat.renderQueue = 3000;
+            mat.SetFloat("_Mode", 2f);
+        }
+    }
+
+    public void SetMaterialToFade(Material mat)
+    {
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.DisableKeyword("_ALPHATEST_ON");
+            mat.EnableKeyword("_ALPHABLEND_ON");
+            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            mat.renderQueue = 3000;
+            mat.SetFloat("_Mode", 2f);
+    }
+
     private IEnumerator DestroyNormal()
     {
         yield return new WaitForSeconds(0.1f);

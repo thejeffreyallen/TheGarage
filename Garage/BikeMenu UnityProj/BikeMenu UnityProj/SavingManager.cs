@@ -194,7 +194,7 @@ public class SavingManager : MonoBehaviour
                     PartMaster.instance.GetPart(PartMaster.instance.rightPedal).transform.localEulerAngles += new Vector3(0, 180f, 0);
                 }
 
-                
+                /*
                 Collider[] colliders1 = PartMaster.instance.GetPart(PartMaster.instance.frontWheelMeshCol).GetComponent<ColliderSet>().colliders;
                 Collider[] colliders2 = PartMaster.instance.GetPart(PartMaster.instance.rearWheelMeshCol).GetComponent<ColliderSet>().colliders;
                 colliders1[0].GetComponent<WheelCollider>().mass = 200;
@@ -207,7 +207,7 @@ public class SavingManager : MonoBehaviour
                 side.stiffness = 1.5f;
                 colliders1[0].GetComponent<WheelCollider>().sidewaysFriction = side;
                 colliders2[0].GetComponent<WheelCollider>().sidewaysFriction = side;
-
+                */
                 //colliders1[0].transform.localPosition = new Vector3(0, -0.11f, 0.4197685f);
                 //colliders1[1].GetComponent<WheelCollider>().center = new Vector3(0, 0, 0);
                 //colliders1[1].GetComponent<WheelCollider>().forceAppPointDistance = 0f;
@@ -676,8 +676,7 @@ public class SavingManager : MonoBehaviour
                 Material material = PartMaster.instance.GetMaterial(pair.Key);
                 if (material == null)
                     continue;
-                saveList.matData.Add(new MatData(pair.Key, material.GetFloat("_Glossiness"), material.GetFloat("_GlossMapScale"), material.GetTextureScale("_MainTex").x, material.GetTextureScale("_MainTex").y, material.GetTextureScale("_BumpMap").x, material.GetTextureScale("_BumpMap").y, material.GetTextureScale("_MetallicGlossMap").x, material.GetTextureScale("_MetallicGlossMap").y, material.GetFloat("_Metallic")));
-
+                saveList.matData.Add(new MatData(pair.Key, material.GetFloat("_Glossiness"), material.GetFloat("_GlossMapScale"), material.GetTextureScale("_MainTex").x, material.GetTextureScale("_MainTex").y, material.GetTextureScale("_BumpMap").x, material.GetTextureScale("_BumpMap").y, material.GetTextureScale("_MetallicGlossMap").x, material.GetTextureScale("_MetallicGlossMap").y, material.GetFloat("_Metallic"), material.GetFloat("_Mode") == 2f));
             }
         }
         catch (Exception e)
@@ -781,7 +780,7 @@ public class SavingManager : MonoBehaviour
             foreach (MatData matData in loadList.matData)
             {
 
-                PartMaster.instance.SetMaterialData(matData.key, matData.glossiness, matData.glossMapScale, matData.metallic, matData.texTileX, matData.texTileY, matData.normTileX, matData.normTileY, matData.metTileX, matData.metTileY);
+                PartMaster.instance.SetMaterialData(matData.key, matData.glossiness, matData.glossMapScale, matData.metallic, matData.texTileX, matData.texTileY, matData.normTileX, matData.normTileY, matData.metTileX, matData.metTileY, matData.isFade);
             }
         }
         catch (Exception e)

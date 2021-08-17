@@ -163,8 +163,9 @@ public class MatData
     public float normTileX, normTileY;
     public float metTileX, metTileY;
     public float metallic;
+    public bool isFade;
 
-    public MatData(int key, float glossiness, float glossMapScale, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY, float metallic)
+    public MatData(int key, float glossiness, float glossMapScale, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY, float metallic, bool isFade)
     {
         this.key = key;
         this.glossiness = glossiness;
@@ -176,6 +177,7 @@ public class MatData
         this.metTileX = metTileX;
         this.metTileY = metTileY;
         this.metallic = metallic;
+        this.isFade = isFade;
     }
 
     public MatData()

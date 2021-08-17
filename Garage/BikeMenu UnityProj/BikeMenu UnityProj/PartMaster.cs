@@ -41,8 +41,9 @@ public class PartMaster : MonoBehaviour
         public float normTileX, normTileY;
         public float metTileX, metTileY;
         public float metallic;
+        public bool isFade;
 
-        public MaterialData(float glossiness, float glossMapScale, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY, float metallic)
+        public MaterialData(float glossiness, float glossMapScale, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY, float metallic, bool isFade)
         {
             this.glossiness = glossiness;
             this.glossMapScale = glossMapScale;
@@ -53,6 +54,7 @@ public class PartMaster : MonoBehaviour
             this.metTileX = metTileX;
             this.metTileY = metTileY;
             this.metallic = metallic;
+            this.isFade = isFade;
         }
     }
 
@@ -206,7 +208,7 @@ public class PartMaster : MonoBehaviour
         }
     }
 
-    public void SetMaterialData(int key, float glossiness, float glossMapScale, float metallic, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY)
+    public void SetMaterialData(int key, float glossiness, float glossMapScale, float metallic, float texTileX, float texTileY, float normTileX, float normTileY, float metTileX, float metTileY, bool isFade)
     {
         try
         {
@@ -219,6 +221,10 @@ public class PartMaster : MonoBehaviour
             material[0].SetTextureScale("_MainTex", new Vector2(texTileX, texTileY));
             material[0].SetTextureScale("_BumpMap", new Vector2(normTileX, normTileY));
             material[0].SetTextureScale("_MetallicGlossMap", new Vector2(metTileX, metTileY));
+            if (isFade)
+            {
+                MaterialManager.instance.SetMaterialToFade(material[0]);
+            }
             SetMaterials(key, material);
         }
         catch (Exception e)

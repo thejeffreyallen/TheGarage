@@ -189,6 +189,7 @@ public class ColourSetter : MonoBehaviour
                     Debug.Log("Error setting color " + e.Message + e.StackTrace);
                 }
             }
+            
         }
         if (MenuManager.instance.experimentalMenu.activeInHierarchy)
         {
