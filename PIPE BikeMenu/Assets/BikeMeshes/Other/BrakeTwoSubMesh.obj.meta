@@ -6,20 +6,29 @@ ModelImporter:
     100000: //RootNode
     100002: default
     100004: BrakeTwo
+    100006: SingleCable_SeatStay
     400000: //RootNode
     400002: default
     400004: BrakeTwo
+    400006: SingleCable_SeatStay
     2100000: Default_OBJ
     2100002: Metal
     2100004: BrakeParts
     2100006: BrakeTwoMat
     2100008: Cable
+    2100010: Default_OBJ.002
+    2100012: Metal.002
+    2100014: BrakeParts.003
+    2100016: Cable.004
     2300000: default
     2300002: BrakeTwo
+    2300004: SingleCable_SeatStay
     3300000: default
     3300002: BrakeTwo
+    3300004: SingleCable_SeatStay
     4300000: default
     4300002: BrakeTwo
+    4300004: SingleCable_SeatStay
   externalObjects: {}
   materials:
     importMaterials: 1

@@ -6,7 +6,7 @@ public class CreateAssetBundles
     [MenuItem("Assets/Build AssetBundles")]
     static void BuildAllAssetBundles()
     {
-        string assetBundleDirectory = "G:/Pipe1.9.9/3099592/PIPE_Data/";
+        string assetBundleDirectory = "G:/PIPE/3099592/PIPE_Data/";
         if (!Directory.Exists(assetBundleDirectory))
         {
             Directory.CreateDirectory(assetBundleDirectory);
@@ -18,11 +18,12 @@ public class CreateAssetBundles
         {
             try
             {
-                File.Delete(file);
+                File.Delete(file); 
             }
             catch{
                 
             }
         }
+        File.Delete("G:/PIPE/3099592/PIPE_Data/PIPE_Data");
     }
 }

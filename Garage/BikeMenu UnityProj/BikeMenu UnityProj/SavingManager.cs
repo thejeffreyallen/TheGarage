@@ -434,6 +434,8 @@ public class SavingManager : MonoBehaviour
     private void SaveBrakes()
     {
         saveList.brakes = BrakesManager.instance.IsEnabled();
+        saveList.barBrakeIndex = BrakesManager.instance.barBrakeIndex;
+        saveList.frameBrakeIndex = BrakesManager.instance.frameBrakeIndex;
     }
 
     /// <summary>
@@ -442,6 +444,8 @@ public class SavingManager : MonoBehaviour
     private void LoadBrakes()
     {
         BrakesManager.instance.SetBrakes(loadList.brakes);
+        BrakesManager.instance.SetBarBrakeStyle(loadList.barBrakeIndex);
+        BrakesManager.instance.SetFrameBrakeStyle(loadList.frameBrakeIndex);
     }
 
     /// <summary>

@@ -37,6 +37,10 @@ public class CustomMeshManager : MonoBehaviour
     public Mesh[] barMeshes;
     public Text selectedBarsText;
 
+    [Header("Nipples")]
+    public int selectedNipples = 0;
+    public Mesh[] nippleMeshes;
+
     [Header("SeatPosts")]
     public int selectedSeatPost = 0;
     public Mesh[] seatPostMeshes;
@@ -178,6 +182,7 @@ public class CustomMeshManager : MonoBehaviour
     public List<MeshObject> barAccessories;
     public List<MeshObject> frameAccessories;
     public List<MeshObject> seatPosts;
+    public List<MeshObject> nipples;
 
     public Dictionary<string, List<MeshObject>> meshLists = new Dictionary<string, List<MeshObject>>();
 
@@ -269,6 +274,7 @@ public class CustomMeshManager : MonoBehaviour
             barAccessories = new List<MeshObject>();
             frameAccessories = new List<MeshObject>();
             seatPosts = new List<MeshObject>();
+            nipples = new List<MeshObject>();
 
             foreach (Mesh m in frameMeshes)
                 frames.Add(new MeshObject(m, false, ""));
@@ -310,6 +316,8 @@ public class CustomMeshManager : MonoBehaviour
                 frameAccessories.Add(new MeshObject(m, false, ""));
             foreach (Mesh m in seatPostMeshes)
                 seatPosts.Add(new MeshObject(m, false, ""));
+            foreach (Mesh m in nippleMeshes)
+                nipples.Add(new MeshObject(m, false, ""));
 
             meshLists.Add("frame", frames);
             meshLists.Add("bars", bars);
@@ -336,6 +344,7 @@ public class CustomMeshManager : MonoBehaviour
             meshLists.Add("rearHubGuard", rearHubGuards);
             meshLists.Add("seatPost", seatPosts);
             meshLists.Add("stemBolts", boltsStem);
+            meshLists.Add("nipples", nipples);
         }
         catch (Exception e)
         {
@@ -366,6 +375,7 @@ public class CustomMeshManager : MonoBehaviour
             seatPosts = LoadFromFile("SeatPosts/", seatPosts);
             frontHubGuards = LoadFromFile("FrontHubGuards/", frontHubGuards);
             rearHubGuards = LoadFromFile("RearHubGuards/", rearHubGuards);
+            nipples = LoadFromFile("Nipples/", nipples);
         }
         catch (Exception e)
         {
@@ -851,22 +861,58 @@ public class CustomMeshManager : MonoBehaviour
     /// SetSpokesMesh method - Change the bike spokes mesh at runtime
     /// </summary>
     /// <param name="j"> the index of the mesh to change to </param>
-    public void SetFrontSpokesMesh(int j)
+    public void SetFrontSpokesMesh(int i)
     {
-        PartMaster.instance.SetMesh(PartMaster.instance.frontSpokes, spokes[j % spokes.Count].mesh);
-        selectedFrontSpokesText.text = spokes[j % spokes.Count].mesh.name;
-        selectedFrontSpokes = (j % spokes.Count);
+        MeshObject mo = spokes[i % spokes.Count];
+        if (mo.isCustom)
+        {
+            string path = "Spokes/" + Path.GetFileName(mo.fileName);
+            Mesh nip = FindSpecific("nipples", path);
+            if (nip == null)
+            {
+                Debug.Log("The mesh: " + path + " could not be loaded");
+                PartMaster.instance.SetMesh(PartMaster.instance.frontSpokes, mo.mesh);
+                PartMaster.instance.SetMesh(PartMaster.instance.frontNipples, nipples[0].mesh);
+            }
+            PartMaster.instance.SetMesh(PartMaster.instance.frontSpokes, mo.mesh);
+            PartMaster.instance.SetMesh(PartMaster.instance.frontNipples, nip);
+        }
+        else
+        {
+            PartMaster.instance.SetMesh(PartMaster.instance.frontSpokes, spokes[i % spokes.Count].mesh);
+            PartMaster.instance.SetMesh(PartMaster.instance.frontNipples, nipples[i % nipples.Count].mesh);
+        }
+        selectedFrontSpokesText.text = spokes[i % spokes.Count].mesh.name;
+        selectedFrontSpokes = (i % spokes.Count);
     }
 
     /// <summary>
     /// SetSpokesMesh method - Change the bike spokes mesh at runtime
     /// </summary>
-    /// <param name="j"> the index of the mesh to change to </param>
-    public void SetRearSpokesMesh(int j)
+    /// <param name="i"> the index of the mesh to change to </param>
+    public void SetRearSpokesMesh(int i)
     {
-        PartMaster.instance.SetMesh(PartMaster.instance.rearSpokes, spokes[j % spokes.Count].mesh);
-        selectedRearSpokesText.text = spokes[j % spokes.Count].mesh.name;
-        selectedRearSpokes = (j % spokes.Count);
+        MeshObject mo = spokes[i % spokes.Count];
+        if (mo.isCustom)
+        {
+            string path = "Spokes/" + Path.GetFileName(mo.fileName);
+            Mesh nip = FindSpecific("nipples", path);
+            if (nip == null)
+            {
+                Debug.Log("The mesh: " + path + " could not be loaded");
+                PartMaster.instance.SetMesh(PartMaster.instance.rearSpokes, mo.mesh);
+                PartMaster.instance.SetMesh(PartMaster.instance.rearNipples, nipples[0].mesh);
+            }
+            PartMaster.instance.SetMesh(PartMaster.instance.rearSpokes, mo.mesh);
+            PartMaster.instance.SetMesh(PartMaster.instance.rearNipples, nip);
+        }
+        else
+        {
+            PartMaster.instance.SetMesh(PartMaster.instance.rearSpokes, spokes[i % spokes.Count].mesh);
+            PartMaster.instance.SetMesh(PartMaster.instance.rearNipples, nipples[i % nipples.Count].mesh);
+        }
+        selectedRearSpokesText.text = spokes[i % spokes.Count].mesh.name;
+        selectedRearSpokes = (i % spokes.Count);
     }
 
     /// <summary>

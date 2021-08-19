@@ -14,6 +14,11 @@ public class BrakesManager : MonoBehaviour
     public GameObject barBrakes;
     public GameObject frameBrakes;
 
+    public Mesh[] frameBrakeStyles;
+    public Mesh[] barBrakeStyles;
+    public int frameBrakeIndex = 0;
+    public int barBrakeIndex = 0;
+
     public bool brakesEnabled;
 
     private void Awake()
@@ -45,6 +50,8 @@ public class BrakesManager : MonoBehaviour
 
     void EnableBrakes()
     {
+        if (brakesEnabled == true)
+            return;
         Transform bars = PartMaster.instance.GetPart(PartMaster.instance.bars).transform;
         Transform frame = PartMaster.instance.GetPart(PartMaster.instance.frame).transform;
 
@@ -64,6 +71,8 @@ public class BrakesManager : MonoBehaviour
 
     void DisableBrakes()
     {
+        if (brakesEnabled == false)
+            return;
         Debug.Log("Destroying brake prefabs");
         Transform TempParent = new GameObject().transform;
         barBrakes.transform.parent = TempParent;
@@ -77,6 +86,50 @@ public class BrakesManager : MonoBehaviour
         PartMaster.instance.partList.Remove(-4);
         PartMaster.instance.origTrans.Remove(-3);
         PartMaster.instance.origTrans.Remove(-4);
+    }
+
+    public void ToggleFrameBrakeStyle()
+    {
+        if (!brakesEnabled)
+        {
+            return;
+        }
+        frameBrakeIndex++;
+        frameBrakeIndex = frameBrakeIndex % frameBrakeStyles.Length;
+        frameBrakes.GetComponent<MeshFilter>().mesh = frameBrakeStyles[frameBrakeIndex];
+    }
+
+    public void ToggleBarBrakeStyle()
+    {
+        if (!brakesEnabled)
+        {
+            return;
+        }
+        barBrakeIndex++;
+        barBrakeIndex = barBrakeIndex % barBrakeStyles.Length;
+        barBrakes.GetComponent<MeshFilter>().mesh = barBrakeStyles[barBrakeIndex];
+    }
+
+    public void SetFrameBrakeStyle(int i)
+    {
+        if (!brakesEnabled)
+        {
+            return;
+        }
+        i = i % frameBrakeStyles.Length;
+        frameBrakes.GetComponent<MeshFilter>().mesh = frameBrakeStyles[i];
+        frameBrakeIndex = i;
+    }
+
+    public void SetBarBrakeStyle(int i)
+    {
+        if (!brakesEnabled)
+        {
+            return;
+        }
+        i = i % barBrakeStyles.Length;
+        barBrakes.GetComponent<MeshFilter>().mesh = barBrakeStyles[i];
+        barBrakeIndex = i;
     }
 
     public GameObject GetBarBrakes()

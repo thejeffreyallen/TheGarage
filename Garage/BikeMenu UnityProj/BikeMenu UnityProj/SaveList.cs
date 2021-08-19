@@ -26,6 +26,9 @@ public class SaveList
     public float rearTireWidth;
     public float seatHeight;
 
+    public int barBrakeIndex;
+    public int frameBrakeIndex;
+
     public int seatID;
     public int gripsID;
     public int frontTreadID;

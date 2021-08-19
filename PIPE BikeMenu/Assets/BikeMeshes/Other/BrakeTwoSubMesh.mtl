@@ -1,7 +1,7 @@
-# Blender MTL File: 'None'
+# Blender MTL File: 'Brakes.blend'
 # Material Count: 4
 
-newmtl BrakeParts
+newmtl BrakeParts.003
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.000000 0.021610
@@ -11,7 +11,7 @@ Ni 1.450000
 d 1.000000
 illum 3
 
-newmtl Cable
+newmtl Cable.004
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.013378 0.800000 0.000176
@@ -19,9 +19,9 @@ Ks 0.500000 0.500000 0.500000
 Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
-illum 2
+illum 3
 
-newmtl Default_OBJ
+newmtl Default_OBJ.002
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.025394 0.025394 0.025394
@@ -31,7 +31,7 @@ Ni 1.450000
 d 1.000000
 illum 3
 
-newmtl Metal
+newmtl Metal.002
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.184469 0.184469 0.184469
